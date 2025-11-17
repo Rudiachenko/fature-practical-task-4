@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: code-review-agent
+  ai:
+    azure:
+      openai:
+        api-key: ${AZURE_OPEN_AI_KEY}
+        endpoint: ${AZURE_OPEN_AI_ENDPOINT}
+        chat:
+          options:
+            deployment-name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME:gpt-4o}
+    mcp:
+      client:
+        enabled: true
+        name: github-mcp-client
+        version: 1.0.0
+        request-timeout: 60s
+        type: SYNC
+        streamable-http:
+          connections:
+            github:
+              url: https://api.github.com
+              endpoint: /mcp
+              headers:
+                Authorization: "Bearer ${GITHUB_TOKEN}"
+app:
+  code-review:
+    system-prompt: classpath:prompts/pr-review-system-prompt.md
+  conventions:
+    resources:
+      - classpath:documents/java-convention.md
+      - classpath:documents/python-convention.md
+
+logging:
+  level:
+    sun.rmi.transport.tcp: ERROR
+    org.springframework.ai.mcp: DEBUG
+    io.modelcontextprotocol: DEBUG

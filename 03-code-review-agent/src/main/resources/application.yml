@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: mcp-code-review-agent
+  ai:
+    azure:
+      openai:
+        api-key: ${AZURE_OPEN_AI_KEY}
+        endpoint: ${AZURE_OPEN_AI_ENDPOINT}
+        chat:
+          options:
+            deployment-name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME:gpt-4o}
+app:
+  code-review:
+    system-prompt: classpath:prompts/code-review-system-prompt.md
+  conventions:
+    resources:
+      - classpath:documents/java-convention.md
+      - classpath:documents/python-convention.md
+logging:
+  level:
+    org.springframework.ai: DEBUG

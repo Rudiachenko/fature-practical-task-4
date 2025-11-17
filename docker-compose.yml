@@ -1,0 +1,15 @@
+services:
+  chroma:
+    image: ghcr.io/chroma-core/chroma:1.0.0
+    container_name: chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["http://localhost:8080"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma-data:/chroma/.chroma
+
+volumes:
+  chroma-data:
+

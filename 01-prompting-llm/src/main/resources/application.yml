@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: prompting-llm
+  ai:
+    azure:
+      openai:
+        apiKey: ${AZURE_OPEN_AI_KEY}
+        endpoint: ${AZURE_OPEN_AI_ENDPOINT}
+        model: ${AZURE_OPEN_AI_DEPLOYMENT_NAME:gpt-4o}
+
+app:
+  chat:
+    model-name: ${spring.ai.azure.openai.model}
+    system-prompt: classpath:/prompts/system_prompt.st
+    max-memory-messages: 20
