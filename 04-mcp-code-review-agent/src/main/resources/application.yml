@@ -19,10 +19,8 @@ spring:
         streamable-http:
           connections:
             github:
-              url: https://api.github.com
-              endpoint: /mcp
-              headers:
-                Authorization: "Bearer ${GITHUB_TOKEN}"
+              url: https://api.githubcopilot.com
+              endpoint: /mcp/
 app:
   code-review:
     system-prompt: classpath:prompts/pr-review-system-prompt.md
