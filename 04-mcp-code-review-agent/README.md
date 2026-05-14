@@ -35,8 +35,8 @@ The agent MUST interact with a **remote MCP server** to retrieve Pull Request da
 
 A Spring Boot service that performs AI-assisted GitHub Pull Request reviews using:
 
-- **Spring AI** for AI orchestration
-- **GitHub MCP (Model Context Protocol)** for full GitHub integration via GitHub's **remote MCP endpoint** (`https://api.github.com/mcp`) — no local MCP server required
+- **Spring AI 1.1.2** for AI orchestration
+- **GitHub MCP (Model Context Protocol)** for full GitHub integration via GitHub's **remote MCP endpoint** (`https://api.githubcopilot.com/mcp/`) — no local MCP server required
 - **Direct convention loading** from markdown files
 - **ReAct Agent** pattern for autonomous tool usage
 - **Automated comment posting** - Acts like a real code reviewer!
@@ -45,11 +45,11 @@ A Spring Boot service that performs AI-assisted GitHub Pull Request reviews usin
 
 - **CodeReviewReactAgent**: ReAct agent orchestrating the PR review process
 - **GitHub MCP Integration**: remote HTTP-based GitHub tools via Model Context Protocol
-    - Fetch PR information
-    - Read file diffs
-    - Get changed files
-    - Post review comments
-    - And many more GitHub operations
+  - Fetch PR information
+  - Read file diffs
+  - Get changed files
+  - Post review comments
+  - And many more GitHub operations
 - **CodeReviewTools**: Custom tools for language detection and convention retrieval
 - **ConventionService**: Loads and manages coding conventions from markdown files
 
@@ -126,7 +126,9 @@ Start the application:
 
 ### MCP Configuration
 
-The agent connects directly to GitHub's remote MCP endpoint over HTTP
+The agent connects directly to GitHub's remote MCP endpoint over the **streamable-HTTP** transport.
+
+**YAML Configuration** ([application.yml](src/main/resources/application.yml)):
 
 ```yaml
 spring:
@@ -141,10 +143,28 @@ spring:
         streamable-http:
           connections:
             github:
-              url: https://api.github.com
-              endpoint: /mcp
-              headers:
-                Authorization: Bearer ${GITHUB_TOKEN}
+              url: https://api.githubcopilot.com
+              endpoint: /mcp/
+```
+
+**Authorization Header** ([GitHubMcpRequestCustomizerConfig.java](src/main/java/com/epam/codereview/config/GitHubMcpRequestCustomizerConfig.java)):
+
+Spring AI's `streamable-http.connections` properties only expose `url` and `endpoint`. The `Authorization: Bearer <PAT>` header is injected by a `McpSyncHttpClientRequestCustomizer` bean:
+
+```java
+@Configuration
+public class GitHubMcpRequestCustomizerConfig {
+
+  @Bean
+  public McpSyncHttpClientRequestCustomizer gitHubMcpAuthorizationCustomizer(
+      @Value("${GITHUB_TOKEN}") String gitHubToken) {
+
+    return (HttpRequest.Builder builder,
+            String method, URI uri, String body,
+            McpTransportContext context) ->
+        builder.header("Authorization", "Bearer " + gitHubToken);
+  }
+}
 ```
 
 **Configuration Options:**
@@ -154,10 +174,10 @@ spring:
 - `version`: Client version
 - `request-timeout`: Timeout for MCP requests (60s for PR reviews)
 - `type`: `SYNC` for blocking, `ASYNC` for reactive applications
-- `streamable-http.connections`: Streamable HTTP connections to remote MCP servers
-  - `url`: Base URL of the remote MCP server
-  - `endpoint`: MCP endpoint path suffix (default: `/mcp`)
-  - `headers`: HTTP headers sent with every request (e.g., `Authorization: Bearer <token>`)
+- `streamable-http.connections.<name>.url`: Base URL of the remote MCP server
+- `streamable-http.connections.<name>.endpoint`: MCP endpoint path suffix (must include trailing slash for GitHub)
+
+**Note**: HTTP headers (like `Authorization`) cannot be set in YAML. They must be injected via a `McpSyncHttpClientRequestCustomizer` bean.
 
 **Transport Types:**
 
@@ -167,11 +187,14 @@ spring:
 streamable-http:
   connections:
     github:
-      url: https://api.github.com
-      endpoint: /mcp
-      headers:
-        Authorization: Bearer ${GITHUB_TOKEN}
+      url: https://api.githubcopilot.com
+      endpoint: /mcp/
 ```
+
+URL checklist:
+- ✅ host `api.githubcopilot.com`
+- ✅ endpoint `/mcp/` with trailing slash
+- ❌ `https://api.github.com/mcp` is **not** a valid endpoint
 
 **2. STDIO Transport** (Process-based — for local MCP servers):
 
@@ -199,10 +222,8 @@ spring:
         streamable-http:
           connections:
             github:
-              url: https://api.github.com
-              endpoint: /mcp
-              headers:
-                Authorization: Bearer ${GITHUB_TOKEN}
+              url: https://api.githubcopilot.com
+              endpoint: /mcp/
         stdio:
           connections:
             filesystem:  # Optional: For local file access
@@ -213,6 +234,8 @@ spring:
               env:
                 ALLOWED_PATHS: /path/to/directory
 ```
+
+Remember: Each additional remote MCP server requiring authentication needs its own `McpSyncHttpClientRequestCustomizer` bean that checks the URI and adds the appropriate token.
 
 ### Tool Flow
 
@@ -322,11 +345,11 @@ Content-Type: application/json
 2. Get PR details using `get_pull_request` (including commit SHA)
 3. Get list of changed files using `list_pull_request_files`
 4. For each changed file:
-   - Fetch content using `get_file_contents`
-   - Identify programming language from file extension
-   - Retrieve coding conventions for that language
-   - Review code line-by-line against conventions
-   - **Post LINE-SPECIFIC comments** on exact line numbers using `create_pull_request_review_comment`
+  - Fetch content using `get_file_contents`
+  - Identify programming language from file extension
+  - Retrieve coding conventions for that language
+  - Review code line-by-line against conventions
+  - **Post LINE-SPECIFIC comments** on exact line numbers using `create_pull_request_review_comment`
 5. Notify you that inline comments have been posted
 
 **The agent posts comments on SPECIFIC LINES in the "Files changed" tab - exactly where the issues are!**
@@ -357,11 +380,11 @@ Content-Type: application/json
 2. **Get PR Info**: Calls `get_pull_request` to get PR details and commit SHA
 3. **List Changed Files**: Calls `list_pull_request_files` to get all modified files
 4. **For Each File**:
-   - **Fetch Content**: `get_file_contents` from PR branch
-   - **Detect Language**: Identifies from file extension (.java, .py)
-   - **Get Conventions**: `retrieveCodeConvention` for the language
-   - **Review Code**: Analyzes against convention rules
-   - **Post Comment**: `add_pull_request_review_comment` for each violation
+  - **Fetch Content**: `get_file_contents` from PR branch
+  - **Detect Language**: Identifies from file extension (.java, .py)
+  - **Get Conventions**: `retrieveCodeConvention` for the language
+  - **Review Code**: Analyzes against convention rules
+  - **Post Comment**: `add_pull_request_review_comment` for each violation
 5. **Submit Review**: `create_pull_request_review` with overall summary
 6. **Report Back**: Confirms comments posted to user
 
