@@ -97,9 +97,7 @@ Content-Type: application/json
 
 {
   "input": "What is context llm window?",
-  "conversationId": "demo-session",
-  "topK": 4,
-  "similarityThreshold": 0.3
+  "conversationId": "demo-session"
 }
 ```
 

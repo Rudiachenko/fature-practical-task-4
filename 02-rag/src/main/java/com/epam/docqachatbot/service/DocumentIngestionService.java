@@ -8,6 +8,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.pdf.ParagraphPdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -18,6 +19,7 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +32,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DocumentIngestionService {
 
+  // A probe query used only to detect whether the vector store already has data.
+  // This is a heuristic, not a guaranteed count — acceptable for bootstrap gating.
+  private static final String BOOTSTRAP_PROBE_QUERY = "bootstrap-check";
+  private static final Map<String, Object> BOOTSTRAP_METADATA =
+    Map.of("sourceType", "bootstrap");
+
   private final ResourceLoader resourceLoader;
   private final VectorStore vectorStore;
   private final DocumentProcessingProperties processingProperties;
@@ -37,87 +45,88 @@ public class DocumentIngestionService {
 
   @EventListener(ApplicationReadyEvent.class)
   void ensureSampleData() {
-    /*
-      TODO Check if any document exists in the store and assign the corresponding value to "storeIsEmpty" variable
-     */
-    boolean storeIsEmpty = false;
-    if (storeIsEmpty) {
-      log.info("Vector store empty, ingesting sample document");
+    if (isVectorStoreEmpty()) {
+      log.info("Vector store appears empty — ingesting bootstrap documents");
       try {
-        ingestResources(documentsProperties.getResources(), Map.of("sourceType", "bootstrap"));
+        ingestResources(documentsProperties.getResources(), BOOTSTRAP_METADATA);
       } catch (Exception ex) {
-        log.warn("Failed to ingest bootstrap document", ex);
+        log.error("Bootstrap ingestion failed; application may lack seed data", ex);
       }
     }
   }
 
-  public void ingestResources(List<String> resourceLocations, Map<String, Object> metadata)
-    throws IOException {
+  private boolean isVectorStoreEmpty() {
+    /*
+      TODO Check if any document exists in the store and return whether it is empty
+     */
+    return false;
+  }
+
+  /**
+   * Ingests all resources, continuing past individual failures and reporting them at the end.
+   */
+  public void ingestResources(List<String> resourceLocations, Map<String, Object> metadata) {
+    List<String> failures = new ArrayList<>();
     for (String location : resourceLocations) {
-      Resource resource = resourceLoader.getResource(location);
-      if (!resource.exists()) {
-        log.warn("Resource {} not found, skipping", location);
-        continue;
+      try {
+        ingestSingleResource(location, metadata);
+      } catch (Exception ex) {
+        log.error("Failed to ingest '{}', skipping", location, ex);
+        failures.add(location);
       }
-
-      List<Document> documents;
-
-      // Check if resource is a PDF
-      if (isPdfResource(location)) {
-        log.info("Processing PDF document from {}", location);
-        documents = processPdfDocument(resource, location, metadata);
-      } else {
-        log.info("Processing text document from {}", location);
-        documents = processTextDocument(resource, location, metadata);
-      }
-
-      // Apply transformers
-      documents = splitIntoChunks(documents);
-
-      log.info("Ingesting {} document chunks from {}", documents.size(), location);
-
-      /*
-        TODO Insert documents into the vectorStore
-       */
+    }
+    if (!failures.isEmpty()) {
+      log.warn("Ingestion completed with {} failure(s): {}", failures.size(), failures);
     }
   }
 
-  private boolean isPdfResource(String location) {
-    // Check by file extension
+  private void ingestSingleResource(String location, Map<String, Object> metadata) {
+    Resource resource = resourceLoader.getResource(location);
+    if (!resource.exists()) {
+      log.warn("Resource '{}' not found, skipping", location);
+      return;
+    }
+
+    List<Document> raw = isPdf(location)
+      ? readPdfDocument(resource, location, metadata)
+      : readTextDocument(resource, location, metadata);
+
+    List<Document> chunks = chunk(raw);
+    log.info("Ingesting {} chunk(s) from '{}'", chunks.size(), location);
+
+    /*
+      TODO Insert documents into the vectorStore
+     */
+  }
+
+  private boolean isPdf(String location) {
     return location.toLowerCase().endsWith(".pdf");
   }
 
-  private List<Document> processPdfDocument(Resource resource, String location,
-                                            Map<String, Object> baseMetadata) {
-    try {
-      /*
-        TODO Read and process the PDF document to extract paragraphs.
-          Enrich the document's metadata with additional fields: "source" eq location and "documentType" eq "pdf",
-          while also keeping baseMetadata and those metadata produced by pdfReader
+  private List<Document> readPdfDocument(Resource resource,
+    String location,
+    Map<String, Object> baseMetadata) {
+    log.info("Processing PDF document from {}", location);
 
-        Note: Use ParagraphPdfDocumentReader for proper paragraph-level extraction
-        This ensures all text content is extracted, not just page-level chunks
-       */
+    /*
+      TODO Read and process the PDF document to extract paragraphs.
+        Enrich each document's metadata with additional fields: "source" eq location and "documentType" eq "pdf",
+        while also keeping baseMetadata and those metadata produced by pdfReader
 
-      List<Document> documents = null;
+      Note: Use ParagraphPdfDocumentReader for proper paragraph-level extraction
+      This ensures all text content is extracted, not just page-level chunks
+     */
 
-      log.info("Extracted {} paragraphs from PDF {}", documents.size(), location);
-      return documents;
+    List<Document> paragraphs = null;
 
-    } catch (Exception e) {
-      log.error("Failed to process PDF document from {}, falling back to text processing", location,
-        e);
-      try {
-        return processTextDocument(resource, location, baseMetadata);
-      } catch (IOException ioException) {
-        log.error("Failed to process document as text as well", ioException);
-        return List.of();
-      }
-    }
+    log.info("Extracted {} paragraphs from PDF {}", paragraphs.size(), location);
+    return paragraphs;
   }
 
-  private List<Document> processTextDocument(Resource resource, String location,
-                                             Map<String, Object> baseMetadata) throws IOException {
+  private List<Document> readTextDocument(Resource resource,
+    String location,
+    Map<String, Object> baseMetadata) {
+    log.info("Processing text document from {}", location);
 
     /*
       TODO Create a text document with the corresponding document's metadata
@@ -127,32 +136,53 @@ public class DocumentIngestionService {
     return List.of(document);
   }
 
-  private List<Document> splitIntoChunks(List<Document> documents) {
+  private Document enrich(Document source,
+    String location,
+    String documentType,
+    Map<String, Object> baseMetadata) {
+    Map<String, Object> merged = buildMetadata(location, documentType, baseMetadata);
+    merged.putAll(source.getMetadata()); // PDF-reader metadata wins on key conflicts
+    return Document.builder()
+      .id(source.getId())
+      .text(source.getText())
+      .metadata(merged)
+      .build();
+  }
+
+  private Map<String, Object> buildMetadata(String location,
+    String documentType,
+    Map<String, Object> base) {
+    Map<String, Object> meta = new HashMap<>(base);
+    meta.put("source", location);
+    meta.put("documentType", documentType);
+    return meta;
+  }
+
+  private List<Document> chunk(List<Document> documents) {
     if (documents.isEmpty()) {
       return documents;
     }
-
-    List<Document> processedDocuments = new ArrayList<>(documents);
-
-    // Apply chunking transformer
-    DocumentProcessingProperties.Chunking chunking = processingProperties.getChunking();
-    if (chunking.isEnabled()) {
-      log.debug("Applying TokenTextSplitter with {} tokens per chunk",
-        chunking.getTokensPerChunk());
-
-      /*
-        TODO Split documents into smaller chunks and store them into processedDocuments
-        Note: Spring AI's TokenTextSplitter doesn't support overlap natively
-      */
-
-      log.info("After chunking: {} document chunks created", processedDocuments.size());
+    DocumentProcessingProperties.Chunking cfg = processingProperties.getChunking();
+    if (!cfg.isEnabled()) {
+      return documents;
     }
 
-    return processedDocuments;
+    /*
+      TODO Split documents into smaller chunks and return them
+      Note: Spring AI's TokenTextSplitter doesn't support overlap natively
+     */
+
+    List<Document> chunks = null;
+
+    log.info("After chunking: {} document chunks created", chunks.size());
+    return chunks;
   }
 
   public void deleteByIds(List<String> documentIds) {
+    if (documentIds == null || documentIds.isEmpty()) {
+      return;
+    }
+    log.info("Deleting {} document(s) from vector store", documentIds.size());
     // TODO Delete documents from the vector store
   }
 }
-
