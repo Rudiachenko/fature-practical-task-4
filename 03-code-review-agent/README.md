@@ -32,9 +32,27 @@ The agent must analyze repository code, retrieve contextual information via tool
   - Merge Request Requirements / Template:
     - 🗒️ Key Takeaways (REQUIRED) - _Please summarize your key takeaways from this implementation, including any experiments performed and insights gained during the process._
     - 📸 Screenshots (REQUIRED) - _Please attach relevant screenshots that demonstrate the results of the task execution and experiments performed._
+    - 🧪 Experiments & Edge Cases (REQUIRED) - _Pick one or two experiments per module, run them, and reflect the findings._
     - 🕵️ Quality check (REQUIRED)
       - [ ] I have verified that the functionality works properly
       - [ ] I have performed self-review of my code
+
+## Experiments & Edge Cases
+
+> The suggested experiments are for reference purpose only, feel free to suggest any alternative experiment you came up with
+
+| # | Experiment | How to trigger | What to observe |
+|---|------------|----------------|-----------------|
+| 1 | **Tool overload** | Register several extra/redundant or dummy tools alongside the real ones | Wrong tool selection, wasted reasoning steps, slower runs |
+| 2 | **Ambiguous tool descriptions** | Blank out or make vague a tool's `@Tool` description (e.g., `retrieveCodeConvention`) | Mis-selection and confusion — tool descriptions act as a hidden prompt |
+| 3 | **Missing convention** | Review a file in a language with **no** loaded convention (e.g., Go, Kotlin) | Honest *"no convention found"* vs hallucinated rules presented as fact |
+| 4 | **Evidence enforcement** | Make `readFile` return empty / point it at a non-existent file | Does the agent still fabricate findings without real evidence? |
+| 5 | **Path traversal** | Submit `../../etc/passwd` or an absolute path outside the repo root | Input validation and the repository-root security boundary |
+| 6 | **Large file / context overload** | Feed a very large source file | Truncation, degraded analysis quality, token-limit errors |
+| 7 | **Loop non-termination** | Craft a request that encourages endless tool calling | Need for (and behavior of) a max-iteration guard in the ReAct loop |
+| 8 | **Empty / non-code input** | Submit an empty file or a README/Markdown file | Graceful handling vs nonsense or hallucinated findings |
+
+**Failure modes to watch for:** selecting irrelevant tools, fabricated findings when tools return nothing, infinite or excessive tool loops, accepting paths outside the repo root, and silent quality loss on oversized inputs.
 
 ## Features
 

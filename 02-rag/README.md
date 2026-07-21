@@ -40,9 +40,27 @@ The chatbot must retrieve relevant document fragments, provide context-aware ans
   - Merge Request Requirements / Template:
     - 🗒️ Key Takeaways (REQUIRED) - _Please summarize your key takeaways from this implementation, including any experiments performed and insights gained during the process._
     - 📸 Screenshots (REQUIRED) - _Please attach relevant screenshots that demonstrate the results of the task execution and experiments performed._
+    - 🧪 Experiments & Edge Cases (REQUIRED) - _Pick two or three experiments per module, run them, and reflect the findings._
     - 🕵️ Quality check (REQUIRED)
       - [ ] I have verified that the functionality works properly
       - [ ] I have performed self-review of my code
+
+## Experiments & Edge Cases
+
+> The suggested experiments are for reference purpose only, feel free to suggest any alternative experiment you came up with
+
+| # | Experiment | How to trigger | What to observe |
+|---|------------|----------------|-----------------|
+| 1 | **Grounding / refusal** | Ask a question with **no** supporting document in the store | Whether it correctly responds *"I don't have enough information to answer this question."* |
+| 2 | **Chunk size** | Re-ingest the same document with a small vs large chunk size | Retrieval granularity, answer completeness, number of relevant chunks returned |
+| 3 | **Chunk overlap** | Overlapping vs non-overlapping chunks | Continuity of context across chunk boundaries; split-fact answers |
+| 4 | **`topK` sweep** | Query with `topK` `1` vs `4` vs `20` | Precision vs recall; context overload; cost and latency |
+| 5 | **Similarity threshold** | Query with `similarityThreshold` `0.1` vs `0.5` vs `0.8` | Over-retrieval (noise) vs under-retrieval (no answer found) |
+| 6 | **Noisy corpus** | Ingest several irrelevant/off-topic documents alongside the relevant one | Distractor effect on retrieval and answer accuracy |
+| 7 | **Query transformation/expansion toggle** | Enable/disable `app.rag.query-transformation.*` and `app.rag.query-expansion.*` | Recall vs added latency/cost; duplicate chunks before/after `ConcatenationDocumentJoiner` |
+| 8 | **Source attribution** | Verify the returned `sources` against the actual answer content | Citation accuracy — are cited sources real and relevant, or hallucinated? |
+
+**Failure modes to watch for:** answers built from irrelevant/noisy chunks, failure to refuse when context is missing, facts split across chunk boundaries, hallucinated or mismatched source references, and rising latency/cost as `topK` grows.
 
 ### Setup
 

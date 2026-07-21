@@ -28,6 +28,12 @@ The agent combines reasoning with tool usage by interacting with external tools 
 ### Module 4: Model Context Protocol (MCP) (`04-mcp-code-review-agent`)
 A Spring Boot service that performs AI-assisted GitHub Pull Request reviews by connecting to a remote MCP server to retrieve PR metadata, analyze changed code, and post evidence-based review comments.
 
+### Experiments & Edge Cases (all modules)
+
+Beyond the basic implementation, every module's README includes `Experiments & Edge Cases` section. These experiments are lightweight: mostly configuration, input, or prompt changes (not new code) and exist to help you experience how AI systems behave under non-ideal conditions: overloaded or conflicting prompts, too many or poorly-described tools, varied chunk sizes and retrieval settings, noisy or contradictory documents, malformed structured outputs, and context overload.
+
+Pick two or three experiments per module, run them, and reflect the findings into your Merge Request **Key Takeaways**.
+
 ## Setup
 
 ### Prerequisites

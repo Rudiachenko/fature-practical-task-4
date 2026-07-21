@@ -27,9 +27,27 @@ The agent MUST interact with a **remote MCP server** to retrieve Pull Request da
   - Merge Request Requirements / Template:
     - 🗒️ Key Takeaways (REQUIRED) - _Please summarize your key takeaways from this implementation, including any experiments performed and insights gained during the process._
     - 📸 Screenshots (REQUIRED) - _Please attach relevant screenshots that demonstrate the results of the task execution and experiments performed._
+    - 🧪 Experiments & Edge Cases (REQUIRED) - _Pick two or three experiments per module, run them, and reflect the findings._
     - 🕵️ Quality check (REQUIRED)
       - [ ] I have verified that the functionality works properly
       - [ ] I have performed self-review of my code
+
+## Experiments & Edge Cases
+
+> The suggested experiments are for reference purpose only, feel free to suggest any alternative experiment you came up with
+
+| # | Experiment | How to trigger | What to observe |
+|---|------------|----------------|-----------------|
+| 1 | **Tool overload** | Compare the full auto-discovered GitHub toolset vs mentally restricting the agent to a few tools in the system prompt | Tool-selection accuracy, latency, wrong/unnecessary tool calls |
+| 2 | **Ambiguous request** | Omit the PR number or repo (e.g., *"review my PR"*) | Does the agent ask for clarification or hallucinate owner/repo/PR identifiers? |
+| 3 | **Invalid / inaccessible PR** | Target a non-existent PR, or a private repo with a read-only token (403) | Error handling and graceful degradation vs confident-but-wrong output |
+| 4 | **Large PR** | Review a PR with many changed files / huge diffs | Context overload, partial reviews, request timeouts |
+| 5 | **MCP unavailability** | Use a wrong endpoint, an expired token, or block network access | Startup and runtime resilience; quality of error messages |
+| 6 | **Line anchoring** | Inspect where posted comments land in the "Files changed" tab | Comments on the correct line vs out-of-diff / wrong-line anchoring |
+| 7 | **Hallucinated tool** | Prompt the agent to use a GitHub tool that doesn't exist | How it recovers from invalid/failed tool calls |
+| 8 | **Local vs MCP comparison** | Compare this module's MCP tools with Module 3's local tools on a similar review | Trade-offs: control, tool discovery, reliability, latency, debuggability |
+
+**Failure modes to watch for:** selecting the wrong tool among many auto-discovered ones, hallucinated repo/PR identifiers, confident output on inaccessible PRs, truncated reviews on large PRs, mis-anchored inline comments, and unhandled MCP connectivity/auth errors.
 
 ## Architecture
 
