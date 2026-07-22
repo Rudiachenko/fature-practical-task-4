@@ -37,6 +37,22 @@ The agent must analyze repository code, retrieve contextual information via tool
       - [ ] I have verified that the functionality works properly
       - [ ] I have performed self-review of my code
 
+## Subtask - Checking whether the model choice is justified for code review:
+
+* Pick a real, non-trivial source file with a genuine mix of issues (take it from any source); run the same review prompt with each model (gpt-4o, gpt-4.1-nano-2025-04-14, gpt-5-mini-2025-08-07), twice in a row per model on the identical file.
+* Ask for a structured review across these categories:
+  * Naming — naming-convention violations.
+  * Code structure — long methods, single-responsibility violations.
+  * Best practices — exception handling, resource management.
+  * Code quality — documentation, readability.
+  * Common anti-patterns — magic numbers, naive string handling, deep nesting.
+* Analyze the result:
+  * Verify every cited line and claim against the actual file — don't accept a claim just because it sounds plausible.
+  * Watch for generic, templated claims that sound true for almost any class but may not be true here (e.g. getters/setters, encapsulation, documentation) — verify these specifically.
+  * Compare the two runs per model — any reversed verdict between them is a reliability flag on its own, regardless of which run was more accurate.
+  * Note any real issue the model missed, to build a list of blind spots over time.
+  * Score each run: pass = net-accurate findings; fail = a new false claim not present in the model's other run.
+
 ## Experiments & Edge Cases
 
 > The suggested experiments are for reference purpose only, feel free to suggest any alternative experiment you came up with
@@ -105,6 +121,10 @@ Set the following environment variables before starting:
 export AZURE_OPEN_AI_KEY=dial-key
 export AZURE_OPEN_AI_ENDPOINT=https://ai-proxy.lab.epam.com
 export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4o
+
+# Use next for subtask investigation of model choice:
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4.1-nano-2025-04-14
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-5-mini-2025-08-07 
 ```
 
 Start the application:

@@ -32,6 +32,17 @@ The agent MUST interact with a **remote MCP server** to retrieve Pull Request da
       - [ ] I have verified that the functionality works properly
       - [ ] I have performed self-review of my code
 
+## Subtask - Checking whether the model choice is justified for multi-step agentic tasks:
+
+* Point the agent at a real, live task with tools available (e.g. a pull request to review via the GitHub MCP); run each model (gpt-4o, gpt-4.1-nano-2025-04-14, gpt-5-mini-2025-08-07) through the task once, without manual intervention.
+* Ask the agent to complete the task end-to-end (e.g. read the diff and post review comments).
+  * Example: we pointed the agent at a real pull request in the project's GitHub repo and asked it to read the diff and post inline review comments.
+* Analyze the result:
+  * Did the task complete, or did the model loop, time out, or exhaust its retry budget? Record wall-clock time.
+  * Count concrete outputs produced (e.g. comments posted) and check each one against the real diff — real and on-target, or generic filler?
+  * A model that finishes fastest with the fewest outputs may be stopping early rather than being efficient — check whether the task was genuinely complete.
+  * Score: pass = task completed with on-target output; fail = task not completed or no usable output produced.
+
 ## Experiments & Edge Cases
 
 > The suggested experiments are for reference purpose only, feel free to suggest any alternative experiment you came up with
@@ -122,6 +133,10 @@ export AZURE_OPEN_AI_ENDPOINT=https://ai-proxy.lab.epam.com
 
 # GitHub Token — used as Bearer auth for the remote GitHub MCP endpoint
 export GITHUB_TOKEN=your-github-personal-access-token
+
+# Use next for subtask investigation of model choice:
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4.1-nano-2025-04-14
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-5-mini-2025-08-07 
 ```
 
 ### GitHub Token

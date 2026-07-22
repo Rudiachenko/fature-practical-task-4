@@ -45,6 +45,26 @@ The chatbot must retrieve relevant document fragments, provide context-aware ans
       - [ ] I have verified that the functionality works properly
       - [ ] I have performed self-review of my code
 
+## Subtask - Checking whether the model choice is justified for RAG-grounded answers:
+
+* Index a reference document once and keep the index/embedding model fixed; run the app in turn with each generator model (gpt-4o, gpt-4.1-nano-2025-04-14, gpt-5-mini-2025-08-07).
+* Ask the following questions:
+  * Simple question — a direct factual lookup, answerable from a single passage.
+    * Example: "What is AgentWrite?"
+  * Detail search — a multi-part fact that requires precise retrieval.
+    * Example: "What are the two main stages of the AgentWrite framework, and what is the purpose of each stage?"
+  * Information synthesis — an explanation that requires combining information spread across the document.
+    * Example: "Why do the authors claim that simply increasing the context window is not enough to generate high-quality long-form text?"
+  * Analysis/reasoning — an open-ended question that goes beyond the document, asking for the model's own extrapolation.
+    * Example: "Based on the paper, if you were implementing AgentWrite in a production AI application, what challenges or limitations would you expect, and how would you address them?"
+  * Complex summary — a fixed-length bullet summary of the document's key contributions.
+    * Example: "Summarize the paper in five bullet points, where each bullet represents one key contribution of the work. Do not include implementation details or experimental results."
+* Analyze the result:
+  * Simple / detail-search / synthesis questions — check every concrete number, name, and claim against the actual source text; any unsupported or altered fact is a fail.
+  * Analysis/reasoning question — not a faithfulness test; judge depth and structure, but flag speculative claims stated with more certainty than the source supports.
+  * Summary question — check whether the bullets are specific and distinct, or vague restatements.
+  * Repeat with each model and record pass/fail per question plus a 1–5 score per model.
+
 ## Experiments & Edge Cases
 
 > The suggested experiments are for reference purpose only, feel free to suggest any alternative experiment you came up with
@@ -83,7 +103,12 @@ export AZURE_OPEN_AI_EMBEDDING_DEPLOYMENT_NAME=text-embedding-3-small-1
 # Optional: override Chroma defaults
 export CHROMA_BASE_URL=http://localhost:8000
 export CHROMA_COLLECTION=doc-qa-collection
+
+# Use next for subtask investigation of model choice:
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4.1-nano-2025-04-14
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-5-mini-2025-08-07 
 ```
+
 
 The defaults match the local `docker compose` stack (Chroma 1.0.0).
 

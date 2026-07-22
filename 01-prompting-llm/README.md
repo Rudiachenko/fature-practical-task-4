@@ -47,6 +47,22 @@ Design and implement a RESTful Chatbot API that integrates with Azure OpenAI Lar
       - [ ] I have verified that the functionality works properly
       - [ ] I have performed self-review of my code
 
+## Subtask - Checking whether the model choice is justified for simple, direct answers:
+
+* Run the app in turn with each model (gpt-4o, gpt-4.1-nano-2025-04-14, gpt-5-mini-2025-08-07).
+* Ask the following questions:
+  * Deer test — checks whether the model gives a grounded, sensible answer to an odd premise without inventing implausible capabilities.
+    * Example: "I am a deer. I just came out of the forest and see a serious accident on the road — two cars collided. What should I, a deer, do?"
+  * Analysis test — tests structured argumentative reasoning: weighing competing factors using the model's own background knowledge on a real, verifiable event.
+    * Example: "Analyze the form of the France and Portugal national team players at Euro 2016 and argue, with reasoning, who should have won."
+  * Nonsense test — checks whether the model admits a meaningless input is incoherent, or fabricates a false "poetic" interpretation.
+    * Example: "And the potato got overgrown with rain, BUT not all wolves are a tomato! Give water by itself, however, not-it and not you, the wind falls in response, but doesn't burn."
+* Analyze the result:
+  * Deer test — flag any invented capability or detail that doesn't fit the scenario.
+  * Analysis test — flag a one-sided answer that just asserts a winner without weighing both sides.
+  * Nonsense test (critical) — any invented meaning is a fail, no matter how fluent it sounds.
+  * Repeat with each model and record pass/fail per test plus a 1–5 score per model.
+
 ## Experiments & Edge Cases 
 
 > The suggested experiments are for reference purpose only, feel free to suggest any alternative experiment you came up with
@@ -114,6 +130,10 @@ Set environment variables (macOS/Linux syntax shown):
 export AZURE_OPEN_AI_KEY=dial-key
 export AZURE_OPEN_AI_ENDPOINT=https://ai-proxy.lab.epam.com
 export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4o
+
+# Use next for subtask investigation of model choice:
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4.1-nano-2025-04-14
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-5-mini-2025-08-07 
 ```
 
 `application.yml` uses these values automatically.
