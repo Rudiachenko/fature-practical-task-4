@@ -70,6 +70,15 @@ The agent must analyze repository code, retrieve contextual information via tool
 
 **Failure modes to watch for:** selecting irrelevant tools, fabricated findings when tools return nothing, infinite or excessive tool loops, accepting paths outside the repo root, and silent quality loss on oversized inputs.
 
+## Additional tasks
+
+Once you are done with the main task and experiments(edge cases), you may want to practice additional tasks.
+
+### Additional task
+
+Implement a sub-agent that summarizes the comments left by the code review agent, and outputs them to the standard output.
+The sub agent should take the comments, left by previous agent, as an input, and provide an executive summary of those comments.
+
 ## Features
 
 ### ReAct Agent Features

@@ -60,6 +60,26 @@ The agent MUST interact with a **remote MCP server** to retrieve Pull Request da
 
 **Failure modes to watch for:** selecting the wrong tool among many auto-discovered ones, hallucinated repo/PR identifiers, confident output on inaccessible PRs, truncated reviews on large PRs, mis-anchored inline comments, and unhandled MCP connectivity/auth errors.
 
+## Additional tasks
+
+Once you are done with the main task and experiments(edge cases), you may want to practice additional tasks.
+
+### Additional task
+
+Implement a custom MCP server that provides some tool - any tool.
+For example, a tool that tells current time and date.
+Make LLM use that MCP server and call that tool.
+
+Consider implementing a tool that takes parameters - any parameters, preferably more than one.
+The intent is for you to learn how to declare tool parameters and apply validation to them (e.g. if some parameter is numeric - return proper error to LLM in case value passed was not numeric).
+For examples, for current time tool, you can pass timezone name or timezone offset as a parameter.
+
+Or, more relevant to the module - create a tool that constructs a GitHub PR URL using GitHub user ID (string), project ID (string) and PR ID (integer) as parameters.
+Under the hood, the tool can simply concatenate strings using the pattern `https://github.com/<user ID>/<project ID>/pull/<PR ID>` to produce a PR URL.
+E.g. spring-projects + spring-ai + 6647 => https://github.com/spring-projects/spring-ai/pull/6647
+
+Make LLM use that MCP server and call your tools, verifying that LLM constructs tool parameters correctly.
+
 ## Architecture
 
 A Spring Boot service that performs AI-assisted GitHub Pull Request reviews using:
@@ -622,5 +642,3 @@ The agent automatically discovers all available GitHub MCP tools. Common tools i
 #### Examples
 - [**Agentic AI Demo - Smart Business Platform**](https://github.com/Ramzus/spring-ai-mcp-server-demo)
 - [**Proposal Agent with MCP**](https://github.com/lucasdengcn/langchain4j-ai-example)
-
-

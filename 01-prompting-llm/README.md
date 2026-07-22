@@ -80,6 +80,18 @@ Design and implement a RESTful Chatbot API that integrates with Azure OpenAI Lar
 
 **Failure modes to watch for:** malformed/partial JSON under token pressure, `tone` values outside the enum, the model honoring user text over the system contract, and lost early-conversation context once the memory window fills.
 
+## Additional tasks
+
+Once you are done with the main task and experiments(edge cases), you may want to practice additional tasks.
+
+### Additional task
+
+Retrieve and return in API output information about token usage.
+For reference, see completions API response "usage" object.
+
+Hint: for SpringAI specifically, see https://docs.spring.io/spring-ai/docs/current/api/org/springframework/ai/chat/model/ChatResponse.html#getMetadata()
+and https://docs.spring.io/spring-ai/docs/current/api/org/springframework/ai/chat/metadata/ChatResponseMetadata.html#getUsage()
+
 ## Architecture
 
 - **Spring Boot 4.0.2** with Java 21+
@@ -237,3 +249,5 @@ POST /chat
 
 **DIAL Core API**
 - [**DIAL Core API**](https://dialx.ai/dial_api)
+- 
+

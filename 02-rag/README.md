@@ -7,7 +7,7 @@ The chatbot must retrieve relevant document fragments, provide context-aware ans
 ## Requirements:
 
 - Implement an endpoint to ingest documents (*.txt, *.pdf, *.md, etc.) into the vector database. Processing Steps:
-  - Extract text content.
+  - Extract text content from EPAM Java Secure Coding policy file - https://policy.epam.com/pages/guidelines/java-security-code . You can use PDF version, or take MD version from this repo - see the EPAM_JavaSecureCodingGD.md file
   - Split document into chunks.
   - Generate embeddings for each chunk.
   - Store chunks in vector database.
@@ -82,16 +82,29 @@ The chatbot must retrieve relevant document fragments, provide context-aware ans
 
 **Failure modes to watch for:** answers built from irrelevant/noisy chunks, failure to refuse when context is missing, facts split across chunk boundaries, hallucinated or mismatched source references, and rising latency/cost as `topK` grows.
 
-### Setup
+## Additional tasks
 
-## Prerequisites
+Once you are done with the main task, you may want to practice additional tasks.
+
+### Additional task
+
+Use smarter chunking or retrieval strategies, that take into account semantics of the input document.
+Please notice: the document basically contains 3 levels of hierarchy, under which you have paragraphs, bulleted lists and code samples.
+
+Consider having a smarter chunking with inclusion of headings into each chunk - this is simpler to implement.
+
+Alternatively, employ a Graph DB for retrieval of chunk hierarchy - e.g. get the full paragraph for a match of one chunk of it, or a full bulleted list for a match of one point in the list etc.
+
+## Setup
+
+### Prerequisites
 
 - Java 21+
 - Chroma vector database running locally (see repository root `README.md`)
 - Azure OpenAI credentials for chat & embeddings
 - EPAM VPN – for access to DIAL API
 
-## Configuration
+### Configuration
 
 Set the following environment variables before starting:
 
@@ -196,3 +209,5 @@ Import the following requests in Postman (replace host/port if needed):
 
 ### Optional
 - [**Advanced RAG Techniques**](https://neo4j.com/blog/genai/advanced-rag-techniques/)
+
+
