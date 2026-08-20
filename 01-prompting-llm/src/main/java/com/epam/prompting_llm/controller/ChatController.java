@@ -14,6 +14,7 @@ public class ChatController implements ChatApi {
 
   private final ChatProcessor chatProcessor;
 
+  @Override
   public ResponseEntity<PromptResponse> sendMessage(PromptRequest request) {
     return ResponseEntity.ok(chatProcessor.sendMessage(request));
   }

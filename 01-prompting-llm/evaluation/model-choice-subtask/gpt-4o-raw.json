@@ -1,0 +1,77 @@
+[
+  {
+    "conversationId": "evaluation-gpt-4o-deer",
+    "rawModelResponse": "{\"response\":\"As a deer, your instinctual response would be to ensure your own safety by moving away from the road and returning to a safe area in the forest.\",\"tone\":\"NEUTRAL\"}",
+    "finishReason": "stop",
+    "usage": {
+      "promptTokens": 239,
+      "completionTokens": 41,
+      "totalTokens": 280,
+      "nativeUsage": {
+        "completionTokens": 41,
+        "promptTokens": 239,
+        "totalTokens": 280,
+        "promptTokensDetails": {
+          "cachedTokens": 0,
+          "audioTokens": 0
+        },
+        "completionTokensDetails": {
+          "reasoningTokens": 0,
+          "acceptedPredictionTokens": 0,
+          "audioTokens": 0,
+          "rejectedPredictionTokens": 0
+        }
+      }
+    }
+  },
+  {
+    "conversationId": "evaluation-gpt-4o-analysis",
+    "rawModelResponse": "{\"response\":\"France and Portugal both showcased strong performances during Euro 2016, with Portugal ultimately winning the tournament. France had a dynamic squad with standout players like Antoine Griezmann, who was the top scorer, and a solid midfield and defense. Portugal, led by Cristiano Ronaldo, demonstrated resilience and tactical discipline, overcoming challenges despite not winning any group stage matches outright. While France had home advantage and a more consistent form, Portugal's ability to adapt and their decisive performance in the final justified their victory.\",\"tone\":\"NEUTRAL\"}",
+    "finishReason": "stop",
+    "usage": {
+      "promptTokens": 232,
+      "completionTokens": 108,
+      "totalTokens": 340,
+      "nativeUsage": {
+        "completionTokens": 108,
+        "promptTokens": 232,
+        "totalTokens": 340,
+        "promptTokensDetails": {
+          "cachedTokens": 0,
+          "audioTokens": 0
+        },
+        "completionTokensDetails": {
+          "reasoningTokens": 0,
+          "acceptedPredictionTokens": 0,
+          "audioTokens": 0,
+          "rejectedPredictionTokens": 0
+        }
+      }
+    }
+  },
+  {
+    "conversationId": "evaluation-gpt-4o-nonsense",
+    "rawModelResponse": "{\"response\":\"It seems like you're expressing something creatively or metaphorically. Could you clarify or elaborate on your message?\",\"tone\":\"NEUTRAL\"}",
+    "finishReason": "stop",
+    "usage": {
+      "promptTokens": 245,
+      "completionTokens": 31,
+      "totalTokens": 276,
+      "nativeUsage": {
+        "completionTokens": 31,
+        "promptTokens": 245,
+        "totalTokens": 276,
+        "promptTokensDetails": {
+          "cachedTokens": 0,
+          "audioTokens": 0
+        },
+        "completionTokensDetails": {
+          "reasoningTokens": 0,
+          "acceptedPredictionTokens": 0,
+          "audioTokens": 0,
+          "rejectedPredictionTokens": 0
+        }
+      }
+    }
+  }
+]

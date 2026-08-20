@@ -1,8 +1,10 @@
 package com.epam.prompting_llm.api.model;
 
 public record PromptResponse(
+  String conversationId,
   String response,
-  MessageTone tone
+  MessageTone tone,
+  TokenUsage usage
 ) {
 
 }

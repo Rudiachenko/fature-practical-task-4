@@ -1,0 +1,65 @@
+[
+  {
+    "deployment": "gpt-5-mini-2025-08-07",
+    "suite": "Comparison",
+    "case": "Deer",
+    "requestBody": {
+      "message": "I am a deer. I just came out of the forest and see a serious accident on the road - two cars collided. What should I, a deer, do?",
+      "maxTokens": 5000,
+      "conversationId": "evaluation-gpt-5-mini-2025-08-07-deer"
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-5-mini-2025-08-07-deer",
+      "response": "Move off the road immediately and back into the forest or dense cover. Stay low and quiet; do not approach the wrecked vehicles or injured people—humans will handle rescue and it can be dangerous for you. Watch for oncoming traffic and headlights; wait until it’s calm before trying to cross or move near the roadway. If you smell smoke or see fire, put more distance between you and the scene. Stay hidden and still until it feels safe to return to your normal area.",
+      "tone": "NEUTRAL",
+      "usage": {
+        "promptTokens": 236,
+        "completionTokens": 506,
+        "totalTokens": 742
+      }
+    }
+  },
+  {
+    "deployment": "gpt-5-mini-2025-08-07",
+    "suite": "Comparison",
+    "case": "Analysis",
+    "requestBody": {
+      "message": "Analyze the form of the France and Portugal national team players at Euro 2016 and argue, with reasoning, who should have won.",
+      "maxTokens": 5000,
+      "conversationId": "evaluation-gpt-5-mini-2025-08-07-analysis"
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-5-mini-2025-08-07-analysis",
+      "response": "France carried the tournament’s most in-form attacking players: Antoine Griezmann was the standout (tournament top scorer and playmaker), Paul Pogba provided control and physicality in midfield, and France created the clearest chances throughout the competition. Portugal arrived largely as a pragmatic, defence-first unit built around Cristiano Ronaldo’s leadership, a dogged backline (Pepe, Cédric/others) and the surprising impact of young Renato Sanches off the bench; they rarely dominated games but were hard to break down and patient on the counter. Reading the form on paper, France had the better run of individual performances and more consistent attacking threat, so one can reasonably argue France “should” have won based on quality and chance creation. That said, football outcomes aren’t decided only by form: Portugal’s game plan, mental resilience (and the decisive substitute Eder in the final), plus the late disruption of Ronaldo’s injury in the final, made their victory defensible. Verdict: on pure player form and tournament momentum France were the more deserving side, but Portugal’s pragmatic tactics and clutch moments meant their title was a fair outcome in context.",
+      "tone": "NEUTRAL",
+      "usage": {
+        "promptTokens": 229,
+        "completionTokens": 1534,
+        "totalTokens": 1763
+      }
+    }
+  },
+  {
+    "deployment": "gpt-5-mini-2025-08-07",
+    "suite": "Comparison",
+    "case": "Nonsense",
+    "requestBody": {
+      "message": "And the potato got overgrown with rain, BUT not all wolves are a tomato! Give water by itself, however, not-it and not you, the wind falls in response, but doesn't burn.",
+      "maxTokens": 5000,
+      "conversationId": "evaluation-gpt-5-mini-2025-08-07-nonsense"
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-5-mini-2025-08-07-nonsense",
+      "response": "That reads like surreal, poetic imagery. Do you want an interpretation, a clearer rewrite, or help turning it into a poem? Quick interpretation: the potato overgrown by rain suggests unexpected consequences or excess; “not all wolves are a tomato” plays with category confusion or mistaken identity; giving water by itself implies help without attachment; the wind falling in response but not burning evokes gentle change. Which direction would you like?",
+      "tone": "NEUTRAL",
+      "usage": {
+        "promptTokens": 242,
+        "completionTokens": 429,
+        "totalTokens": 671
+      }
+    }
+  }
+]
