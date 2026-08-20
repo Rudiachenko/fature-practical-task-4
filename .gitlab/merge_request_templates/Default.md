@@ -11,6 +11,9 @@ _Please summarize your key takeaways from this implementation, including any exp
 ### 📸 Screenshots (REQUIRED)
 _Please attach relevant screenshots that demonstrate the results of the task execution and experiments performed._
 
+### 🧪 Experiments & Edge Cases (REQUIRED)
+_Please describe two or three experiments performed for the module, their results, and the insights gained._
+
 ### 🕵️ Quality check (REQUIRED)
 - [ ] I have verified that the functionality works properly
 - [ ] I have performed self-review of my code

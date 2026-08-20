@@ -1,0 +1,16 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiChatAutoConfiguration
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiImageAutoConfiguration
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiAudioTranscriptionAutoConfiguration
+
+app:
+  chat:
+    model-name: deterministic-test-model
+    system-prompt: classpath:/prompts/system_prompt.st
+    max-memory-messages: 20
+    default-temperature: 0.7
+    top-p-supported: true
+    top-p-fallback-temperature: 0.6

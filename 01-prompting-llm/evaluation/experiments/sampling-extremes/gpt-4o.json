@@ -1,0 +1,178 @@
+[
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-temperature-0.0-run-1",
+    "requestBody": {
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "maxTokens": 250,
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-0.0-run-1",
+      "temperature": 0
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-0.0-run-1",
+      "response": "The city street glistens under the cascade of rain, its cobblestones reflecting the kaleidoscope of neon signs and streetlights. Umbrellas bob through the misty air, their owners weaving through puddles that ripple with the rhythm of the falling drops.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 62,
+        "totalTokens": 280
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-temperature-0.0-run-2",
+    "requestBody": {
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "maxTokens": 250,
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-0.0-run-2",
+      "temperature": 0
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-0.0-run-2",
+      "response": "The rain cascaded down in shimmering sheets, turning the cobblestone street into a glistening mosaic of reflected neon lights. Umbrellas bobbed like colorful mushrooms amidst the bustling crowd, their owners hurrying past the warm glow of shop windows.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 60,
+        "totalTokens": 278
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-temperature-1.5-run-1",
+    "requestBody": {
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "maxTokens": 250,
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-1.5-run-1",
+      "temperature": 1.5
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-1.5-run-1",
+      "response": "The dim glow of streetlights shimmered on sleek cobblestones, while rivulets of rainwater painted chaotic patterns along deep gutters. Each droplet reflected neon signs into miniature burst-lit jewels, an urban constellation dancing breathily beneath a closing twilight sky.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 61,
+        "totalTokens": 279
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-temperature-1.5-run-2",
+    "requestBody": {
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "maxTokens": 250,
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-1.5-run-2",
+      "temperature": 1.5
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-temperature-1.5-run-2",
+      "response": "Outside, the air hangs heavy under steely gray heavens, each droplet weaving a glistening quilt on parked cars. Pulsing neon signs flicker across streams reflecting puddles in rhythmic lights, as sidewalks blur with moving umbrellas telling unseen city's tales.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 60,
+        "totalTokens": 278
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-topP-0.1-run-1",
+    "requestBody": {
+      "maxTokens": 250,
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "topP": 0.1,
+      "conversationId": "evaluation-gpt-4o-sampling-topp-0.1-run-1"
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-topp-0.1-run-1",
+      "response": "The city street glistens under the soft glow of streetlights, as rain cascades in shimmering rivulets down the slick pavement. Umbrellas bob through the misty air, their vibrant colors creating fleeting bursts of life against the muted gray of the stormy evening.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 64,
+        "totalTokens": 282
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-topP-0.1-run-2",
+    "requestBody": {
+      "maxTokens": 250,
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "topP": 0.1,
+      "conversationId": "evaluation-gpt-4o-sampling-topp-0.1-run-2"
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-topp-0.1-run-2",
+      "response": "The rain cascaded down in shimmering sheets, turning the city street into a glistening mosaic of reflections and ripples. Neon signs flickered in the puddles, their vibrant colors dancing with each raindrop's gentle impact.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 56,
+        "totalTokens": 274
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-topP-1.0-run-1",
+    "requestBody": {
+      "maxTokens": 250,
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "topP": 1,
+      "conversationId": "evaluation-gpt-4o-sampling-topp-1.0-run-1"
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-topp-1.0-run-1",
+      "response": "Under the silvery glow of streetlights, rain slicked the cobblestones, turning the city into a shimmering mosaic of reflected neon signs and autumn leaves. Umbrellas bobbed like colorful dots in the mist, while the rhythmic patter of raindrops created a lullaby for the bustling night.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 70,
+        "totalTokens": 288
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Sampling-topP-1.0-run-2",
+    "requestBody": {
+      "maxTokens": 250,
+      "message": "Write a two-sentence imaginative description of a rainy city street.",
+      "topP": 1,
+      "conversationId": "evaluation-gpt-4o-sampling-topp-1.0-run-2"
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-sampling-topp-1.0-run-2",
+      "response": "Raindrops dance upon the cobblestone street, their rhythmic patter weaving a symphony of nature amidst the intricate lattice of glowing neon signs. The bustling crowds move beneath a sea of colorful umbrellas, blending like watercolor strokes under the soft haze of the streetlights.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 218,
+        "completionTokens": 63,
+        "totalTokens": 281
+      }
+    }
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "conversationId": "evaluation-gpt-4.1-nano-2025-04-14-deer",
+    "rawModelResponse": "{\"response\":\"As a deer, it's safest to stay away from the accident scene to avoid danger from vehicles or injured people. If you're in a safe spot, observe from a distance and ensure your own safety.\",\"tone\":\"NEUTRAL\"}",
+    "finishReason": "stop",
+    "usage": {
+      "promptTokens": 239,
+      "completionTokens": 49,
+      "totalTokens": 288,
+      "nativeUsage": {
+        "completionTokens": 49,
+        "promptTokens": 239,
+        "totalTokens": 288,
+        "promptTokensDetails": {
+          "cachedTokens": 0,
+          "audioTokens": 0
+        },
+        "completionTokensDetails": {
+          "reasoningTokens": 0,
+          "acceptedPredictionTokens": 0,
+          "audioTokens": 0,
+          "rejectedPredictionTokens": 0
+        }
+      }
+    }
+  },
+  {
+    "conversationId": "evaluation-gpt-4.1-nano-2025-04-14-analysis",
+    "rawModelResponse": "{\"response\":\"At Euro 2016, France showcased a balanced team with key players like Antoine Griezmann and Paul Pogba, while Portugal relied heavily on Cristiano Ronaldo's leadership and goal-scoring. France's cohesive team play and tactical flexibility gave them an edge, but Portugal's resilience and Ronaldo's pivotal role ultimately led them to victory. Considering overall team performance and individual impact, Portugal's triumph was justified, especially given their strong defensive organization and Ronaldo's influence.\",\"tone\":\"NEUTRAL\"}",
+    "finishReason": "stop",
+    "usage": {
+      "promptTokens": 232,
+      "completionTokens": 101,
+      "totalTokens": 333,
+      "nativeUsage": {
+        "completionTokens": 101,
+        "promptTokens": 232,
+        "totalTokens": 333,
+        "promptTokensDetails": {
+          "cachedTokens": 0,
+          "audioTokens": 0
+        },
+        "completionTokensDetails": {
+          "reasoningTokens": 0,
+          "acceptedPredictionTokens": 0,
+          "audioTokens": 0,
+          "rejectedPredictionTokens": 0
+        }
+      }
+    }
+  },
+  {
+    "conversationId": "evaluation-gpt-4.1-nano-2025-04-14-nonsense",
+    "rawModelResponse": "{\"response\":\"Your message appears to be poetic or metaphorical, possibly describing a natural scene or expressing an abstract idea. If you need help interpreting it or have a specific question, please clarify.\",\"tone\":\"NEUTRAL\"}",
+    "finishReason": "stop",
+    "usage": {
+      "promptTokens": 245,
+      "completionTokens": 46,
+      "totalTokens": 291,
+      "nativeUsage": {
+        "completionTokens": 46,
+        "promptTokens": 245,
+        "totalTokens": 291,
+        "promptTokensDetails": {
+          "cachedTokens": 0,
+          "audioTokens": 0
+        },
+        "completionTokensDetails": {
+          "reasoningTokens": 0,
+          "acceptedPredictionTokens": 0,
+          "audioTokens": 0,
+          "rejectedPredictionTokens": 0
+        }
+      }
+    }
+  }
+]

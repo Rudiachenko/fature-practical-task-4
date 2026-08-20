@@ -1,0 +1,68 @@
+[
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Memory-isolation-A-store",
+    "requestBody": {
+      "message": "Remember that my project code name is ORCHID. Reply briefly.",
+      "maxTokens": 200,
+      "conversationId": "evaluation-gpt-4o-memory-a",
+      "temperature": 0.2
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-memory-a",
+      "response": "Got it, I will remember that your project code name is ORCHID.",
+      "tone": "POSITIVE",
+      "usage": {
+        "promptTokens": 219,
+        "completionTokens": 25,
+        "totalTokens": 244
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Memory-isolation-A-recall",
+    "requestBody": {
+      "message": "What is my project code name?",
+      "maxTokens": 200,
+      "conversationId": "evaluation-gpt-4o-memory-a",
+      "temperature": 0.2
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-memory-a",
+      "response": "Your project code name is ORCHID.",
+      "tone": "NEUTRAL",
+      "usage": {
+        "promptTokens": 267,
+        "completionTokens": 19,
+        "totalTokens": 286
+      }
+    }
+  },
+  {
+    "deployment": "gpt-4o",
+    "suite": "Experiments",
+    "case": "Memory-isolation-B-recall",
+    "requestBody": {
+      "message": "What is my project code name? If I never told you, say you do not know.",
+      "maxTokens": 200,
+      "conversationId": "evaluation-gpt-4o-memory-b",
+      "temperature": 0.2
+    },
+    "httpStatus": 200,
+    "responseBody": {
+      "conversationId": "evaluation-gpt-4o-memory-b",
+      "response": "I do not know your project code name.",
+      "tone": "NEUTRAL",
+      "usage": {
+        "promptTokens": 224,
+        "completionTokens": 19,
+        "totalTokens": 243
+      }
+    }
+  }
+]

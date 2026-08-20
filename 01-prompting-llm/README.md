@@ -251,3 +251,32 @@ POST /chat
 - [**DIAL Core API**](https://dialx.ai/dial_api)
 - 
 
+## Implementation Findings and Results
+
+The original task description above is preserved unchanged. The implementation and verification
+produced the following additional findings:
+
+- `POST /chat` uses `message` as the canonical input field and keeps `input` as a backwards-
+  compatible alias. Responses include `conversationId`, generated `response`, strict enum `tone`,
+  and provider token `usage` when available.
+- Only one of `temperature` and `topP` is applied per request. When `topP` is unsupported by the
+  configured provider, it falls back to temperature. GPT-5 reasoning deployments reject both
+  sampling parameters, so they must be omitted; `maxTokens` is translated to
+  `max_completion_tokens` for those deployments.
+- The task specifies no maximum value for `maxTokens`. The clean three-model comparison therefore
+  used the same `maxTokens=5000` upper bound for every request. All nine requests returned HTTP
+  200, including the GPT-5 mini Analysis case; its earlier HTTP 502 was caused by an insufficient
+  reasoning-token budget.
+- Model-fit results were `gpt-4o: 5/5`, `gpt-4.1-nano-2025-04-14: 3/5`, and
+  `gpt-5-mini-2025-08-07: 3/5`. GPT-4o was the only model that passed the critical nonsense test
+  without inventing a concrete interpretation.
+- Sampling extremes, prompt injection, and conversational-memory isolation were also verified.
+  Prompt injection did not break the structured response contract, and memory remained isolated
+  between different `conversationId` values.
+- The complete verification gate passed with 60 unit tests, 13 integration tests, and 93.37% line
+  coverage.
+
+Complete findings, original endpoint responses, and raw provider metadata are stored in
+[`evaluation/`](evaluation/RESULTS.md). The reproducible runner is available at
+[`scripts/run-live-evaluation.ps1`](scripts/run-live-evaluation.ps1).
+
