@@ -1,0 +1,2 @@
+Top-level fixture file used by RepositoryPathResolverTest to prove that a valid, in-root relative
+path resolves successfully and that directory listings surface top-level entries correctly.

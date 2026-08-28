@@ -1,24 +1,19 @@
 spring:
-  application:
-    name: code-review-agent
   ai:
     azure:
       openai:
-        api-key: ${AZURE_OPEN_AI_KEY}
-        endpoint: ${AZURE_OPEN_AI_ENDPOINT}
+        api-key: hermetic-test-key
+        endpoint: http://127.0.0.1:1
         chat:
           options:
-            deployment-name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME:gpt-4o}
+            deployment-name: hermetic-test-deployment
 app:
   code-review:
     system-prompt: classpath:prompts/code-review-system-prompt.md
-    repository-root: .
+    repository-root: src/test/resources/fixtures/repo-root
     max-iterations: 8
     max-file-chars: 20000
   conventions:
     resources:
       - classpath:documents/java-convention.md
       - classpath:documents/python-convention.md
-logging:
-  level:
-    org.springframework.ai: DEBUG

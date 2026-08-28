@@ -1,0 +1,3 @@
+This is a nested fixture file used to validate repository-root-bounded file reads, including the
+FileUtils truncation-marker behavior when a configured character limit is smaller than the file's
+actual length.
