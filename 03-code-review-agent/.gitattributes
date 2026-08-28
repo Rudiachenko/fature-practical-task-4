@@ -1,0 +1,7 @@
+# This module-scoped .gitattributes ensures Git never applies CRLF/text renormalization to fixture
+# files that are deliberately invalid/non-UTF-8 byte sequences (e.g. FileUtilsTest/CodeReviewToolsTest
+# fixtures proving IllegalStateException handling for malformed input). Without this, the repo-wide
+# core.autocrlf=true setting could otherwise mangle these bytes on checkout/commit even though Git's
+# own binary-content heuristic would likely also catch this file. Paths below are relative to this
+# file's directory.
+src/test/resources/fixtures/repo-root/**/*.bin binary
