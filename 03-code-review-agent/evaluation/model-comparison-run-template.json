@@ -1,0 +1,129 @@
+{
+  "$comment": "Fillable instance of model-comparison-schema.json (R12 subtask). This is the actual 6-entry (3 deployments x 2 runs) result set an operator fills in - not the schema itself. Every score/verdict field below starts unpopulated (status: PENDING, verdict: null) because no live DIAL/VPN run has been performed in this sandbox; see 03-code-review-agent/evaluation/RESULTS.md's R12 section for what an operator must do to turn this template into a real, COMPLETED artifact. Copy this file to evaluation/runs/<timestamp>-model-comparison.json before filling it in, so this template itself stays a clean, always-empty starting point.",
+  "schemaVersion": 1,
+  "status": "REQUIRES_OPERATOR",
+  "sourceFile": null,
+  "sourceFileModified": false,
+  "categories": [
+    "Naming",
+    "CodeStructure",
+    "BestPractices",
+    "CodeQuality",
+    "CommonAntiPatterns"
+  ],
+  "scoringMethod": {
+    "passRule": "pass = net-accurate findings (every cited line/claim verified against the actual file)",
+    "failRule": "fail = a new false claim not present in the model's other run",
+    "verificationSteps": [
+      "Verify every cited line/claim in the run's findings against the actual sourceFile content.",
+      "Flag generic/templated claims that sound true for almost any class but were not specifically checked against this file.",
+      "Compare the two runs for the same deployment for a reversed PASS/FAIL verdict on the identical file.",
+      "Log blind spots: real issues present in sourceFile that this run's model missed."
+    ]
+  },
+  "modelRuns": [
+    {
+      "deployment": "gpt-4o",
+      "runNumber": 1,
+      "status": "PENDING",
+      "verdict": null,
+      "requestTimestampUtc": null,
+      "findingsByCategory": {
+        "Naming": [],
+        "CodeStructure": [],
+        "BestPractices": [],
+        "CodeQuality": [],
+        "CommonAntiPatterns": []
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [],
+      "notes": null
+    },
+    {
+      "deployment": "gpt-4o",
+      "runNumber": 2,
+      "status": "PENDING",
+      "verdict": null,
+      "requestTimestampUtc": null,
+      "findingsByCategory": {
+        "Naming": [],
+        "CodeStructure": [],
+        "BestPractices": [],
+        "CodeQuality": [],
+        "CommonAntiPatterns": []
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [],
+      "notes": null
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "runNumber": 1,
+      "status": "PENDING",
+      "verdict": null,
+      "requestTimestampUtc": null,
+      "findingsByCategory": {
+        "Naming": [],
+        "CodeStructure": [],
+        "BestPractices": [],
+        "CodeQuality": [],
+        "CommonAntiPatterns": []
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [],
+      "notes": null
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "runNumber": 2,
+      "status": "PENDING",
+      "verdict": null,
+      "requestTimestampUtc": null,
+      "findingsByCategory": {
+        "Naming": [],
+        "CodeStructure": [],
+        "BestPractices": [],
+        "CodeQuality": [],
+        "CommonAntiPatterns": []
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [],
+      "notes": null
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "runNumber": 1,
+      "status": "PENDING",
+      "verdict": null,
+      "requestTimestampUtc": null,
+      "findingsByCategory": {
+        "Naming": [],
+        "CodeStructure": [],
+        "BestPractices": [],
+        "CodeQuality": [],
+        "CommonAntiPatterns": []
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [],
+      "notes": null
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "runNumber": 2,
+      "status": "PENDING",
+      "verdict": null,
+      "requestTimestampUtc": null,
+      "findingsByCategory": {
+        "Naming": [],
+        "CodeStructure": [],
+        "BestPractices": [],
+        "CodeQuality": [],
+        "CommonAntiPatterns": []
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [],
+      "notes": null
+    }
+  ],
+  "reversedVerdicts": []
+}

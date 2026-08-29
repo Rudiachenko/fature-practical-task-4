@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Module 3 model-comparison subtask (R12) results schema",
+  "description": "Schema for the R12 subtask: pick one real, non-trivial source file with a genuine mix of issues, run the same structured review request against POST /code-review with each of the three named deployments, twice in a row per model on the identical file, and score each run per context/TICKET.md's stated method. This file is a scaffold only - as of Increment 8, no live DIAL/VPN run has been performed in this sandbox (see 03-code-review-agent/evaluation/RESULTS.md's R12 section), so every score/verdict field below is REQUIRES_OPERATOR or null rather than fabricated, per context/RETROSPECTIVE.md's standing honesty rule (do not attribute a review/score to a run that never happened). An operator completing this subtask should either fill in evaluation/runs/<timestamp>-model-comparison.json conforming to this schema, or extend this file directly, and update RESULTS.md's R12 section to cite the real artifact.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "status",
+    "sourceFile",
+    "sourceFileModified",
+    "categories",
+    "scoringMethod",
+    "modelRuns"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer"
+    },
+    "status": {
+      "enum": ["REQUIRES_OPERATOR", "COMPLETED"],
+      "description": "REQUIRES_OPERATOR until an operator with live DIAL/VPN access has actually performed all 6 runs (3 deployments x 2 runs each) and filled in every modelRuns[] entry's real verdict/score."
+    },
+    "sourceFile": {
+      "type": ["string", "null"],
+      "description": "Repository-relative path to the single, real, non-trivial source file chosen for this subtask (the ticket permits taking it 'from any source'). Null until an operator selects one."
+    },
+    "sourceFileModified": {
+      "const": false,
+      "description": "Always false: this subtask reviews an existing file's content as-is between the two runs per model; the file must not be edited between runs, or the two runs would no longer be a genuine same-input reliability comparison."
+    },
+    "categories": {
+      "type": "array",
+      "description": "The five structured-review categories the ticket's subtask requires, verbatim.",
+      "items": {
+        "enum": [
+          "Naming",
+          "CodeStructure",
+          "BestPractices",
+          "CodeQuality",
+          "CommonAntiPatterns"
+        ]
+      },
+      "minItems": 5,
+      "maxItems": 5
+    },
+    "scoringMethod": {
+      "type": "object",
+      "description": "Restates context/TICKET.md's own subtask analysis method, so this schema is self-describing without needing the ticket open side by side.",
+      "required": ["passRule", "failRule", "verificationSteps"],
+      "properties": {
+        "passRule": {
+          "const": "pass = net-accurate findings (every cited line/claim verified against the actual file)"
+        },
+        "failRule": {
+          "const": "fail = a new false claim not present in the model's other run"
+        },
+        "verificationSteps": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 4
+        }
+      }
+    },
+    "modelRuns": {
+      "type": "array",
+      "description": "Exactly 6 entries: one per (deployment, runNumber) pair, 3 deployments x 2 runs each.",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "deployment",
+          "runNumber",
+          "status",
+          "verdict",
+          "requestTimestampUtc",
+          "findingsByCategory",
+          "genericTemplatedClaimsFlagged",
+          "blindSpots",
+          "notes"
+        ],
+        "properties": {
+          "deployment": {
+            "enum": [
+              "gpt-4o",
+              "gpt-4.1-nano-2025-04-14",
+              "gpt-5-mini-2025-08-07"
+            ]
+          },
+          "runNumber": {
+            "enum": [1, 2]
+          },
+          "status": {
+            "enum": ["PENDING", "COMPLETED"]
+          },
+          "verdict": {
+            "type": ["string", "null"],
+            "enum": ["PASS", "FAIL", null],
+            "description": "Null while status is PENDING. PASS/FAIL per scoringMethod above, decided only after every cited line/claim has been individually verified against sourceFile's real content."
+          },
+          "requestTimestampUtc": {
+            "type": ["string", "null"]
+          },
+          "findingsByCategory": {
+            "type": "object",
+            "description": "One entry per category in `categories`, each an array of individually-verified finding summaries.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["claim", "citedLine", "verifiedAgainstFile"],
+                "properties": {
+                  "claim": {"type": "string"},
+                  "citedLine": {"type": ["integer", "string", "null"]},
+                  "verifiedAgainstFile": {
+                    "type": ["boolean", "null"],
+                    "description": "True only once a human/reviewer has read sourceFile at citedLine and confirmed the claim is accurate; null while status is PENDING."
+                  }
+                }
+              }
+            }
+          },
+          "genericTemplatedClaimsFlagged": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Claims that sound true for almost any class (getters/setters, encapsulation, documentation) but were specifically checked against this file rather than accepted on plausibility alone, per the ticket's own warning."
+          },
+          "blindSpots": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Real issues present in sourceFile that this run's model missed, building a cross-run/cross-model blind-spot list per the ticket's instruction."
+          },
+          "notes": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "reversedVerdicts": {
+      "type": "array",
+      "description": "Populated only once both runs for a given deployment are COMPLETED: any deployment whose two runs produced a different PASS/FAIL verdict on the same file is a reliability flag on its own, per the ticket's own instruction, regardless of which run was more accurate.",
+      "items": {
+        "type": "object",
+        "required": ["deployment", "run1Verdict", "run2Verdict"],
+        "properties": {
+          "deployment": {
+            "enum": [
+              "gpt-4o",
+              "gpt-4.1-nano-2025-04-14",
+              "gpt-5-mini-2025-08-07"
+            ]
+          },
+          "run1Verdict": {"enum": ["PASS", "FAIL"]},
+          "run2Verdict": {"enum": ["PASS", "FAIL"]}
+        }
+      }
+    }
+  }
+}

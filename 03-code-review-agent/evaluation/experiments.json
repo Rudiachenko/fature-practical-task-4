@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": 1,
+  "description": "Machine-readable enumeration of the 8 Experiments & Edge Cases named in context/TICKET.md (verbatim README table, R13). Each entry records how its underlying mechanism is proven: either hermeticStatus.status = PROVEN with a citation to the specific increment + test class + test method that hermetically demonstrates it (no live model needed), or REQUIRES_OPERATOR when the ticket's own 'what to observe' column can only be judged against genuine, non-deterministic live model behavior. liveEvaluation is always separate from hermeticStatus: several experiments have a hermetically-provable structural mechanism (e.g. the max-iteration guard exists and fires deterministically) while the live, real-model narrative the README also implicitly invites ('does the model actually behave sensibly') remains REQUIRES_OPERATOR regardless. See 03-code-review-agent/evaluation/RESULTS.md for the full narrative and measured test-run evidence behind every citation below.",
+  "sourceTicketSection": "context/TICKET.md, 'Experiments & Edge Cases' table (verbatim copy of 03-code-review-agent/README.md's own table)",
+  "experiments": [
+    {
+      "id": 1,
+      "name": "Tool overload",
+      "trigger": "Register several extra/redundant or dummy tools alongside the real six on the ChatOptions bean's tool-callback list.",
+      "whatToObserve": "Wrong tool selection, wasted reasoning steps, slower runs.",
+      "hermeticStatus": {
+        "status": "NOT_APPLICABLE",
+        "citation": null,
+        "note": "Tool selection quality is an emergent property of a live model's own reasoning over the tool list it is given; no hermetic fake can distinguish 'the model picked a worse tool because there were more of them' from 'the model picked the same tool regardless'. Nothing in Increments 1-7 builds a mechanism for this experiment specifically, and none was required to satisfy R13's own 'mixed' disposition for experiments #1/#2."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Add 2-4 clearly redundant/dummy @Tool-annotated methods to a throwaway copy of CodeReviewTools (or a new @Component registered alongside it) with plausible-sounding but useless descriptions (e.g. 'formatCode', 'checkStyleViolations', 'summarizeChangeHistory'), attach them via ToolCallbacks.from(...) in AgentConfig#chatOptions alongside the real six, start the app with real AZURE_OPEN_AI_* credentials, POST /code-review against a real fixture file, and compare iteration count / which tools were actually called (from the INFO-level per-tool-call log lines Increment 5 already emits) against a baseline run with only the real six tools."
+      }
+    },
+    {
+      "id": 2,
+      "name": "Ambiguous tool descriptions",
+      "trigger": "Blank out or make vague a tool's @Tool description (e.g. retrieveCodeConvention).",
+      "whatToObserve": "Mis-selection and confusion - tool descriptions act as a hidden prompt.",
+      "hermeticStatus": {
+        "status": "PROVEN",
+        "citation": "Increment 2, CodeReviewToolsTest.shouldHaveNonBlankDescriptionLongerThanTwentyCharacters_forEveryToolAnnotatedMethod",
+        "note": "A reflection-based regression guard enumerates every @Tool-annotated method on CodeReviewTools and asserts every description is non-blank, longer than 20 characters, and that no two descriptions are identical - this is the structural precondition the ticket's own experiment manipulates ('blank out or make vague'). It proves the shipped tool descriptions are not currently blank/duplicated/ambiguous by this measurable bar; it cannot and does not prove anything about a real model's behavior once a description is deliberately degraded."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Temporarily blank out or vague-ify retrieveCodeConvention's @Tool description (e.g. to 'Does convention stuff.'), start the app with real AZURE_OPEN_AI_* credentials, POST /code-review against a file in a language with a loaded convention (java or python), and compare the resulting tool-call sequence and findings against a baseline run with the real description - then revert the change (never ship a degraded description)."
+      }
+    },
+    {
+      "id": 3,
+      "name": "Missing convention",
+      "trigger": "Review a file in a language with no loaded convention (e.g. Go, Kotlin).",
+      "whatToObserve": "Honest \"no convention found\" vs hallucinated rules presented as fact.",
+      "hermeticStatus": {
+        "status": "PROVEN",
+        "citation": "Increment 2, CodeReviewToolsTest.shouldReturnHonestNoConventionFoundMessageUnmodified_whenLanguageIsGo",
+        "note": "Calls the real CodeReviewTools.retrieveCodeConvention(\"go\") (the real ConventionService, only java/python conventions loaded) and asserts the tool returns ConventionService's existing, unmodified honest message ('No coding convention found for language: go...') rather than any fabricated rule text. This is the exact tool-level mechanism the ReAct loop relies on for this case; re-run and passing as of this increment (see RESULTS.md)."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real AZURE_OPEN_AI_* credentials, POST /code-review with userInput pointing at a Go or Kotlin source file placed under the configured repository root, and confirm the model's final review honestly states no convention was found for that language rather than inventing plausible-sounding rules."
+      }
+    },
+    {
+      "id": 4,
+      "name": "Evidence enforcement",
+      "trigger": "Make readFile return empty / point it at a non-existent file.",
+      "whatToObserve": "Does the agent still fabricate findings without real evidence?",
+      "hermeticStatus": {
+        "status": "PROVEN",
+        "citation": "Increment 5 retry 1, CodeReviewReactAgentTest.shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileNeverSucceedsButModelClaimsFindings and .shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings",
+        "note": "Two effect-verified tests: the first simulates readFile always returning the Increment-2 error sentinel (a fake/non-existent-file readFile call); the second constructs a real CodeReviewTools bound to the real fixtures/repo-root/empty.txt fixture and calls the real, production readFile(\"empty.txt\") to obtain the actual empty-file sentinel text. In both cases the fake model's final answer nonetheless claims non-empty findings, and the runtime EvidenceTracker override (Architecture Note A4) forces the returned CodeReviewResponse to empty findings plus the honest NO_EVIDENCE_REVIEW_TEXT, regardless of what the model claimed. Re-run and passing as of this increment (see RESULTS.md)."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real AZURE_OPEN_AI_* credentials, POST /code-review with userInput pointing at fixtures/repo-root/empty.txt (or any zero-byte file under the repository root), and confirm the returned CodeReviewResponse has empty findings and the honest no-evidence review text even though a real model was involved end to end."
+      }
+    },
+    {
+      "id": 5,
+      "name": "Path traversal",
+      "trigger": "Submit ../../etc/passwd or an absolute path outside the repo root.",
+      "whatToObserve": "Input validation and the repository-root security boundary.",
+      "hermeticStatus": {
+        "status": "PROVEN",
+        "citation": "Increment 6 retry 1, CodeReviewControllerTest.shouldReturnBadRequestWithPathSecurityViolationCode_whenUserInputAttemptsPathTraversal, .shouldRejectBeforeInvokingTheAgent_whenUserInputIsAnAbsoluteWindowsPath, and RepositoryPathResolverTest's validateSecurityBoundary tests (shouldRejectPathTraversal_whenValidateSecurityBoundaryIsCalledWithDotDotEscape, shouldRejectAbsolutePath_whenValidateSecurityBoundaryIsCalledWithAWindowsAbsolutePath, shouldRejectBlankInput_..., shouldRejectPathContainingNulCharacter_...)",
+        "note": "CodeReviewController.processUserQuery calls RepositoryPathResolver#validateSecurityBoundary(userInput) as its first statement, before CodeReviewReactAgent#interact is ever invoked. CodeReviewControllerTest proves this end-to-end through the real controller + real advice pair (MockMvc), asserting both the exact 400/PATH_SECURITY_VIOLATION response AND verify(reviewReactAgent, never()).interact(any()) - i.e. the deterministic 400 happens with zero ChatModel calls, not merely a status-code check. Re-run and passing as of this increment (see RESULTS.md); this is the one experiment fully closed without any live-model dependency, because the rejection is a pure input-shape check that happens before any model interaction."
+      },
+      "liveEvaluation": {
+        "status": "NOT_APPLICABLE",
+        "instructions": "No live model call is ever reached for a rejected path, by design (see hermeticStatus above) - there is no additional live-behavior half of this experiment to run. An operator may still POST /code-review with '../../etc/passwd' or 'C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts' against a live-credentialed instance purely to visually confirm the same 400/PATH_SECURITY_VIOLATION response over real HTTP, but this reconfirms the hermetic proof rather than adding new evidence."
+      }
+    },
+    {
+      "id": 6,
+      "name": "Large file / context overload",
+      "trigger": "Feed a very large source file.",
+      "whatToObserve": "Truncation, degraded analysis quality, token-limit errors.",
+      "hermeticStatus": {
+        "status": "PROVEN",
+        "citation": "Increment 1, FileUtilsTest.shouldTruncateContentAndAppendMarker_whenLimitIsSmallerThanFileLength; Increment 3 retry 1, CodeReviewToolsTest.shouldReturnContentWrappedInMarkersWithVisibleTruncationMarker_whenContentExceedsConfiguredMaxFileChars; Increment 5 retry 1, CodeReviewReactAgentTest.shouldSetTruncatedTrue_whenAnyToolResultContainsTruncationMarker_evenIfModelClaimsFalse",
+        "note": "Three layers, each proven: (1) FileUtils.readFile truncates to app.code-review.max-file-chars and appends the visible FileUtils.TRUNCATION_MARKER; (2) CodeReviewTools.readFile's wrapped tool result keeps that marker strictly inside the <<<BEGIN/END_UNTRUSTED_CODE_SNIPPET>>> delimiters, so the model sees it directly; (3) CodeReviewReactAgent's EvidenceTracker observes any tool result containing FileUtils.TRUNCATION_MARKER and force-sets the final response's truncated field to true, even if the model's own structured-output JSON claims truncated:false - an objectively observed signal is never overridden by the model. Re-run and passing as of this increment (see RESULTS.md)."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real AZURE_OPEN_AI_* credentials, lower app.code-review.max-file-chars to a small value (or point at a genuinely large source file already over the default 20000-character limit), POST /code-review, and observe both the truncated:true field in the response and, qualitatively, whether the model's analysis quality visibly degrades on the truncated remainder of the file (token-limit errors upstream would surface as a 502 AI_PROVIDER_FAILURE via CodeReviewExceptionHandler)."
+      }
+    },
+    {
+      "id": 7,
+      "name": "Loop non-termination",
+      "trigger": "Craft a request that encourages endless tool calling.",
+      "whatToObserve": "Need for (and behavior of) a max-iteration guard in the ReAct loop.",
+      "hermeticStatus": {
+        "status": "PROVEN",
+        "citation": "Increment 5, CodeReviewReactAgentTest.shouldThrowAgentIterationLimitExceededException_afterExactlyMaxIterationsModelCalls_whenModelRequestsToolCallsIndefinitely; Increment 5 retry 1 boundary tests shouldThrowAgentIterationLimitExceededExceptionWithZeroChatModelCalls_whenMaxIterationsIsZero, ...whenMaxIterationsIsNegative, ...whenMaxIterationsIsOneAndModelRequestsATool, and shouldReturnPopulatedResponseAfterExactlyOnePhaseOneCall_whenMaxIterationsIsOneAndModelAnswersImmediately; Increment 6, CodeReviewPropertiesTest (@Min(1) fail-fast at startup) and CodeReviewControllerTest.shouldReturnInternalServerErrorWithIterationLimitCode_whenAgentExhaustsMaxIterations",
+        "note": "A fake model configured to request a tool call on every single turn is proven, by an exact chatModel-call-count assertion, to exhaust after exactly app.code-review.max-iterations calls (never max-iterations+1) and throw AgentIterationLimitExceededException rather than return a partial/fabricated answer; the exact HTTP-level effect (500/AGENT_ITERATION_LIMIT_EXCEEDED) is proven end-to-end through the real controller+advice. Boundary values 0, -1, and 1 are each individually proven, and misconfiguration (max-iterations <= 0) additionally fails fast at Spring Boot startup via @Min(1), not silently at request time. Re-run and passing as of this increment (see RESULTS.md)."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real AZURE_OPEN_AI_* credentials and a deliberately small app.code-review.max-iterations (e.g. 1 or 2), craft a userInput/system-prompt combination likely to encourage repeated exploration (e.g. a large, deeply-nested directory), POST /code-review, and confirm the response is 500/AGENT_ITERATION_LIMIT_EXCEEDED rather than a hang or a fabricated answer once the real model's own tool-calling behavior is involved."
+      }
+    },
+    {
+      "id": 8,
+      "name": "Empty / non-code input",
+      "trigger": "Submit an empty file or a README/Markdown file.",
+      "whatToObserve": "Graceful handling vs nonsense or hallucinated findings.",
+      "hermeticStatus": {
+        "status": "PROVEN",
+        "citation": "Increment 2, CodeReviewToolsTest.shouldReturnExplicitNonErrorEmptyFileMessage_whenFileExistsButIsEmpty and the three blank-codeSnippet tests (shouldReturnBlankCodeSnippetMessageAndNeverCallTheModel_when...); Increment 5 retry 1, CodeReviewReactAgentTest.shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings",
+        "note": "The empty-file sub-case is fully, structurally closed: readFile on a real zero-byte fixture returns a distinct, non-error, unwrapped sentinel message (never the READ_ERROR_PREFIX message and never wrapped in the untrusted-content markers), every blank-codeSnippet tool call short-circuits before ever calling the model, and the runtime evidence-enforcement override (experiment #4's mechanism) additionally forces empty findings/honest review text even if a fake model claims findings anyway. The narrower non-empty-but-non-code-file sub-case (e.g. a real README/prose file that readFile reads successfully) is a DELIBERATE, DOCUMENTED HAND-OFF: Increment 5's own PROGRESS.md entry ('Two hand-off decisions this increment made explicitly', decision 1) records the decision to leave this specific sub-case as a prompt-only mitigation (the system prompt's Evidence Requirements section instructs honesty here) rather than add a classifier-based runtime guard, because a hand-rolled 'is this reviewable code' heuristic risks false positives that would incorrectly suppress genuine findings - this is a documented trade-off, not a silent gap."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real AZURE_OPEN_AI_* credentials, POST /code-review twice: once with userInput pointing at fixtures/repo-root/empty.txt (or any zero-byte file), once with userInput pointing at a real README/Markdown/prose file under the repository root, and confirm in both cases the review is graceful (no hallucinated code-quality findings) - the empty-file case is additionally hermetically enforced (see hermeticStatus above), while the non-empty-prose-file case relies entirely on the model actually following the system prompt's honesty instructions, which only a live run can observe."
+      }
+    }
+  ]
+}
