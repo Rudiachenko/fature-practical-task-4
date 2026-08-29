@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class RepositoryPathResolverTest {
@@ -186,6 +187,65 @@ class RepositoryPathResolverTest {
       .isInstanceOf(FileNotFoundInRepositoryException.class)
       .isNotInstanceOf(PathSecurityViolationException.class)
       .hasMessage("File not found in repository: nested/CON");
+  }
+
+  // --- validateSecurityBoundary (security-only pre-check, retry 1 High finding) -----------------
+  //
+  // Delegates directly to the same private validateAndResolve(...) resolveFile/listImmediateEntries
+  // already use, so these tests exist to prove the public entry point's own contract - not to
+  // re-derive the underlying security rule, which is already exhaustively covered above.
+
+  @Test
+  void shouldRejectPathTraversal_whenValidateSecurityBoundaryIsCalledWithDotDotEscape() {
+    assertThatThrownBy(() -> resolver.validateSecurityBoundary("../../etc/passwd"))
+      .isInstanceOf(PathSecurityViolationException.class);
+  }
+
+  @Test
+  void shouldRejectAbsolutePath_whenValidateSecurityBoundaryIsCalledWithAWindowsAbsolutePath() {
+    assertThatThrownBy(
+      () -> resolver.validateSecurityBoundary("C:\\Windows\\System32\\drivers\\etc\\hosts"))
+      .isInstanceOf(PathSecurityViolationException.class);
+  }
+
+  @Test
+  void shouldRejectBlankInput_whenValidateSecurityBoundaryIsCalledWithAnEmptyString() {
+    assertThatThrownBy(() -> resolver.validateSecurityBoundary(""))
+      .isInstanceOf(PathSecurityViolationException.class);
+  }
+
+  @Test
+  void shouldRejectPathContainingNulCharacter_whenValidateSecurityBoundaryIsCalledWithEmbeddedNul() {
+    String pathWithNul = "evil" + (char) 0 + ".txt";
+
+    assertThatThrownBy(() -> resolver.validateSecurityBoundary(pathWithNul))
+      .isInstanceOf(PathSecurityViolationException.class);
+  }
+
+  @Test
+  void shouldNotThrow_whenValidateSecurityBoundaryIsCalledWithAnOrdinaryInRootRelativePath() {
+    // Neither existence nor "file vs directory" is checked by this method - proved separately below -
+    // but an ordinary, unremarkable in-root path must not throw either.
+    assertThatCode(() -> resolver.validateSecurityBoundary("nested/nested-file.txt"))
+      .doesNotThrowAnyException();
+  }
+
+  @Test
+  void shouldNotThrow_whenValidateSecurityBoundaryIsCalledWithAnInRootDirectoryPath() {
+    // A directory (not a regular file) must be accepted - the ticket's own "a relative file or
+    // repository path" wording covers directories too, and this pre-check must not reject the
+    // repository-exploration use case.
+    assertThatCode(() -> resolver.validateSecurityBoundary("nested"))
+      .doesNotThrowAnyException();
+  }
+
+  @Test
+  void shouldNotThrow_whenValidateSecurityBoundaryIsCalledWithASyntacticallyValidButNonExistentPath() {
+    // Existence is deliberately out of scope for this security-only check - a missing file must still
+    // reach the agent so it can honestly report "file not found" itself (Experiment #4's own
+    // dependency on this, per the coordinator's decision).
+    assertThatCode(() -> resolver.validateSecurityBoundary("nested/does-not-exist.txt"))
+      .doesNotThrowAnyException();
   }
 
   // --- Symlink escape (availability-gated) -----------------------------------------------------

@@ -97,6 +97,36 @@ public final class RepositoryPathResolver {
   }
 
   /**
+   * Security-only pre-check: runs exactly the same boundary rule as steps 1-3 of this class's
+   * algorithm (blank/whitespace input, an embedded NUL character, any absolute or drive-qualified
+   * form - Windows drive-absolute, Windows drive-relative, UNC, POSIX leading {@code /} - an
+   * alternate-data-stream-shaped colon, and {@code ..} containment against the canonical root once
+   * normalized) but, unlike {@link #resolveFile(String)}/{@link #listImmediateEntries(String, int)},
+   * never touches the filesystem: it does not require {@code relativePath} to exist, and does not
+   * require it to be a regular file rather than a directory.
+   *
+   * <p>Delegates directly to the same private {@link #validateAndResolve(String)} method those two
+   * methods already call, so there is exactly one copy of the security rule in this class, never a
+   * second copy that could silently drift from it.
+   *
+   * <p>Intended for an upfront, cheap rejection of an out-of-root or malformed
+   * {@code userInput} - e.g. by {@code CodeReviewController}, before the request ever reaches the
+   * agent/model - so a caller can observe the repository-root security boundary via a deterministic
+   * HTTP status code alone, with no model call spent on input that is rejected by construction. A
+   * syntactically valid, in-root path that does not (yet) exist, or that names a directory rather
+   * than a file, deliberately passes this check without error: existence/kind is intentionally out of
+   * scope here, since a missing file must still reach the agent so it can honestly report
+   * "file not found" itself (see {@link FileNotFoundInRepositoryException}), rather than being
+   * silently rejected upfront as if it were a security concern.
+   *
+   * @param relativePath a path relative to the repository root
+   * @throws PathSecurityViolationException if {@code relativePath} fails the security boundary
+   */
+  public void validateSecurityBoundary(String relativePath) {
+    validateAndResolve(relativePath);
+  }
+
+  /**
    * Lists the immediate (non-recursive) entries of an existing directory strictly within the
    * repository root, bounded to at most {@code maxEntries} entries, sorted by name.
    *
