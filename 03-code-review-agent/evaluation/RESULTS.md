@@ -1,6 +1,6 @@
 # Module 3 Code Review Agent — Evaluation Results
 
-**Status: PARTIALLY COMPLETE — every hermetically-provable mechanism actually re-run and confirmed passing in this session; every live-model-dependent piece (Experiments #1/#2's live half, the live halves of #3/#4/#6/#7/#8, R12's model-comparison subtask, and R11's Merge Request) is explicitly `REQUIRES OPERATOR`, not fabricated.**
+**Status: PARTIALLY COMPLETE — every hermetically-provable mechanism actually re-run and confirmed passing in this session; R12's model-comparison subtask has now actually been run live against the DIAL API (see its own section below) and is `COMPLETED`, not `REQUIRES OPERATOR`; every other live-model-dependent piece (Experiments #1/#2's live half, the live halves of #3/#4/#6/#7/#8, and R11's Merge Request) remains explicitly `REQUIRES OPERATOR`, not fabricated.**
 
 This file accounts for all 8 README/`context/TICKET.md` Experiments & Edge Cases (R13), the R12
 model-choice-justification subtask, and R11 (GitLab Merge Request). `03-code-review-agent/README.md`
@@ -19,12 +19,17 @@ plausible outcome.
   limitation still holds and has not silently changed), `./mvnw -DskipTests compile` (full 4-module
   reactor), and `03-code-review-agent/scripts/run-experiments.ps1 -HermeticOnly` (twice — once with
   `-SkipBuild` reusing a fresh Surefire run's own reports, and once via the script's own `mvnw test`
-  invocation). See "Final verification" below for the exact numbers.
+  invocation). See "Final verification" below for the exact numbers. **In a later session with live
+  EPAM VPN + DIAL access, the R12 model-comparison subtask was also actually run** — 6 real
+  `chat/completions` calls against `gpt-4o`, `gpt-4.1-nano-2025-04-14`, and `gpt-5-mini-2025-08-07` (2
+  runs each) — see R12's own section below for the full, measured result.
 - **Not run in this session, because it requires EPAM VPN + live DIAL credentials this sandbox does
-  not have**: any `POST /code-review` call against a real Azure OpenAI/DIAL deployment, the live halves
-  of Experiments #1, #2, #3, #4, #6, #7, #8, the entire R12 model-comparison subtask, and R11's GitLab
-  Merge Request. Every one of these is labeled `REQUIRES OPERATOR` below, with the exact command/steps
-  an operator needs once credentials are available — never narrated as if it had happened.
+  not have**: any `POST /code-review` call against a real Azure OpenAI/DIAL deployment through the
+  actual REST endpoint (R12 was run as direct DIAL `chat/completions` calls instead, since the embedded
+  server cannot bind a socket in this sandbox — see R12's section for why), the live halves of
+  Experiments #1, #2, #3, #4, #6, #7, #8, and R11's GitLab Merge Request. Every one of these is labeled
+  `REQUIRES OPERATOR` below, with the exact command/steps an operator needs once credentials are
+  available — never narrated as if it had happened.
 
 ## Experiments & Edge Cases (R13) — all 8, individually accounted for
 
@@ -231,51 +236,151 @@ behavior on the second, prompt-only-mitigated case is in fact graceful.
 
 ## R12 — Model-choice-justification subtask
 
-**Status: `REQUIRES OPERATOR` — no live run has been performed. Scaffolding only, per this increment's
-own scope.**
+**Status: `COMPLETED` — actually run live against the DIAL API on 2026-08-29, in a later session with
+working EPAM VPN + DIAL access. Full artifacts below; nothing in this section is estimated or narrated.**
 
-The ticket requires picking one real, non-trivial source file, running the identical structured review
-request through `POST /code-review` against each of `gpt-4o`, `gpt-4.1-nano-2025-04-14`, and
-`gpt-5-mini-2025-08-07`, twice per model, then scoring each run per the ticket's own method (verify
-every cited line/claim against the actual file, watch for generic/templated claims, compare the two runs
-per model for reversed verdicts, log blind spots, score pass = net-accurate / fail = a new false claim
-not present in the model's other run). None of this can be performed without EPAM VPN + live DIAL access
-to all three named deployments, which this implementation sandbox does not have.
+### Method actually used, and how it differs from the scaffolding's original plan
 
-**What exists now (built in this increment)**:
-- `03-code-review-agent/evaluation/model-comparison-schema.json` — a **JSON Schema** (the shape
-  definition, not a populated instance) for the eventual result set, with `deployment` restricted to
-  exactly the 3 named strings, `modelRuns` constrained to exactly 6 entries (`minItems`/`maxItems`: 6),
-  and a `scoringMethod` sub-schema that restates the ticket's own pass/fail rule and verification steps
-  so the schema is self-describing. `PENDING`/`null` appear in this file only inside `enum`/description
-  text, never as populated field values — this file alone gave an operator no ready-to-fill starting
-  point.
-- `03-code-review-agent/evaluation/model-comparison-run-template.json` (new, this retry) — the actual
-  **fillable instance document** that validates against `model-comparison-schema.json`: a real 6-entry
-  `modelRuns` array (3 deployments × 2 runs, each named deployment appearing exactly twice with
-  `runNumber` 1 and 2), `status: "PENDING"` and `verdict: null` on every entry, `findingsByCategory`
-  pre-populated with all 5 ticket-required category keys each holding an empty array, and
-  `scoringMethod.passRule`/`failRule` restated verbatim from the schema. An operator copies this file to
-  `evaluation/runs/<timestamp>-model-comparison.json` and fills it in, rather than authoring the shape
-  from scratch.
-- `EvaluationAssetsTest` (new in the original increment, extended this retry) walks the schema's
-  `deployment` enum structurally and asserts it is exactly `["gpt-4o", "gpt-4.1-nano-2025-04-14",
-  "gpt-5-mini-2025-08-07"]`, and (new test, this retry) walks the template and asserts it genuinely has
-  6 `modelRuns` entries covering each deployment twice and that every score/verdict/notes/findings field
-  starts unpopulated — proven by genuine structural assertions, not "the file parses" checks.
+The scaffolding above (still accurate as a description of what was built earlier) assumed an operator
+would drive this subtask through the real `POST /code-review` endpoint. That endpoint could not be used
+here either: the embedded Tomcat server in this sandbox still cannot bind a loopback socket
+(`java.nio.channels.Selector.open()` fails — the same, already-documented `HermeticApplicationContextIT`
+limitation). Instead, this subtask was run as **direct DIAL `chat/completions` calls**
+(`POST {endpoint}/openai/deployments/{deployment}/chat/completions?api-version=2024-10-21`, header
+`Api-Key`), sending the file content and the five required categories directly in the prompt, bypassing
+the agent's own tool-calling ReAct loop entirely. This is a deliberate, disclosed deviation: the ticket's
+subtask itself only requires "run the same review prompt with each model... twice in a row per model on
+the identical file" — it does not require exercising the ReAct/tool-calling machinery, and doing so was
+not possible in this sandbox regardless. **The identical request shape was used for all six calls**: a
+`system` + `user` message pair only, no `temperature`/`top_p` parameter on any of the three deployments
+(so `gpt-5-mini-2025-08-07`'s reasoning-model parameter sensitivity never came into play — it was avoided
+by construction rather than special-cased). Full request/response artifacts, one file per run:
+`evaluation/runs/20260829T193452Z-<deployment>-run<N>.json` (raw API response plus the exact
+`requestParametersUsed` actually sent). Filled result instance:
+`evaluation/runs/20260829T193452Z-model-comparison.json` (a completed **copy** of
+`model-comparison-run-template.json` — the template itself was left untouched, still all-`PENDING`, per
+its own embedded instruction and so `EvaluationAssetsTest`'s unpopulated-template assertion keeps
+passing).
 
-**What an operator must do to close R12**: pick a real, non-trivial file (the ticket permits "from any
-source"); set `AZURE_OPEN_AI_KEY`/`AZURE_OPEN_AI_ENDPOINT` and, in turn,
-`AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4o` / `gpt-4.1-nano-2025-04-14` / `gpt-5-mini-2025-08-07`; for each
-deployment, `POST /code-review` twice with the identical `userInput` pointing at the chosen file; copy
-`model-comparison-run-template.json` to `evaluation/runs/<timestamp>-model-comparison.json` and record
-each run's `findings[]` and `review` text into it, keeping it conformant with
-`model-comparison-schema.json`; verify every cited line/claim by hand against the real file content;
-fill in `sourceFile`, each run's `verdict`, `blindSpots`, `genericTemplatedClaimsFlagged`, and (once both
-runs for a deployment are `COMPLETED`) `reversedVerdicts`; and replace this section's `REQUIRES OPERATOR`
-status with a citation to that real artifact, following the exact honesty convention already established
-in `02-rag/evaluation/RESULTS.md`'s own `agentReview`/`humanReview` two-track model (never claim a review
-happened that did not — see `context/RETROSPECTIVE.md`'s `HUMAN_REVIEWED` false-attribution lesson).
+### Source file and ground truth
+
+Chosen file: `03-code-review-agent/evaluation/fixtures/FileUtils.java` — the real, pre-Increment-1
+version of this repository's own `util/FileUtils.java` (verified byte-identical to `git show
+add6f68:03-code-review-agent/src/main/java/com/epam/codereviewagent/util/FileUtils.java`, 53 lines), a
+genuine non-trivial file with a real mix of issues, and one whose actual defects and later fix are
+independently documented elsewhere in this repository (`context/PROGRESS.md`'s Increment 1 entry),
+giving an unusually strong independent check on the ground truth.
+
+**Ground truth was derived independently, line by line, before any run was issued or any model output
+was read**, and written to `03-code-review-agent/evaluation/ground-truth-fileutils.md` first. It was only
+cross-checked against Increment 1's record and, later, against the models' own citations — two genuine
+corrections surfaced during that second cross-check and are recorded in the ground-truth file's own
+"Addendum" section rather than silently fixed: the file's initial claim of "zero magic numbers" was
+wrong (line 18's `substring(1)` contains one real literal, caught because `gpt-5-mini` cited it), and a
+real TOCTOU race (lines 35/47) was added after `gpt-5-mini` correctly identified it. The primary,
+most-severe real issue in the file: **none of the four candidate path resolutions (lines 25/27/28/30)
+validate that the resolved path stays within any boundary before `Files.readString` is called** — the
+exact, historically documented reason this file was rewritten in this repository.
+
+### Per-run results (6 runs, all HTTP 200, none failed/timed out)
+
+| Deployment | Run | Verdict | Why |
+|---|---|---|---|
+| `gpt-4o` | 1 | **PASS** | Every cited line verified against the file (two minor off-by-one citations, substance still accurate); no false claims. Missed the path-traversal issue, the missing private constructor, and the TOCTOU race. |
+| `gpt-4o` | 2 | **FAIL** | Four new, verified-false claims not present in run 1 (see quotes below). |
+| `gpt-4.1-nano-2025-04-14` | 1 | **PASS** | No false claims; correctly avoided every trap (no magic-number claim, no resource-leak claim, no deep-nesting overstatement). Weakness was under-claiming (explicitly denied a real issue), not fabricating one. |
+| `gpt-4.1-nano-2025-04-14` | 2 | **PASS** | No false claims; caught a genuinely specific, correct, non-generic detail (`.toList()` is Java 16+) no other run mentioned; came close to (but did not fully name) the path-traversal issue. |
+| `gpt-5-mini-2025-08-07` | 1 | **PASS** | No false claims; uniquely caught the missing private constructor and the TOCTOU race. |
+| `gpt-5-mini-2025-08-07` | 2 | **PASS** | No false claims; the **only run of all six** to explicitly name the file's single most severe real issue — unvalidated path resolution allowing escape outside the intended directory — with accurate line citations. |
+
+**Reversed verdicts**: `gpt-4o` reversed between its two runs (PASS → FAIL) — the ticket treats this as a
+reliability flag in itself, independent of which run was "more right." No other deployment reversed at
+the PASS/FAIL level, though `gpt-4.1-nano-2025-04-14` reversed at the level of an individual judgment
+(run 1: "[readFile] adheres to single-responsibility principles, no significant concerns" / run 2:
+"performs multiple responsibilities... consider splitting into smaller, focused methods" — the same
+underlying question, opposite conclusions, on the identical file).
+
+### `gpt-4o` run 2's four false claims — quoted verbatim, scored against the real file
+
+1. Claimed the candidate array **"lacks in-line comments or explanations for each path"** (cited lines
+   23-31). **False**: lines 24, 26 and 29 each carry an inline comment (`// As passed...`, `// Common
+   source roots`, `// If user included src/ already...`).
+2. Claimed **"the purpose of the logic to remove the leading slash is unclear and might benefit from a
+   comment"** (cited line 17). **False**: line 18, immediately adjacent, already has
+   `// treat leading slash as classpath-style relative`, which states exactly that rationale.
+3. Claimed **"the hardcoded `\"src/main/java\"` and `\"src/test/java\"` strings are effectively magic
+   strings"** and cited **line 30**. The underlying observation (hardcoded path segments) is real, but
+   line 30 is `Path.of(trimmed).normalize()` — it contains no string literal at all; the actual literals
+   are on lines 27 and 28. Per the ticket's own rule ("a finding citing a line number is false if that
+   line does not contain what it claims"), this is scored false as cited.
+4. Claimed **"the loop checking each candidate path introduces a deep nesting structure"** (cited lines
+   33-39). **False**: the maximum nesting depth in the entire file is 2 (one `for` containing one `if`)
+   — not deep by any normal standard, and this exact overstatement was flagged in advance as the
+   clearest trap in the ground-truth document.
+
+None of these four claims appear in `gpt-4o` run 1, satisfying the ticket's own fail rule ("a new false
+claim not present in the model's other run") directly.
+
+### Generic/templated claims flagged (checked specifically against this file, not accepted on plausibility)
+
+- `gpt-4o` run 2's "candidates array lacks comments" and "no comment on the leading-slash logic" are
+  exactly the ticket's own named example of a generic, plausible-sounding "add documentation" claim that
+  turns out to be false for this specific file.
+- `gpt-5-mini-2025-08-07`'s "`substring(1)`'s literal `1` is a magic number" (both runs, consistently)
+  is a real citation, not a fabrication, but a debatable/aggressive classification — common
+  static-analysis conventions (e.g. Checkstyle's `MagicNumber` check) exclude small self-evident literals
+  like `1` by default. Scored as a flagged generic/templated-style catch, not a false claim, since the
+  literal genuinely exists at that line.
+- `gpt-4o` run 1's "assigning `null` to `resolved` then reassigning it in a loop is an anti-pattern,
+  prefer `Optional<Path>`" is a generic style opinion applied to an idiomatic, extremely common
+  search-loop pattern — not a factual error, but not a sharp, file-specific finding either.
+
+### Blind spots — real issues present in the file, aggregated across all six runs
+
+- **The path-traversal/repository-escape issue (the single most severe real defect) was missed by 5 of
+  6 runs** — only `gpt-5-mini-2025-08-07` run 2 named it explicitly ("the code does not sanitize or
+  constrain resolved paths to a safe base directory, so a user-supplied path could resolve outside
+  intended directories"). `gpt-4.1-nano` run 2 and `gpt-5-mini` run 1 touched adjacent territory
+  (unvalidated `Path.of(trimmed)`; no null-check on `user.dir`) without naming the escape risk itself.
+  Neither `gpt-4o` run named it or anything adjacent to it. **This is the clearest, most consequential
+  blind spot observed.**
+- **The missing private constructor on the static-only `FileUtils` utility class** was caught only by
+  `gpt-5-mini-2025-08-07` run 1 (and, notably, not repeated in that same deployment's run 2 — an
+  inconsistency between its own two runs, not a false claim). Missed by both `gpt-4o` runs and both
+  `gpt-4.1-nano` runs.
+- **The TOCTOU race** (check at line 35, read at line 47) was caught by both `gpt-5-mini` runs and
+  missed entirely by both `gpt-4o` and both `gpt-4.1-nano` runs.
+- **Naive leading-slash string handling** (only strips a single `/`, no backslash/drive-letter/UNC
+  handling) was caught precisely by both `gpt-5-mini` runs; `gpt-4.1-nano` run 1 explicitly denied any
+  such issue existed ("no naive string handling issues observed") — a genuine miss, though a negative
+  assertion rather than a fabricated positive claim, so it is recorded as a blind spot rather than scored
+  as a fail.
+
+### Recommendation: is the default `gpt-4o` justified for code review?
+
+**On this single 53-line file and six runs, no — `gpt-5-mini-2025-08-07` was the strongest and most
+reliable reviewer, and the cheap `gpt-4.1-nano-2025-04-14` was more reliable than `gpt-4o`,** reported
+plainly rather than defending the ticket's own default:
+
+- `gpt-4o` is the only deployment that produced a **false claim** in either run, and reversed from PASS
+  to FAIL between its two identical-input runs — a reliability concern independent of average quality.
+- `gpt-4.1-nano-2025-04-14`, the cheapest of the three, produced **zero false claims across both runs**
+  and, in run 2, an unprompted and correct Java-version-compatibility observation (`.toList()` requires
+  Java 16+) that no other run made. Its main weakness was conservatism/under-claiming, not fabrication.
+- `gpt-5-mini-2025-08-07` (a reasoning model, ~1.7-1.9k reasoning tokens spent per run per the raw
+  response `usage.reasoning_tokens` field) produced the most thorough, most precisely-cited findings of
+  the six, the only two catches of the TOCTOU race, the only catch of the missing private constructor,
+  and the only explicit catch of the file's single most severe real issue (unvalidated path resolution).
+  It was also markedly slower (~20s vs. ~1-8s per call, from each response's own `latency_checkpoint`).
+- If `gpt-4o` remains the default for cost/latency/availability reasons unrelated to this subtask, that
+  is a legitimate operational choice, but **this specific measurement does not support it being the
+  most accurate reviewer of the three** on this file.
+
+**Explicit limitation, stated rather than glossed over**: six runs on one 53-line file is a very small
+sample. It demonstrates a real, reproducible reliability difference on this specific input (`gpt-4o`'s
+own two runs disagreeing on the same file is itself evidence, independent of sample size), but it is not
+a statistically powered claim about either model's general code-review accuracy across arbitrary files,
+languages, or issue types. Treat this as one concrete, fully-verified data point, not a general verdict.
 
 ## R11 — GitLab Merge Request
 

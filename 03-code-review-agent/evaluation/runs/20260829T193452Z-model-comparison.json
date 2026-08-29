@@ -1,0 +1,268 @@
+{
+  "$comment": "COMPLETED instance of model-comparison-schema.json (R12 subtask), filled from a real live run against the DIAL API on 2026-08-29. model-comparison-run-template.json itself was left unmodified (still all-PENDING) per its own instruction to copy-then-fill; this is that copy. Full raw responses (one file per run) live alongside this file in evaluation/runs/, named 20260829T193452Z-<deployment>-run<N>.json. Verbatim quotes backing every FAIL verdict and every genericTemplatedClaimsFlagged/blindSpots entry are in evaluation/RESULTS.md's R12 section, not duplicated here in full.",
+  "schemaVersion": 1,
+  "status": "COMPLETED",
+  "sourceFile": "03-code-review-agent/evaluation/fixtures/FileUtils.java",
+  "sourceFileModified": false,
+  "categories": [
+    "Naming",
+    "CodeStructure",
+    "BestPractices",
+    "CodeQuality",
+    "CommonAntiPatterns"
+  ],
+  "scoringMethod": {
+    "passRule": "pass = net-accurate findings (every cited line/claim verified against the actual file)",
+    "failRule": "fail = a new false claim not present in the model's other run",
+    "verificationSteps": [
+      "Verify every cited line/claim in the run's findings against the actual sourceFile content.",
+      "Flag generic/templated claims that sound true for almost any class but were not specifically checked against this file.",
+      "Compare the two runs for the same deployment for a reversed PASS/FAIL verdict on the identical file.",
+      "Log blind spots: real issues present in sourceFile that this run's model missed."
+    ]
+  },
+  "modelRuns": [
+    {
+      "deployment": "gpt-4o",
+      "runNumber": 1,
+      "status": "COMPLETED",
+      "verdict": "PASS",
+      "requestTimestampUtc": "2026-08-29T19:34:52Z",
+      "findingsByCategory": {
+        "Naming": [
+          {"claim": "readFile is too generic given multi-candidate fallback behavior", "citedLine": 10, "verifiedAgainstFile": true},
+          {"claim": "FileUtils name implies a multi-method utility but only holds one method", "citedLine": 8, "verifiedAgainstFile": true}
+        ],
+        "CodeStructure": [
+          {"claim": "readFile mixes validation, normalization, candidate construction, resolution and reading in one method (SRP)", "citedLine": "10-50", "verifiedAgainstFile": true}
+        ],
+        "BestPractices": [
+          {"claim": "catch (Exception ex) is overly broad, should be IOException", "citedLine": 48, "verifiedAgainstFile": true},
+          {"claim": "Files.readString hardcodes UTF-8 encoding", "citedLine": 47, "verifiedAgainstFile": true},
+          {"claim": "IllegalArgumentException for not-found is misleading; a FileNotFoundException-style type would be clearer", "citedLine": 41, "verifiedAgainstFile": "partial - the throw itself is on line 42-43, not 41; the cited line holds the guarding if, substance is accurate"}
+        ],
+        "CodeQuality": [
+          {"claim": "comment on line 15 is helpful but under-explains 'common relative patterns'", "citedLine": 15, "verifiedAgainstFile": true},
+          {"claim": "public class and method lack Javadoc", "citedLine": "8,10", "verifiedAgainstFile": true}
+        ],
+        "CommonAntiPatterns": [
+          {"claim": "leading-slash stripping is a hidden 'magic' behavioral assumption (not a numeric magic-number claim)", "citedLine": 18, "verifiedAgainstFile": true},
+          {"claim": "exception message recomputes the candidate-path stream instead of precomputing it", "citedLine": "40 (loop)/42-43 (stream)", "verifiedAgainstFile": "partial - loop is lines 34-39, not 40 (blank line); the stream call itself, correctly at 42-43, is the real substance"},
+          {"claim": "assigning null to `resolved` then reassigning in a loop is an anti-pattern; prefer Optional<Path>", "citedLine": "33-39", "verifiedAgainstFile": "true (null assignment exists) but the 'anti-pattern' framing is a generic/debatable style opinion, not a factual error"}
+        ]
+      },
+      "genericTemplatedClaimsFlagged": [
+        "'assigning null then reassigning in a loop is an anti-pattern, prefer Optional<Path>' - idiomatic search-loop pattern, not a real defect specific to this file"
+      ],
+      "blindSpots": [
+        "Missed the primary issue: no containment/traversal check on any of the four resolved candidates (lines 25/27/28/30) before Files.readString",
+        "Did not flag the missing private constructor on the static-only utility class",
+        "Did not flag the check-then-read TOCTOU race (lines 35, 47)"
+      ],
+      "notes": "No false claims found; all cited lines verified against the file (two minor off-by-one line citations noted above, substance still accurate). Scored PASS."
+    },
+    {
+      "deployment": "gpt-4o",
+      "runNumber": 2,
+      "status": "COMPLETED",
+      "verdict": "FAIL",
+      "requestTimestampUtc": "2026-08-29T19:35:02Z",
+      "findingsByCategory": {
+        "Naming": [
+          {"claim": "readFile is ambiguous about resolution/encoding behavior", "citedLine": 10, "verifiedAgainstFile": true},
+          {"claim": "FileUtils does not fully capture the class's specific resolve+read behavior", "citedLine": 8, "verifiedAgainstFile": true}
+        ],
+        "CodeStructure": [
+          {"claim": "readFile validates, normalizes, checks candidates, and reads in one method (SRP)", "citedLine": "10-50", "verifiedAgainstFile": true}
+        ],
+        "BestPractices": [
+          {"claim": "wraps and rethrows Exception as IllegalStateException without differentiating error cases", "citedLine": 49, "verifiedAgainstFile": true},
+          {"claim": "Files.readString can be a memory concern for very large files; consider chunked reads", "citedLine": 47, "verifiedAgainstFile": "true but generic/speculative - no evidence in the file about expected file sizes"}
+        ],
+        "CodeQuality": [
+          {"claim": "FileUtils class lacks Javadoc", "citedLine": 8, "verifiedAgainstFile": true},
+          {"claim": "readFile lacks a detailed Javadoc comment", "citedLine": 10, "verifiedAgainstFile": true},
+          {"claim": "candidates array (lines 23-31) lacks in-line comments or explanations for each path", "citedLine": "23-31", "verifiedAgainstFile": false},
+          {"claim": "purpose of removing the leading slash is unclear and might benefit from a comment", "citedLine": 17, "verifiedAgainstFile": false}
+        ],
+        "CommonAntiPatterns": [
+          {"claim": "hardcoded 'src/main/java' and 'src/test/java' are magic strings", "citedLine": 30, "verifiedAgainstFile": false},
+          {"claim": "naive string handling when concatenating paths into the exception message", "citedLine": 43, "verifiedAgainstFile": "weak/generic - the underlying code (a stream/map/toList call) is not really string concatenation"},
+          {"claim": "the candidate-search loop introduces deep nesting", "citedLine": "33-39", "verifiedAgainstFile": false}
+        ]
+      },
+      "genericTemplatedClaimsFlagged": [
+        "'lacks in-line comments' for the candidates array - templated 'add documentation' claim not checked against the actual file, which already has 3 inline comments there",
+        "'deep nesting' for a single for+if (depth 2) - templated anti-pattern-category padding to fill out the requested heading"
+      ],
+      "blindSpots": [
+        "Missed the primary issue: no containment/traversal check on any of the four resolved candidates",
+        "Did not flag the missing private constructor",
+        "Did not flag the check-then-read TOCTOU race"
+      ],
+      "notes": "FAIL: four claims verified false or misattributed against the real file - (1) 'candidates array lacks in-line comments' (lines 24/26/29 have comments), (2) 'line 17 lacks a comment' (line 18 has one, adjacent to 17), (3) magic-string citation to line 30 (the strings are actually on lines 27-28), (4) 'deep nesting' for the search loop (max depth is 2, not deep). None of these four claims appear in run 1, so this is a genuine new-false-claim FAIL per the ticket's own rule, and a run1=PASS/run2=FAIL reversal for this deployment."
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "runNumber": 1,
+      "status": "COMPLETED",
+      "verdict": "PASS",
+      "requestTimestampUtc": "2026-08-29T19:35:09Z",
+      "findingsByCategory": {
+        "Naming": [
+          {"claim": "No issues found", "citedLine": null, "verifiedAgainstFile": true}
+        ],
+        "CodeStructure": [
+          {"claim": "readFile is relatively long but adheres to SRP, no significant concerns", "citedLine": 10, "verifiedAgainstFile": "debatable - understates the real SRP critique other runs raised; not factually false, just under-critical"}
+        ],
+        "BestPractices": [
+          {"claim": "catching generic Exception is discouraged, prefer IOException", "citedLine": 48, "verifiedAgainstFile": true},
+          {"claim": "Files.readString does not require explicit resource management, no issue there", "citedLine": 47, "verifiedAgainstFile": true}
+        ],
+        "CodeQuality": [
+          {"claim": "validation and its comment are clear and concise", "citedLine": "11-13", "verifiedAgainstFile": true},
+          {"claim": "comments explain the path-resolution logic well", "citedLine": "15-30", "verifiedAgainstFile": true},
+          {"claim": "no Javadoc or method-level comments present", "citedLine": null, "verifiedAgainstFile": true}
+        ],
+        "CommonAntiPatterns": [
+          {"claim": "building the exception message via stream().map().toList() could produce lengthy, log-cluttering messages", "citedLine": 43, "verifiedAgainstFile": true},
+          {"claim": "string handling (trim/startsWith) is straightforward; no naive string handling issues observed", "citedLine": null, "verifiedAgainstFile": "false as a negative assertion - the leading-slash handling does not cover backslash/drive-letter/UNC forms; recorded as a blind spot, not a hard false claim since it asserts absence rather than a fabricated fact"},
+          {"claim": "nested array initialization (23-31) is acceptable", "citedLine": "23-31", "verifiedAgainstFile": true},
+          {"claim": "no deep nesting issues; loop and conditionals are straightforward", "citedLine": null, "verifiedAgainstFile": true}
+        ]
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [
+        "Missed the primary issue: no containment/traversal check on any resolved candidate",
+        "Explicitly denied the real naive-string-handling issue ('no naive string handling issues observed') instead of catching it",
+        "Downplayed the real SRP finding other runs correctly raised",
+        "Did not flag the missing private constructor",
+        "Did not flag the check-then-read TOCTOU race"
+      ],
+      "notes": "No false positive claims found (it correctly avoids every trap: no magic-number claim, no resource-leak claim, no deep-nesting overstatement, correctly credits existing comments). Its weakness is under-claiming real issues, not fabricating false ones - scored PASS under the ticket's own binary rule, though this is the most conservative/least useful run of the six."
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "runNumber": 2,
+      "status": "COMPLETED",
+      "verdict": "PASS",
+      "requestTimestampUtc": "2026-08-29T19:35:13Z",
+      "findingsByCategory": {
+        "Naming": [
+          {"claim": "No issues found", "citedLine": null, "verifiedAgainstFile": true}
+        ],
+        "CodeStructure": [
+          {"claim": "readFile is lengthy and performs multiple responsibilities: validation, normalization, candidate resolution, existence checking, reading", "citedLine": "10-51", "verifiedAgainstFile": true}
+        ],
+        "BestPractices": [
+          {"claim": "catching generic Exception may mask different issues, prefer IOException", "citedLine": 48, "verifiedAgainstFile": true},
+          {"claim": "Files.readString manages resources internally, which is good", "citedLine": 47, "verifiedAgainstFile": true}
+        ],
+        "CodeQuality": [
+          {"claim": "method lacks documentation comments/Javadoc", "citedLine": null, "verifiedAgainstFile": true},
+          {"claim": "inline comments are minimal for the complex normalization/candidate-selection parts", "citedLine": null, "verifiedAgainstFile": true}
+        ],
+        "CommonAntiPatterns": [
+          {"claim": "Path.of(trimmed) used as a candidate without comprehensive validation of trimmed's contents", "citedLine": 30, "verifiedAgainstFile": true},
+          {"claim": ".toList() requires Java 16+; use Collectors.toList() for earlier-version compatibility", "citedLine": 43, "verifiedAgainstFile": true},
+          {"claim": "no deep nesting issues; code is straightforward", "citedLine": null, "verifiedAgainstFile": true}
+        ]
+      },
+      "genericTemplatedClaimsFlagged": [],
+      "blindSpots": [
+        "Came close to the primary issue (flagged unvalidated Path.of(trimmed) at line 30) but stopped short of naming path-traversal/repository-escape explicitly",
+        "Did not flag the missing private constructor",
+        "Did not flag the check-then-read TOCTOU race"
+      ],
+      "notes": "No false claims found; PASS. Notable within-model reversal vs run 1 (not a PASS/FAIL reversal, both PASS): run 1 said readFile 'adheres to single-responsibility principles, no significant concerns' and explicitly denied any naive-string-handling issue; run 2 correctly flags the SRP violation and comes much closer to the real validation gap. Also caught a genuinely specific, correct technical detail (.toList() is Java 16+) that no other run mentioned."
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "runNumber": 1,
+      "status": "COMPLETED",
+      "verdict": "PASS",
+      "requestTimestampUtc": "2026-08-29T19:35:16Z",
+      "findingsByCategory": {
+        "Naming": [
+          {"claim": "single-letter loop variable 'p' is not descriptive", "citedLine": 34, "verifiedAgainstFile": true},
+          {"claim": "'cwd' is a terse abbreviation, prefer a descriptive name", "citedLine": 21, "verifiedAgainstFile": true},
+          {"claim": "readFile does not indicate it returns a String", "citedLine": 10, "verifiedAgainstFile": true}
+        ],
+        "CodeStructure": [
+          {"claim": "readFile mixes validation, normalization, candidate construction, search, error reporting and reading (SRP)", "citedLine": "11,16,15-19,23-31,33-39,41-44,46-50", "verifiedAgainstFile": true},
+          {"claim": "FileUtils is final but has no private constructor to prevent instantiation", "citedLine": 8, "verifiedAgainstFile": true}
+        ],
+        "BestPractices": [
+          {"claim": "catching broad Exception obscures specific failure modes, prefer IOException", "citedLine": 48, "verifiedAgainstFile": true},
+          {"claim": "TOCTOU race between the existence/regular-file check and the later read", "citedLine": "35,47", "verifiedAgainstFile": true},
+          {"claim": "System.getProperty(\"user.dir\") is used without a null check", "citedLine": 21, "verifiedAgainstFile": "true, though user.dir is a JVM-guaranteed system property so real-world risk is low"}
+        ],
+        "CodeQuality": [
+          {"claim": "public class and method lack Javadoc (usage, edge cases, exceptions)", "citedLine": "8,10", "verifiedAgainstFile": true},
+          {"claim": "leading-slash comment is brief; the strip behavior could be surprising", "citedLine": "15-19", "verifiedAgainstFile": true},
+          {"claim": "inline candidate-array construction reduces readability", "citedLine": "23-31", "verifiedAgainstFile": true}
+        ],
+        "CommonAntiPatterns": [
+          {"claim": "substring(1)'s literal 1 is a magic number", "citedLine": 18, "verifiedAgainstFile": "true - the literal exists, though classifying it as a magic-number anti-pattern is a debatable/aggressive call, not a fabrication"},
+          {"claim": "naive leading-slash handling: only checks '/', not Windows backslashes or drive letters", "citedLine": "16-19", "verifiedAgainstFile": true},
+          {"claim": "hardcoded 'src/main/java'/'src/test/java' path literals should be constants", "citedLine": "27-28", "verifiedAgainstFile": true},
+          {"claim": "No issues found (deep nesting)", "citedLine": null, "verifiedAgainstFile": true}
+        ]
+      },
+      "genericTemplatedClaimsFlagged": [
+        "'substring(1) is a magic number' is a technically-grounded but aggressive/debatable classification of a self-evident array-offset literal"
+      ],
+      "blindSpots": [
+        "Does not explicitly name path-traversal/repository-escape as an issue, though the adjacent user.dir/TOCTOU findings are in the same neighborhood"
+      ],
+      "notes": "Every cited line verified against the real file; no false claims found. Also the only run (alongside its own run 2) to catch the TOCTOU race, and the only run of all six to catch the missing private constructor. Scored PASS."
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "runNumber": 2,
+      "status": "COMPLETED",
+      "verdict": "PASS",
+      "requestTimestampUtc": "2026-08-29T19:35:38Z",
+      "findingsByCategory": {
+        "Naming": [
+          {"claim": "parameter name 'path' (String) may be confused with the Path type", "citedLine": 10, "verifiedAgainstFile": true},
+          {"claim": "readFile does not indicate encoding or multi-candidate search behavior", "citedLine": "10,47", "verifiedAgainstFile": true},
+          {"claim": "'cwd' is an abbreviation rather than a descriptive name", "citedLine": 21, "verifiedAgainstFile": true},
+          {"claim": "single-letter loop variable 'p' is not descriptive", "citedLine": 34, "verifiedAgainstFile": true}
+        ],
+        "CodeStructure": [
+          {"claim": "readFile performs 7 distinct responsibilities end to end (SRP)", "citedLine": "11-16,17-19,21,23-31,33-39,41-44,46-50", "verifiedAgainstFile": true},
+          {"claim": "candidate array construction is dense and mixes several strategies inline", "citedLine": "23-31", "verifiedAgainstFile": true}
+        ],
+        "BestPractices": [
+          {"claim": "catching broad Exception hides specific failure modes", "citedLine": 48, "verifiedAgainstFile": true},
+          {"claim": "TOCTOU race between existence check and later read", "citedLine": "35,47", "verifiedAgainstFile": true},
+          {"claim": "System.getProperty(\"user.dir\") used without validation or documented assumptions", "citedLine": 21, "verifiedAgainstFile": true},
+          {"claim": "resolved paths are not sanitized/constrained to a safe base directory; a user-supplied path could resolve outside intended directories", "citedLine": "25-31,35", "verifiedAgainstFile": true}
+        ],
+        "CodeQuality": [
+          {"claim": "no Javadoc/public API documentation for class or method", "citedLine": "8,10", "verifiedAgainstFile": true},
+          {"claim": "inline comments exist but are minimal and don't cover platform assumptions", "citedLine": "15,24-30", "verifiedAgainstFile": true},
+          {"claim": "candidate construction inline in an array literal is harder to read", "citedLine": "23-31", "verifiedAgainstFile": true},
+          {"claim": "exception message built inline via Arrays.stream().map().toList() is less readable than a small helper", "citedLine": 43, "verifiedAgainstFile": true}
+        ],
+        "CommonAntiPatterns": [
+          {"claim": "hardcoded 'src/main/java'/'src/test/java' are magic string literals", "citedLine": "27-28", "verifiedAgainstFile": true},
+          {"claim": "naive/platform-dependent leading-slash handling via startsWith('/')/substring(1)", "citedLine": "17-19", "verifiedAgainstFile": true},
+          {"claim": "substring index literal 1 is a magic number", "citedLine": 18, "verifiedAgainstFile": "true - literal exists; same debatable-but-grounded classification as run 1"},
+          {"claim": "No deep nesting issues found beyond the simple loop/if structure", "citedLine": null, "verifiedAgainstFile": true}
+        ]
+      },
+      "genericTemplatedClaimsFlagged": [
+        "'substring(1) is a magic number' - same debatable-but-grounded classification as run 1, repeated consistently"
+      ],
+      "blindSpots": [
+        "Did not repeat run 1's missing-private-constructor finding (an omission/inconsistency between this deployment's own two runs, not a false claim)"
+      ],
+      "notes": "Every cited line verified against the real file; no false claims found. This is the ONLY run of all six that explicitly names the file's single most severe real issue - unvalidated/unsanitized path resolution allowing escape outside the intended directory - with accurate line citations. Scored PASS."
+    }
+  ],
+  "reversedVerdicts": [
+    {"deployment": "gpt-4o", "run1Verdict": "PASS", "run2Verdict": "FAIL"}
+  ]
+}
