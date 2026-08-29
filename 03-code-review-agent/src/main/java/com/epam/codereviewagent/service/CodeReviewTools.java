@@ -59,8 +59,22 @@ public class CodeReviewTools {
   static final String NO_LANGUAGE_PROVIDED_MESSAGE =
     "No coding convention could be retrieved: no language was provided.";
 
-  private static final String EMPTY_FILE_MESSAGE_TEMPLATE =
-    "The file '%s' exists in the repository but is empty (zero bytes); there is no content to review.";
+  /**
+   * Fixed suffix of the "exists but is empty" sentinel message returned by {@link #readFile(String)}
+   * when a file exists but has zero bytes of content. Package-private (not {@code private}) so
+   * {@link CodeReviewReactAgent}'s evidence tracker can recognize this specific sentinel by matching
+   * against this one shared constant, rather than either duplicating the literal text or - as retry 1's
+   * code review found (High finding) - relying solely on the absence of {@link FileUtils#READ_ERROR_PREFIX}.
+   * This message is deliberately never {@code READ_ERROR_PREFIX}-prefixed (so the model can tell "not
+   * permitted" apart from "exists but empty"), which previously let a successful-but-empty read count
+   * as real evidence. Deriving both {@link #EMPTY_FILE_MESSAGE_TEMPLATE} and the evidence-tracker's
+   * exclusion check from this one constant means a future rewording of the message here cannot silently
+   * re-open that gap - the exclusion check tracks the wording automatically.
+   */
+  static final String EMPTY_FILE_MESSAGE_SUFFIX =
+    "' exists in the repository but is empty (zero bytes); there is no content to review.";
+
+  private static final String EMPTY_FILE_MESSAGE_TEMPLATE = "The file '%s" + EMPTY_FILE_MESSAGE_SUFFIX;
 
   private static final String PATH_SECURITY_VIOLATION_MESSAGE_TEMPLATE =
     FileUtils.READ_ERROR_PREFIX

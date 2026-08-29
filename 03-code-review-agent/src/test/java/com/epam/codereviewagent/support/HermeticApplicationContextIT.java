@@ -1,13 +1,15 @@
 package com.epam.codereviewagent.support;
 
 import com.epam.codereviewagent.CodeReviewAgentApplication;
+import com.epam.codereviewagent.api.model.CodeReviewResponse;
 import com.epam.codereviewagent.api.model.UserRequest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClient;
 
@@ -21,11 +23,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * ChatModel} swapped for a hermetic {@link RecordingChatModel}, on a random port, with no network
  * access and no {@code AZURE_OPEN_AI_KEY}/{@code AZURE_OPEN_AI_ENDPOINT} required.
  *
- * <p>{@code CodeReviewReactAgent.interact(String)} is not implemented until Increment 5 (it currently
- * returns {@code null}), so this increment only asserts that a real HTTP response is actually received
- * from a real {@code POST /code-review} call against the real controller/advice chain, and that {@code
- * spring.application.name} resolves correctly at the full-context level. Increment 5 tightens the
- * response-content assertion once {@code interact} is implemented.
+ * <p><b>Tightened by Increment 5</b> now that {@code CodeReviewReactAgent.interact(String)} is
+ * actually implemented: the request-handling test configures {@link #recordingChatModel}'s canned
+ * response to a minimal, valid {@code CodeReviewResponse} JSON document (so phase 2's real {@link
+ * com.epam.codereviewagent.service.CodeReviewStructuredOutputConverter} — wired into the real
+ * context, not mocked — successfully parses it) and asserts {@code 200 OK} with real, deserialized
+ * {@code CodeReviewResponse} content, not merely "a response was received".
  */
 @ActiveProfiles("test")
 @SpringBootTest(
@@ -39,21 +42,32 @@ class HermeticApplicationContextIT {
   @Value("${spring.application.name}")
   private String applicationName;
 
+  @Autowired
+  private RecordingChatModel recordingChatModel;
+
   @Test
   void shouldResolveConfiguredApplicationName_notTheOldMcpCodeReviewAgentName() {
     assertThat(applicationName).isEqualTo("code-review-agent");
   }
 
   @Test
-  void shouldReceiveAnHttpResponse_whenPostingARealCodeReviewRequestAgainstTheFullRealContext() {
+  void shouldReceive200OkWithParseableCodeReviewResponse_whenPostingARealCodeReviewRequestAgainstTheFullRealContext() {
+    recordingChatModel.setResponse(
+      "{\"review\":\"Hermetic canned review for the full-context boot proof.\",\"findings\":[],"
+        + "\"truncated\":false}");
     RestClient restClient = RestClient.builder().baseUrl("http://127.0.0.1:" + port).build();
 
-    HttpStatusCode statusCode = restClient.post()
+    ResponseEntity<CodeReviewResponse> response = restClient.post()
       .uri("/code-review")
       .contentType(MediaType.APPLICATION_JSON)
       .body(new UserRequest("nested/nested-file.txt"))
-      .exchange((request, response) -> response.getStatusCode());
+      .retrieve()
+      .toEntity(CodeReviewResponse.class);
 
-    assertThat(statusCode).isNotNull();
+    assertThat(response.getStatusCode().value()).isEqualTo(200);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().review()).isEqualTo("Hermetic canned review for the full-context boot proof.");
+    assertThat(response.getBody().findings()).isEmpty();
+    assertThat(response.getBody().truncated()).isFalse();
   }
 }
