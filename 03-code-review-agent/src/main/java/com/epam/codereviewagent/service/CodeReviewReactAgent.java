@@ -98,9 +98,15 @@ public class CodeReviewReactAgent {
    * {@link CodeReviewProperties#getMaxIterations()}, followed by exactly one structured-output phase
    * 2 call, with runtime evidence/truncation enforcement applied to whatever phase 2 returns.
    *
-   * @param userInput the caller-supplied review target (a relative file or repository path, or free
-   *                   text describing the review request) — always treated as untrusted input, never
-   *                   logged unredacted (see {@link SafeLogFormatter})
+   * @param userInput the caller-supplied review target: a relative file or repository path, within
+   *                   the configured repository root — always treated as untrusted input, never
+   *                   logged unredacted (see {@link SafeLogFormatter}). {@code CodeReviewController}
+   *                   (Increment 6) runs {@code RepositoryPathResolver#validateSecurityBoundary}
+   *                   against this value before this method is ever called, so free text that is not
+   *                   a syntactically valid relative path (e.g. anything absolute or drive-qualified)
+   *                   never reaches this method in practice — see that increment's own hand-off note
+   *                   for why this Javadoc no longer describes "or free text describing the review
+   *                   request" as a supported form
    * @return a populated {@link CodeReviewResponse}
    * @throws AgentIterationLimitExceededException if phase 1 exhausts {@code maxIterations} while the
    *                                               model is still requesting tool calls

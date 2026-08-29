@@ -1,0 +1,33 @@
+{
+  "review": "The reviewed file is generally well-structured, but two issues were identified: a magic number in a conditional and a broad exception catch that could hide real failures.",
+  "findings": [
+    {
+      "file": "src/main/java/com/example/Foo.java",
+      "startLine": 42,
+      "endLine": 42,
+      "rule": "no-magic-numbers",
+      "severity": "medium",
+      "explanation": "The literal 86400 is used directly instead of a named constant, making its meaning unclear.",
+      "recommendation": "Extract 86400 into a named constant such as SECONDS_PER_DAY."
+    },
+    {
+      "file": "src/main/java/com/example/Foo.java",
+      "startLine": 58,
+      "endLine": 64,
+      "rule": "no-broad-catch",
+      "severity": "high",
+      "explanation": "Catching java.lang.Exception here swallows unrelated failures and only logs a generic message.",
+      "recommendation": "Catch the specific checked exception this call can throw and handle it explicitly."
+    },
+    {
+      "file": "src/main/java/com/example/Foo.java",
+      "startLine": null,
+      "endLine": null,
+      "rule": "missing-javadoc",
+      "severity": "low",
+      "explanation": "The public class itself has no Javadoc summary describing its purpose.",
+      "recommendation": "Add a short class-level Javadoc comment."
+    }
+  ],
+  "truncated": false
+}

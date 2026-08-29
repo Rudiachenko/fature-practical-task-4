@@ -41,5 +41,32 @@ public class CodeReviewProperties {
    * Maximum number of characters returned from a single file read before the content is truncated.
    */
   private int maxFileChars = 20000;
+
+  /**
+   * System prompt resource for {@link com.epam.codereviewagent.service.ExecutiveSummarySubAgent}
+   * (Increment 7 / R14) — a separate, simpler, non-agentic sub-agent that summarizes the primary
+   * agent's own review/findings, distinct from {@link #systemPrompt} above. Loaded the same way
+   * {@link #systemPrompt} already is (see the prompt-loading pattern established in Increment 3:
+   * {@code StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8)}), rather than
+   * inventing a new loading mechanism for this one additional prompt.
+   */
+  private Resource executiveSummaryPrompt;
+
+  /**
+   * Whether {@link com.epam.codereviewagent.event.ExecutiveSummaryEventListener} automatically
+   * generates and prints an executive summary (to standard output) after every successfully completed
+   * {@code POST /code-review} request (retry 1, code review Medium finding — "make the summary
+   * reachable from a live review").
+   *
+   * <p>Defaults to {@code true} so the ticket's R14 behavior ("outputs them to the standard output")
+   * is observable out of the box from a live request, not only via the separate
+   * {@code --executive-summary-input=<path>} CLI trigger ({@code ExecutiveSummaryRunner}). Since every
+   * enabled request pays for one additional {@code ChatModel} call and writes to {@code stdout} on
+   * every review, an operator who wants neither may set
+   * {@code app.code-review.executive-summary-auto-trigger-enabled=false}. This never affects the
+   * primary review response either way - see {@code ExecutiveSummaryEventListener}'s own Javadoc for
+   * why a disabled or failing summary can never delay, fail, or alter it.
+   */
+  private boolean executiveSummaryAutoTriggerEnabled = true;
 }
 

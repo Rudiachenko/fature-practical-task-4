@@ -15,6 +15,8 @@ app:
     repository-root: .
     max-iterations: 8
     max-file-chars: 20000
+    executive-summary-prompt: classpath:prompts/executive-summary-system-prompt.md
+    executive-summary-auto-trigger-enabled: true
   conventions:
     resources:
       - classpath:documents/java-convention.md
