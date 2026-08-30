@@ -1,0 +1,48 @@
+﻿{
+    "step":  "R12 extension - Step 1 - token-count validation probe (2026-08-30)",
+    "purpose":  "One cheap chat/completions call per model with the reconstructed prompt, to check whether usage.prompt_tokens matches the original 2026-08-29 6-run series\u0027 literal token counts (753 gpt-4o / 753 gpt-4.1-nano-2025-04-14 / 752 gpt-5-mini-2025-08-07), per context/PROGRESS.md\u0027s 2026-08-30 BLOCKED entry resolution.",
+    "requestBody":  {
+                        "messages":  [
+                                         {
+                                             "content":  "You are a senior software engineer performing a structured code review of Java source code.",
+                                             "role":  "system"
+                                         },
+                                         {
+                                             "content":  "Review the following Java file and provide a structured review across these categories:\n\n- Naming — naming-convention violations.\n- Code structure — long methods, single-responsibility violations.\n- Best practices — exception handling, resource management.\n- Code quality — documentation, readability.\n- Common anti-patterns — magic numbers, naive string handling, deep nesting.\n\nFile: FileUtils.java\n\n1: package com.epam.codereviewagent.util;\n2: \n3: import java.nio.charset.StandardCharsets;\n4: import java.nio.file.Files;\n5: import java.nio.file.Path;\n6: import org.springframework.util.StringUtils;\n7: \n8: public final class FileUtils {\n9: \n10:   public static String readFile(String path) {\n11:     if (!StringUtils.hasText(path)) {\n12:       throw new IllegalArgumentException(\"Path must not be blank\");\n13:     }\n14: \n15:     // Normalize incoming value and support common relative patterns\n16:     String trimmed = path.trim();\n17:     if (trimmed.startsWith(\"/\")) {\n18:       trimmed = trimmed.substring(1); // treat leading slash as classpath-style relative\n19:     }\n20: \n21:     Path cwd = Path.of(System.getProperty(\"user.dir\"));\n22: \n23:     Path[] candidates = new Path[] {\n24:       // As passed (relative to working dir)\n25:       cwd.resolve(trimmed).normalize(),\n26:       // Common source roots\n27:       cwd.resolve(\"src/main/java\").resolve(trimmed).normalize(),\n28:       cwd.resolve(\"src/test/java\").resolve(trimmed).normalize(),\n29:       // If user included src/ already, still try raw\n30:       Path.of(trimmed).normalize()\n31:     };\n32: \n33:     Path resolved = null;\n34:     for (Path p : candidates) {\n35:       if (Files.exists(p) \u0026\u0026 Files.isRegularFile(p)) {\n36:         resolved = p;\n37:         break;\n38:       }\n39:     }\n40: \n41:     if (resolved == null) {\n42:       throw new IllegalArgumentException(\"File not found. Tried: \" +\n43:         java.util.Arrays.stream(candidates).map(Path::toString).toList());\n44:     }\n45: \n46:     try {\n47:       return Files.readString(resolved, StandardCharsets.UTF_8);\n48:     } catch (Exception ex) {\n49:       throw new IllegalStateException(\"Failed to read file: \" + resolved, ex);\n50:     }\n51:   }\n52: \n53: }",
+                                             "role":  "user"
+                                         }
+                                     ]
+                    },
+    "requestParametersUsed":  {
+                                  "messages":  true,
+                                  "temperature":  false,
+                                  "top_p":  false
+                              },
+    "results":  [
+                    {
+                        "deployment":  "gpt-4o",
+                        "httpStatus":  200,
+                        "promptTokens":  571,
+                        "expectedPromptTokens":  753,
+                        "match":  false,
+                        "errorText":  null
+                    },
+                    {
+                        "deployment":  "gpt-4.1-nano-2025-04-14",
+                        "httpStatus":  200,
+                        "promptTokens":  571,
+                        "expectedPromptTokens":  753,
+                        "match":  false,
+                        "errorText":  null
+                    },
+                    {
+                        "deployment":  "gpt-5-mini-2025-08-07",
+                        "httpStatus":  200,
+                        "promptTokens":  570,
+                        "expectedPromptTokens":  752,
+                        "match":  false,
+                        "errorText":  null
+                    }
+                ],
+    "outcome":  "NO MATCH for any of the 3 deployments. Per the protocol, the 12 new runs (indices 3-6 per model) are NOT pooled with the original 6-run series; they are reported as a separate, self-consistent second series with their own saved prompt (see the 12 run artifacts in this same directory, timestamp prefix 20260830T095918Z, and evaluation/r12-extension-2026-08-30.md)."
+}

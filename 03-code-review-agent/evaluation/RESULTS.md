@@ -22,7 +22,11 @@ plausible outcome.
   invocation). See "Final verification" below for the exact numbers. **In a later session with live
   EPAM VPN + DIAL access, the R12 model-comparison subtask was also actually run** — 6 real
   `chat/completions` calls against `gpt-4o`, `gpt-4.1-nano-2025-04-14`, and `gpt-5-mini-2025-08-07` (2
-  runs each) — see R12's own section below for the full, measured result.
+  runs each) — see R12's own section below for the full, measured result. **In a still later session
+  (2026-08-30), 12 further, supplementary `chat/completions` calls were made** (4 more per model) using a
+  disclosed, token-count-validated prompt reconstruction, reported as a separate, unpooled second series —
+  see R12's "Supplementary evidence" subsection and
+  `03-code-review-agent/evaluation/r12-extension-2026-08-30.md`.
 - **Not run in this session, because it requires EPAM VPN + live DIAL credentials this sandbox does
   not have**: any `POST /code-review` call against a real Azure OpenAI/DIAL deployment through the
   actual REST endpoint (R12 was run as direct DIAL `chat/completions` calls instead, since the embedded
@@ -237,7 +241,10 @@ behavior on the second, prompt-only-mitigated case is in fact graceful.
 ## R12 — Model-choice-justification subtask
 
 **Status: `COMPLETED` — actually run live against the DIAL API on 2026-08-29, in a later session with
-working EPAM VPN + DIAL access. Full artifacts below; nothing in this section is estimated or narrated.**
+working EPAM VPN + DIAL access. Full artifacts below; nothing in this section is estimated or narrated.
+Extended with 12 further, supplementary live runs on 2026-08-30 — see the "Supplementary evidence"
+subsection below and `evaluation/r12-extension-2026-08-30.md`; the formal, ticket-compliant headline
+result remains the 2-run measurement immediately below, unchanged.**
 
 ### Method actually used, and how it differs from the scaffolding's original plan
 
@@ -381,6 +388,63 @@ sample. It demonstrates a real, reproducible reliability difference on this spec
 own two runs disagreeing on the same file is itself evidence, independent of sample size), but it is not
 a statistically powered claim about either model's general code-review accuracy across arbitrary files,
 languages, or issue types. Treat this as one concrete, fully-verified data point, not a general verdict.
+
+**This 2-run result is the ticket-compliant, formal, headline R12 answer ("twice in a row per model"),
+already committed as `2d4cc34`. It is restated above exactly as originally measured — nothing in this
+section was re-derived or averaged over the supplementary runs below.**
+
+### Supplementary evidence (2026-08-30) — 12 additional runs, NOT pooled with the 6-run result above
+
+A later session extended R12 with 4 more runs per model (indices 3-6, 12 calls total). This is
+**supplementary evidence only** — it does not replace, average into, or restate the 6-run headline result
+above. Full detail, methodology, every verbatim quote, and the complete per-run scoring table:
+**`03-code-review-agent/evaluation/r12-extension-2026-08-30.md`**. Raw artifacts:
+`evaluation/runs/20260830T095918Z-*.json` (12 run files + 1 probe-validation file), each carrying the
+full literal request body — unlike the original 6, which saved only request shape (see the
+reproducibility lesson below).
+
+**Why not pooled**: the original prompt's literal text was unrecoverable (only request *shape* was ever
+saved). A prompt was reconstructed from this document's own description ("numbered file content, the
+ticket's exact five categories") and validated by a one-shot token-count probe per model before spending
+any further budget. None of the three matched the original series' literal `usage.prompt_tokens`
+(`gpt-4o`: 571 vs. 753 expected; `gpt-4.1-nano-2025-04-14`: 571 vs. 753; `gpt-5-mini-2025-08-07`: 570 vs.
+752 — no iteration was attempted to chase these numbers, per the coordinator's explicit instruction not to
+fit text to a number). The 12 new runs are therefore reported as their own separate, internally
+self-consistent series (confirmed self-consistent: all 4 calls per model returned identical
+`prompt_tokens` within that model), not pooled with the original 6.
+
+**Headline findings from the supplementary series** (full detail and every quote in the linked document):
+
+- **`gpt-4o`**: 1 of 4 new runs had a verified-false claim (a claimed `StringIndexOutOfBoundsException`
+  risk in `substring(1)` that is structurally impossible given the existing `startsWith("/")` guard); the
+  other 3 were clean. Stated plainly, per the honesty requirement this task carries: **`gpt-4o`'s new runs
+  did not come back entirely clean, but they materially weaken the original finding** — 1 false claim
+  across 4 new runs is a much smaller, more equivocal problem than the original run 2's 4 unhedged false
+  claims.
+- **`gpt-4.1-nano-2025-04-14`**: 1 of 4 new runs had a verified (disclosed-as-debatable) false claim — an
+  internally self-contradicted assertion that the code "uses constants instead of hardcoded strings,"
+  which the file does not (and which the same response's own later "Suggestions" section contradicts).
+  Its original "zero false claims across both runs" no longer holds once 4 more runs are measured.
+- **`gpt-5-mini-2025-08-07`**: 0 of 4 new runs had a false claim — 6 of 6 total runs measured across both
+  series (2 original + 4 new) are clean. It remains the most reliable of the three by this measure, though
+  its own run 3 in this series is a materially weaker *thoroughness* showing than its other runs (misses
+  the missing-private-constructor, TOCTOU, and path-containment findings that its runs 4/5/6 all catch).
+- **Path-resolution defect naming, re-examined**: the original 6-run series found only `gpt-5-mini` ever
+  named the file's most severe real defect (unvalidated path resolution allowing escape outside the
+  intended directory). **In the 12 new runs, this is no longer exclusive**: `gpt-4.1-nano-2025-04-14`
+  named it clearly in 1 of 4 new runs (hedged in a further run), and `gpt-4o` produced one partial mention
+  (the phrase "relative path traversal (`../`)"). `gpt-5-mini-2025-08-07` remains the most *consistent*
+  namer (3 of 4 new runs, with the sharpest framing) but is no longer the *only* model ever observed to
+  name it.
+
+**Reproducibility lesson**, recorded here and in `context/PROGRESS.md`: the original 6-run series saved
+only request-shape flags, not the literal request body, making exact replication impossible and forcing
+this token-count-validation workaround. All 12 new run artifacts fix this — each saves its own full,
+literal `requestBody`. Any future run of this harness must persist the full request body verbatim, not
+just parameter-presence flags.
+
+**Sample-size caveat, restated**: 18 runs total across two non-pooled series on one 53-line file remains a
+small, single-file sample — not a statistically powered general claim about either model.
 
 ## R11 — GitLab Merge Request
 

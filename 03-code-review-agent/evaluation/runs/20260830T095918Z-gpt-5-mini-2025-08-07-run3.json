@@ -1,0 +1,92 @@
+﻿{
+    "deployment":  "gpt-5-mini-2025-08-07",
+    "runNumber":  3,
+    "requestTimestampUtc":  "2026-08-30T10:00:34Z",
+    "endpoint":  "https://ai-proxy.lab.epam.com/openai/deployments/gpt-5-mini-2025-08-07/chat/completions?api-version=2024-10-21",
+    "promptProvenance":  "Reconstructed prompt (system+user), not the original 2026-08-29 R12 harness\u0027s verbatim text - that text is unrecoverable (only request *shape* was saved, per context/PROGRESS.md\u0027s BLOCKED entry dated 2026-08-30). Reconstructed from evaluation/RESULTS.md, both PROGRESS.md R12 entries, and evaluation/ground-truth-fileutils.md\u0027s own description (numbered fixture content + the ticket\u0027s exact five categories). Identity with the original was checked by prompt_tokens match, not by recovering the original text.",
+    "promptTokenValidation":  {
+                                  "promptTokens":  570,
+                                  "expected":  752,
+                                  "match":  false
+                              },
+    "requestParametersUsed":  {
+                                  "messages":  true,
+                                  "temperature":  false,
+                                  "top_p":  false,
+                                  "note":  "No temperature/top_p specified for any of the three deployments; request shape (messages-only body) identical across all runs in this batch and identical in shape to the original 2026-08-29 6-run series. Unlike that series, this artifact also saves the full literal request body below (requestBody), fixing the reproducibility gap recorded in context/PROGRESS.md\u0027s 2026-08-30 BLOCKED entry."
+                              },
+    "requestBody":  {
+                        "messages":  [
+                                         {
+                                             "content":  "You are a senior software engineer performing a structured code review of Java source code.",
+                                             "role":  "system"
+                                         },
+                                         {
+                                             "content":  "Review the following Java file and provide a structured review across these categories:\n\n- Naming — naming-convention violations.\n- Code structure — long methods, single-responsibility violations.\n- Best practices — exception handling, resource management.\n- Code quality — documentation, readability.\n- Common anti-patterns — magic numbers, naive string handling, deep nesting.\n\nFile: FileUtils.java\n\n1: package com.epam.codereviewagent.util;\n2: \n3: import java.nio.charset.StandardCharsets;\n4: import java.nio.file.Files;\n5: import java.nio.file.Path;\n6: import org.springframework.util.StringUtils;\n7: \n8: public final class FileUtils {\n9: \n10:   public static String readFile(String path) {\n11:     if (!StringUtils.hasText(path)) {\n12:       throw new IllegalArgumentException(\"Path must not be blank\");\n13:     }\n14: \n15:     // Normalize incoming value and support common relative patterns\n16:     String trimmed = path.trim();\n17:     if (trimmed.startsWith(\"/\")) {\n18:       trimmed = trimmed.substring(1); // treat leading slash as classpath-style relative\n19:     }\n20: \n21:     Path cwd = Path.of(System.getProperty(\"user.dir\"));\n22: \n23:     Path[] candidates = new Path[] {\n24:       // As passed (relative to working dir)\n25:       cwd.resolve(trimmed).normalize(),\n26:       // Common source roots\n27:       cwd.resolve(\"src/main/java\").resolve(trimmed).normalize(),\n28:       cwd.resolve(\"src/test/java\").resolve(trimmed).normalize(),\n29:       // If user included src/ already, still try raw\n30:       Path.of(trimmed).normalize()\n31:     };\n32: \n33:     Path resolved = null;\n34:     for (Path p : candidates) {\n35:       if (Files.exists(p) \u0026\u0026 Files.isRegularFile(p)) {\n36:         resolved = p;\n37:         break;\n38:       }\n39:     }\n40: \n41:     if (resolved == null) {\n42:       throw new IllegalArgumentException(\"File not found. Tried: \" +\n43:         java.util.Arrays.stream(candidates).map(Path::toString).toList());\n44:     }\n45: \n46:     try {\n47:       return Files.readString(resolved, StandardCharsets.UTF_8);\n48:     } catch (Exception ex) {\n49:       throw new IllegalStateException(\"Failed to read file: \" + resolved, ex);\n50:     }\n51:   }\n52: \n53: }",
+                                             "role":  "user"
+                                         }
+                                     ]
+                    },
+    "httpStatusCode":  200,
+    "rawResponse":  {
+                        "id":  "chatcmpl-EIWd2VOBiEM8JKBOq87ZPekEhl8PL",
+                        "choices":  [
+                                        {
+                                            "finish_reason":  "stop",
+                                            "index":  0,
+                                            "logprobs":  null,
+                                            "message":  {
+                                                            "content":  "Summary\n- The class is small and mostly clear, but there are several issues to address: a surprising/buggy normalization rule (dropping a leading \u0027/\u0027), an unnecessary dependency on Spring, overly broad exception handling, minor naming and API-compatibility issues, and lack of documentation. I recommend small refactors to improve correctness, readability and robustness.\n\nDetailed review\n\n1) Naming\n- Class name FileUtils is fine for a small utility. Method name readFile is generic; consider readFileUtf8 or readUtf8 to make the encoding explicit, or readFileFromWorkspace to hint at the \"candidate search\" behavior.\n- Local variable names:\n  - cwd -\u003e currentDir or workingDir (more descriptive).\n  - p -\u003e candidate (avoid single-letter names where clarity matters).\n  - trimmed -\u003e normalizedPath or inputPathTrimmed (more intent).\n- Constant strings like \"src/main/java\" / \"src/test/java\" should be extracted to named constants (SOURCE_MAIN, SOURCE_TEST) to avoid magic literals.\n\n2) Code structure\n- The single method does multiple responsibilities: validate input, normalize path, build candidate list, find existing file, read file. Split into smaller private methods:\n  - validatePathInput(...)\n  - buildCandidates(workingDir, normalizedPath)\n  - findExistingFile(candidates)\n  - readFileUtf8(path)\n- This will improve testability and clarity.\n\n3) Best practices\n- Avoid removing a leading \u0027/\u0027 unconditionally:\n  - Current logic: trimmed.startsWith(\"/\") =\u003e drop leading \u0027/\u0027 to treat it as \"classpath-style relative\".\n  - Problem: that breaks absolute Unix paths (e.g., \"/etc/passwd\") and is platform-dependent. Also Windows absolute paths (C:\\...) are not handled.\n  - Recommendation: treat absolute paths as absolute. If you want to support classpath-like leading \u0027/\u0027, consider a separate explicit API or prefix (e.g., \"classpath:\").\n- Avoid depending on org.springframework.util.StringUtils in a general utility class:\n  - Use standard checks (path == null || path.trim().isEmpty()) or java.util.Objects.requireNonNull + isBlank() (Java 11+).\n- Catch the specific IOException rather than Exception:\n  - Catching Exception is too broad and may hide programming errors.\n- The message building uses Stream.toList() which requires newer Java (Stream.toList introduced in Java 16). If your project targets Java 11/8, that will not compile. Use collect(Collectors.toList()) or String.join.\n- Consider returning Optional\u003cString\u003e or a checked exception for \"not found\" rather than IllegalArgumentException, depending on calling conventions. IllegalArgumentException is acceptable for invalid input; for not found, a FileNotFoundException or NoSuchFileException or IllegalStateException could be clearer.\n- Use StandardCharsets.UTF_8 explicitly (you do) — good.\n\n4) Code quality (documentation, readability)\n- No JavaDoc on class or method. Add JavaDoc explaining:\n  - What paths are accepted.\n  - Which locations are tried and in what order.\n  - That the method reads with UTF-8 and that it throws IllegalArgumentException when no file is found.\n- Improve inline comments to explain intent, especially why candidate list chosen.\n- Prefer Arrays.stream(candidates).filter(...).findFirst() to the for-loop (matter of taste) or at least rename loop variable for readability.\n\n5) Common anti-patterns\n- Magic strings: \"src/main/java\" and \"src/test/java\" — extract to constants so intent is clear and easier to change.\n- Naive string handling: dropping leading \u0027/\u0027 is brittle and incorrect for absolute paths. Also trimming alone may be insufficient for path normalization.\n- Deep nesting: current code is shallow, but you can simplify using Streams or helper methods to avoid the temporary resolved variable.\n\nConcrete recommendations + example refactor\n- Remove Spring dependency for hasText unless the project already uses Spring and this utility intentionally relies on it.\n- Do not remove leading \u0027/\u0027 unless explicitly desired; instead handle absolute paths via Path#isAbsolute.\n- Catch IOException.\n- Replace Stream.toList() to keep Java compatibility or explicitly document minimal JDK version.\n\nExample refactored method (concise, illustrative):\n\nprivate static final String SRC_MAIN = \"src/main/java\";\nprivate static final String SRC_TEST = \"src/test/java\";\n\npublic static String readFile(String pathStr) throws IllegalArgumentException {\n  if (pathStr == null || pathStr.isBlank()) {\n    throw new IllegalArgumentException(\"path must not be null or blank\");\n  }\n\n  String normalized = pathStr.trim();\n  Path inputPath = Path.of(normalized);\n  Path workingDir = Path.of(System.getProperty(\"user.dir\", \".\"));\n\n  Path[] candidates;\n  if (inputPath.isAbsolute()) {\n    // if absolute, only try the absolute path\n    candidates = new Path[] { inputPath.normalize() };\n  } else {\n    candidates = new Path[] {\n      // relative to working dir\n      workingDir.resolve(normalized).normalize(),\n      // common source roots\n      workingDir.resolve(SRC_MAIN).resolve(normalized).normalize(),\n      workingDir.resolve(SRC_TEST).resolve(normalized).normalize(),\n      // raw relative path (relative to process start dir or caller)\n      Path.of(normalized).normalize()\n    };\n  }\n\n  Path found = Arrays.stream(candidates)\n      .filter(p -\u003e Files.exists(p) \u0026\u0026 Files.isRegularFile(p))\n      .findFirst()\n      .orElseThrow(() -\u003e new IllegalArgumentException(\n        \"File not found. Tried: \" + Arrays.stream(candidates).map(Path::toString).collect(Collectors.joining(\", \"))\n      ));\n\n  try {\n    return Files.readString(found, StandardCharsets.UTF_8);\n  } catch (IOException e) {\n    throw new IllegalStateException(\"Failed to read file: \" + found, e);\n  }\n}\n\nOther small improvements\n- Use descriptive exception messages (include which exact candidate succeeded or failed).\n- Consider allowing a base directory parameter (overload) for more flexible testing.\n- Add unit tests to assert expected behavior:\n  - Absolute path input on Unix stays absolute.\n  - Leading \u0027/\u0027 is not dropped unexpectedly.\n  - Various candidate orders are tested.\n  - Behavior on Windows paths.\n\nSummary of fixes prioritized\n1. Stop removing leading \u0027/\u0027 unconditionally — fix absolute path handling (bug).\n2. Replace broad Exception catch with IOException.\n3. Remove or justify Spring StringUtils usage; use standard checks.\n4. Replace Stream.toList usage (or verify Java version).\n5. Add JavaDoc and extract magic strings to constants.\n6. Consider splitting method into smaller helpers for readability and testability.\n\nIf you want, I can provide a full refactored FileUtils.java implementing all suggestions and with JavaDoc and unit-testable helpers.",
+                                                            "refusal":  null,
+                                                            "role":  "assistant",
+                                                            "annotations":  [
+
+                                                                            ]
+                                                        },
+                                            "content_filter_results":  {
+
+                                                                       }
+                                        }
+                                    ],
+                        "created":  1788084036,
+                        "model":  "gpt-5-mini-2025-08-07",
+                        "object":  "chat.completion",
+                        "service_tier":  "default",
+                        "system_fingerprint":  null,
+                        "usage":  {
+                                      "completion_tokens":  2552,
+                                      "prompt_tokens":  570,
+                                      "total_tokens":  3122,
+                                      "completion_tokens_details":  {
+                                                                        "accepted_prediction_tokens":  0,
+                                                                        "audio_tokens":  0,
+                                                                        "reasoning_tokens":  1152,
+                                                                        "rejected_prediction_tokens":  0
+                                                                    },
+                                      "prompt_tokens_details":  {
+                                                                    "audio_tokens":  0,
+                                                                    "cached_tokens":  0
+                                                                },
+                                      "latency_checkpoint":  {
+                                                                 "engine_tbt_ms":  7,
+                                                                 "engine_ttft_ms":  41,
+                                                                 "engine_ttlt_ms":  19171,
+                                                                 "pre_inference_ms":  127,
+                                                                 "service_tbt_ms":  7,
+                                                                 "service_ttft_ms":  279,
+                                                                 "service_ttlt_ms":  19377,
+                                                                 "total_duration_ms":  19257,
+                                                                 "user_visible_ttft_ms":  153
+                                                             }
+                                  },
+                        "prompt_filter_results":  [
+                                                      {
+                                                          "prompt_index":  0,
+                                                          "content_filter_results":  {
+
+                                                                                     }
+                                                      }
+                                                  ]
+                    },
+    "errorText":  null
+}
