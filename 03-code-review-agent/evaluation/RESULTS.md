@@ -12,8 +12,9 @@ plausible outcome.
 
 ## What was actually run in this session, and what was not
 
-- **Actually run in this session**: `./mvnw -pl 03-code-review-agent test` (Surefire, 309 tests — the
-  Increment 7 baseline of 299 plus this increment's own 10 new `EvaluationAssetsTest` cases),
+- **Actually run in this session**: `./mvnw -pl 03-code-review-agent test` (Surefire, 310 tests — the
+  Increment 7 baseline of 299 plus this increment's 11 `EvaluationAssetsTest` cases, corrected from an
+  earlier, stale count of 309 recorded before a retry added the 11th case),
   `./mvnw -pl 03-code-review-agent clean verify -DskipITs=true` (JaCoCo), `./mvnw -pl 03-code-review-agent
   verify` (full Failsafe pipeline, to re-confirm the known `HermeticApplicationContextIT` environment
   limitation still holds and has not silently changed), `./mvnw -DskipTests compile` (full 4-module
@@ -459,9 +460,10 @@ Quality check checklist), and ensure the MR is accessible to facilitators.
 
 ## Final verification (this session, measured — not restated from an earlier increment's number)
 
-- **`./mvnw -pl 03-code-review-agent test`** (Surefire only): **BUILD SUCCESS** — `Tests run: 309,
-  Failures: 0, Errors: 0, Skipped: 2` (the Increment 7 baseline of 299 plus this increment's own 10 new
-  `EvaluationAssetsTest` cases; the 2 skips are the same honest, capability-gated symlink-escape tests
+- **`./mvnw -pl 03-code-review-agent test`** (Surefire only): **BUILD SUCCESS** — `Tests run: 310,
+  Failures: 0, Errors: 0, Skipped: 2` (the Increment 7 baseline of 299 plus this increment's 11
+  `EvaluationAssetsTest` cases — corrected from an earlier, stale count of 309 recorded before a retry
+  added the 11th case; the 2 skips are the same honest, capability-gated symlink-escape tests
   recorded since Increment 1 — on a host without symlink-creation privilege, they are skipped with an
   explicit message, never silently weakened to an unconditional pass).
 - **`./mvnw -pl 03-code-review-agent clean verify -DskipITs=true`** (JaCoCo): **BUILD SUCCESS**,
