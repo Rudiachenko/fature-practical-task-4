@@ -17,16 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
  * RepositoryPathResolver}'s security-only pre-check against {@code request.userInput()} before ever
  * invoking {@link CodeReviewReactAgent#interact(String)} - an out-of-root or malformed
  * {@code userInput} is rejected with a deterministic 400 {@link PathSecurityViolationException}
- * (mapped by {@code CodeReviewExceptionHandler}) with no model call spent on it at all. Existence and
- * "file vs directory" are deliberately left unchecked here (see
+ * (mapped by {@code CodeReviewExceptionHandler}) with no model call spent on it at all. Existence
+ * and "file vs directory" are deliberately left unchecked here (see
  * {@link RepositoryPathResolver#validateSecurityBoundary(String)}'s own Javadoc) so an ordinary
- * relative path, a relative directory path, and a syntactically valid but non-existent path all still
- * reach the agent unchanged.
+ * relative path, a relative directory path, and a syntactically valid but non-existent path all
+ * still reach the agent unchanged.
  *
  * <p><b>Increment 7 retry 1 (code review Medium finding — "make the summary reachable from a live
  * review").</b> After {@link CodeReviewReactAgent#interact(String)} returns successfully, this
- * controller publishes a {@link CodeReviewCompletedEvent} carrying that same response via the generic
- * {@link ApplicationEventPublisher} - it holds no reference to {@code ExecutiveSummarySubAgent} or
+ * controller publishes a {@link CodeReviewCompletedEvent} carrying that same response via the
+ * generic {@link ApplicationEventPublisher} - it holds no reference to
+ * {@code ExecutiveSummarySubAgent} or
  * {@code ExecutiveSummaryEventListener} anywhere (grep-verifiable), preserving the same structural
  * decoupling already established between this controller and the executive-summary sub-agent.
  * Publishing happens only after {@code interact(...)} has already produced {@code response}, so a
@@ -40,6 +41,10 @@ public class CodeReviewController implements CodeReviewApi {
   private final CodeReviewReactAgent reviewReactAgent;
   private final ApplicationEventPublisher eventPublisher;
 
+  /**
+   * Validates the security boundary, runs the review, and publishes a
+   * {@link CodeReviewCompletedEvent} once it succeeds (see this class's own Javadoc).
+   */
   @Override
   public ResponseEntity<CodeReviewResponse> processUserQuery(UserRequest request) {
     repositoryPathResolver.validateSecurityBoundary(request.userInput());

@@ -3,6 +3,10 @@ package com.epam.codereviewagent.service;
 import com.epam.codereviewagent.api.model.CodeReviewResponse;
 import com.epam.codereviewagent.api.model.Finding;
 import com.epam.codereviewagent.config.CodeReviewProperties;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -13,11 +17,6 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * A separate, genuinely simpler, non-agentic sub-agent (R14 / Increment 7): takes the primary
@@ -31,10 +30,11 @@ import java.util.Objects;
  * from Increment 2/3):</b> the {@link Prompt} built by {@link #summarize(CodeReviewResponse)} uses
  * the {@code (List&lt;Message&gt;)} constructor, which (confirmed by decompiling
  * {@code spring-ai-model-1.1.2.jar}'s {@code Prompt} class with {@code javap -p -c} during this
- * increment) delegates to the two-argument constructor with a {@code null} {@link
- * org.springframework.ai.chat.prompt.ChatOptions} — i.e. this prompt carries no explicit options and
- * therefore no tool callbacks, the same mechanism already relied on by {@code CodeReviewTools}'s own
- * {@code retrieveCodeLanguage}/{@code getCodebaseContext} LLM sub-calls (Increment 2). Combined with
+ * increment) delegates to the two-argument constructor with a
+ * {@code null} {@link org.springframework.ai.chat.prompt.ChatOptions} — i.e. this prompt carries
+ * no explicit options and therefore no tool callbacks, the same mechanism already relied on by
+ * {@code CodeReviewTools}'s own {@code retrieveCodeLanguage}/{@code getCodebaseContext} LLM
+ * sub-calls (Increment 2). Combined with
  * {@code AgentConfig#chatModel}'s own {@code defaultOptions} carrying no tool callbacks either
  * (Increment 3), this sub-agent's single call can never itself trigger a nested tool invocation.
  *
@@ -46,13 +46,14 @@ import java.util.Objects;
  * {@code CodeReviewTools}'s own {@code CODE_SNIPPET_BEGIN_MARKER}/{@code CODE_SNIPPET_END_MARKER}
  * constants (package-private, already visible in this package) and neutralizes any pre-existing
  * literal occurrence of either marker with {@code CodeReviewTools}'s own
- * {@code NEUTRALIZED_BEGIN_MARKER_TEXT}/{@code NEUTRALIZED_END_MARKER_TEXT} replacement text — the
- * identical algorithm {@code CodeReviewTools#sanitizeCodeSnippet(String)} already implements.
+ * {@code NEUTRALIZED_BEGIN_MARKER_TEXT}/{@code NEUTRALIZED_END_MARKER_TEXT} replacement text —
+ * the identical algorithm {@code CodeReviewTools#sanitizeCodeSnippet(String)} already implements.
  * {@code sanitizeCodeSnippet} itself is {@code private} to {@code CodeReviewTools}, and Increment 7
  * deliberately did not widen its (or the already package-private marker constants') visibility, to
- * keep this increment's changes inside its own declared file scope (Architecture Note A6, {@code
- * CodeReviewTools.java} is not in Increment 7's file list) rather than touching an out-of-scope file
- * for a three-line convenience. {@link #sanitizeUntrustedText(String)} below is that same algorithm
+ * keep this increment's changes inside its own declared file scope (Architecture Note A6,
+ * {@code CodeReviewTools.java} is not in Increment 7's file list) rather than touching an
+ * out-of-scope file for a three-line convenience. {@link #sanitizeUntrustedText(String)} below is
+ * that same algorithm
  * against the identical shared constants, not a second scheme.
  *
  * <p><b>Evidence honesty for the "empty input" case.</b> When {@link CodeReviewResponse#findings()}
@@ -62,8 +63,9 @@ import java.util.Objects;
  * principle {@code code-review-system-prompt.md} and {@code CodeReviewReactAgent}'s runtime
  * evidence-enforcement override already apply to the primary agent. This class has no equivalent
  * runtime override of its own (there is no tool-observed signal to check an LLM summary against,
- * unlike the primary agent's {@code readFile}-backed evidence tracker) — honesty here is a prompt-level
- * mitigation only, proven hermetically by asserting the rendered prompt's shape (Architecture Note
+ * unlike the primary agent's {@code readFile}-backed evidence tracker) — honesty here is a
+ * prompt-level mitigation only, proven hermetically by asserting the rendered prompt's shape
+ * (Architecture Note
  * A2/A4's own precedent for what a hermetic test can and cannot prove about model behavior), not by
  * asserting a real model actually complies.
  */
@@ -92,22 +94,25 @@ public class ExecutiveSummarySubAgent {
    * @param response the primary code-review agent's own output; must not be {@code null}
    * @return a non-blank, whitespace-trimmed executive summary
    * @throws NullPointerException if {@code response} is {@code null}
-   * @throws IllegalStateException if the executive-summary prompt resource cannot be read, or if the
-   *                                model returned a blank summary
-   * @throws RuntimeException      whatever {@link ChatModel#call(Prompt)} itself throws (for example
-   *                                {@code TransientAiException}/{@code NonTransientAiException} on an
-   *                                AI-provider failure) propagates unchanged — this method never
-   *                                swallows an underlying model failure; the caller decides how to
-   *                                handle it (see {@code ExecutiveSummaryRunner})
+   * @throws IllegalStateException if the executive-summary prompt resource cannot be read, or if
+   *                                the model returned a blank summary
+   * @throws RuntimeException      whatever {@link ChatModel#call(Prompt)} itself throws (for
+   *                                example {@code TransientAiException}/
+   *                                {@code NonTransientAiException} on an AI-provider failure)
+   *                                propagates unchanged — this method never swallows an
+   *                                underlying model failure; the caller decides how to handle it
+   *                                (see {@code ExecutiveSummaryRunner})
    */
   public String summarize(CodeReviewResponse response) {
     Objects.requireNonNull(response, "response must not be null");
 
     String systemPromptText = loadExecutiveSummaryPrompt();
     String userContent = renderReviewContent(response);
-    Prompt prompt = new Prompt(List.of(new SystemMessage(systemPromptText), new UserMessage(userContent)));
+    Prompt prompt =
+      new Prompt(List.of(new SystemMessage(systemPromptText), new UserMessage(userContent)));
 
-    log.info("Requesting executive summary for a code review with {} finding(s)", response.findings().size());
+    log.info("Requesting executive summary for a code review with {} finding(s)",
+      response.findings().size());
     ChatResponse chatResponse = chatModel.call(prompt);
     String summary = chatResponse.getResult().getOutput().getText();
     if (!StringUtils.hasText(summary)) {
@@ -120,11 +125,12 @@ public class ExecutiveSummarySubAgent {
 
   private String loadExecutiveSummaryPrompt() {
     try {
-      return StreamUtils.copyToString(codeReviewProperties.getExecutiveSummaryPrompt().getInputStream(),
-        StandardCharsets.UTF_8);
+      return StreamUtils.copyToString(
+        codeReviewProperties.getExecutiveSummaryPrompt().getInputStream(), StandardCharsets.UTF_8);
     } catch (IOException e) {
       throw new IllegalStateException(
-        "Failed to load executive summary prompt from: " + codeReviewProperties.getExecutiveSummaryPrompt(), e);
+        "Failed to load executive summary prompt from: "
+          + codeReviewProperties.getExecutiveSummaryPrompt(), e);
     }
   }
 
@@ -146,19 +152,24 @@ public class ExecutiveSummarySubAgent {
     if (findings.isEmpty()) {
       return NO_FINDINGS_SENTENCE;
     }
-    StringBuilder builder = new StringBuilder("Findings (").append(findings.size()).append(" total):");
+    StringBuilder builder =
+      new StringBuilder("Findings (").append(findings.size()).append(" total):");
     int index = 1;
     for (Finding finding : findings) {
-      builder.append(System.lineSeparator()).append(index++).append(". ").append(renderFinding(finding));
+      builder.append(System.lineSeparator()).append(index++).append(". ")
+        .append(renderFinding(finding));
     }
     return builder.toString();
   }
 
   private static String renderFinding(Finding finding) {
-    String severity = finding.severity() == null ? "unspecified severity" : finding.severity().jsonValue();
-    String file = finding.file() == null ? "unspecified file" : sanitizeUntrustedText(finding.file());
+    String severity = finding.severity() == null
+      ? "unspecified severity" : finding.severity().jsonValue();
+    String file =
+      finding.file() == null ? "unspecified file" : sanitizeUntrustedText(finding.file());
     String lineRange = renderLineRange(finding.startLine(), finding.endLine());
-    String rule = finding.rule() == null ? "no rule specified" : sanitizeUntrustedText(finding.rule());
+    String rule =
+      finding.rule() == null ? "no rule specified" : sanitizeUntrustedText(finding.rule());
     String explanation = finding.explanation() == null
       ? "no explanation provided" : sanitizeUntrustedText(finding.explanation());
     String recommendation = finding.recommendation() == null
@@ -181,14 +192,17 @@ public class ExecutiveSummarySubAgent {
 
   /**
    * Reuses Increment 2's exact anti-injection neutralization algorithm
-   * ({@code CodeReviewTools.CODE_SNIPPET_BEGIN_MARKER}/{@code CODE_SNIPPET_END_MARKER} replaced with
-   * {@code NEUTRALIZED_BEGIN_MARKER_TEXT}/{@code NEUTRALIZED_END_MARKER_TEXT}) against the same
-   * shared constants, without widening {@code CodeReviewTools#sanitizeCodeSnippet(String)}'s own
+   * ({@code CodeReviewTools.CODE_SNIPPET_BEGIN_MARKER}/{@code CODE_SNIPPET_END_MARKER} replaced
+   * with {@code NEUTRALIZED_BEGIN_MARKER_TEXT}/{@code NEUTRALIZED_END_MARKER_TEXT}) against the
+   * same shared constants, without widening {@code CodeReviewTools#sanitizeCodeSnippet(String)}'s
+   * own
    * {@code private} visibility — see this class's own top-level Javadoc for why.
    */
   private static String sanitizeUntrustedText(String untrustedText) {
     return untrustedText
-      .replace(CodeReviewTools.CODE_SNIPPET_BEGIN_MARKER, CodeReviewTools.NEUTRALIZED_BEGIN_MARKER_TEXT)
-      .replace(CodeReviewTools.CODE_SNIPPET_END_MARKER, CodeReviewTools.NEUTRALIZED_END_MARKER_TEXT);
+      .replace(CodeReviewTools.CODE_SNIPPET_BEGIN_MARKER,
+        CodeReviewTools.NEUTRALIZED_BEGIN_MARKER_TEXT)
+      .replace(CodeReviewTools.CODE_SNIPPET_END_MARKER,
+        CodeReviewTools.NEUTRALIZED_END_MARKER_TEXT);
   }
 }

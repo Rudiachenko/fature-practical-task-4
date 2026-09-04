@@ -1,14 +1,13 @@
 package com.epam.codereviewagent.support;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
 
 /**
  * Hermetic {@link ChatModel} test double, ported from {@code 02-rag}'s
@@ -31,8 +30,8 @@ public final class RecordingChatModel implements ChatModel {
   }
 
   /**
-   * @return an immutable snapshot of every {@link Prompt} passed to {@link #call(Prompt)} so far, in
-   *         call order
+   * @return an immutable snapshot of every {@link Prompt} passed to {@link #call(Prompt)} so far,
+   *         in call order
    */
   public List<Prompt> prompts() {
     return List.copyOf(prompts);
@@ -48,7 +47,10 @@ public final class RecordingChatModel implements ChatModel {
     this.responseFunction = prompt -> response;
   }
 
-  /** Configures every subsequent {@link #call(Prompt)} to derive its response from the prompt itself. */
+  /**
+   * Configures every subsequent {@link #call(Prompt)} to derive its response from the prompt
+   * itself.
+   */
   public void setResponseFunction(Function<Prompt, String> responseFunction) {
     this.responseFunction = responseFunction;
   }

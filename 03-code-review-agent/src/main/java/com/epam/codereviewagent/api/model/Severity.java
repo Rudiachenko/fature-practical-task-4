@@ -5,18 +5,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Severity of a single {@link Finding}, exactly the five values named by the ticket
- * ("blocker/high/medium/low/info"). <b>Serialization</b> always emits exactly the lowercase JSON
- * strings {@code "blocker"}, {@code "high"}, {@code "medium"}, {@code "low"}, {@code "info"} — the
- * ticket's own verbatim values, never changed regardless of how deserialization is relaxed below.
+ * ("blocker/high/medium/low/info"). <b>Serialization</b> always emits exactly the lowercase
+ * JSON strings {@code "blocker"}, {@code "high"}, {@code "medium"}, {@code "low"},
+ * {@code "info"} — the ticket's own verbatim values, never changed regardless of how
+ * deserialization is relaxed below.
  * <p>
  * <b>Deserialization is case-insensitive (code review, retry 1, Medium finding).</b> Real models
  * routinely emit capitalized severities (e.g. {@code "HIGH"}, {@code "High"}); rejecting the whole
  * response over a mere casing difference was judged too costly once combined with this contract's
  * all-or-nothing parsing (one bad {@code severity} discards the entire review and every other,
  * otherwise-valid finding — see {@code context/PROGRESS.md}'s Increment 4 retry 1 entry for the
- * Increment 5 hand-off note on that separate, deliberately-unchanged behavior). {@link
- * #fromJsonValue(String)} therefore matches case-insensitively (via {@link String#equalsIgnoreCase}) and
- * additionally trims leading/trailing whitespace before matching (e.g. {@code " high "} is
+ * Increment 5 hand-off note on that separate, deliberately-unchanged behavior).
+ * {@link #fromJsonValue(String)} therefore matches case-insensitively (via
+ * {@link String#equalsIgnoreCase}) and additionally trims leading/trailing whitespace before
+ * matching (e.g. {@code " high "} is
  * accepted) — a deliberate leniency decision, documented here rather than left implicit, on the
  * theory that whitespace padding is a formatting artifact rather than a signal the model meant
  * something else. A wholly unrelated value (e.g. {@code "critical"}), an empty/blank string, and

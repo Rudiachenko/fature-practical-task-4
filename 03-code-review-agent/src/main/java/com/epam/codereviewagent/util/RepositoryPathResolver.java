@@ -2,7 +2,6 @@ package com.epam.codereviewagent.util;
 
 import com.epam.codereviewagent.exception.FileNotFoundInRepositoryException;
 import com.epam.codereviewagent.exception.PathSecurityViolationException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -14,10 +13,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Enforces a hard repository-root security boundary for every file/directory access requested by a
- * relative path. Replaces the previous multi-candidate path-guessing approach: exactly one
- * deterministic rule decides whether an input is safe, per {@code context/PLAN.md} Architecture Note
- * A1:
+ * Enforces a hard repository-root security boundary for every file/directory access requested
+ * by a relative path. Replaces the previous multi-candidate path-guessing approach: exactly one
+ * deterministic rule decides whether an input is safe, per {@code context/PLAN.md} Architecture
+ * Note A1:
  * <ol>
  *   <li>Reject blank input and any input containing a NUL character.</li>
  *   <li>Reject any absolute or drive-qualified path outright (Windows drive-absolute, Windows
@@ -30,8 +29,9 @@ import java.util.stream.Stream;
  *   <li>If the path passes security but does not exist / is not the expected kind, a different
  *   exception ({@link FileNotFoundInRepositoryException}) is thrown than a security violation
  *   ({@link PathSecurityViolationException}).</li>
- *   <li>If the path exists, it is canonicalized with {@link Path#toRealPath(java.nio.file.LinkOption...)}
- *   and re-checked against the root's own real path, to defeat symlink escape.</li>
+ *   <li>If the path exists, it is canonicalized with
+ *   {@link Path#toRealPath(java.nio.file.LinkOption...)} and re-checked against the root's own
+ *   real path, to defeat symlink escape.</li>
  * </ol>
  */
 public final class RepositoryPathResolver {
@@ -47,11 +47,11 @@ public final class RepositoryPathResolver {
   private final Path root;
 
   /**
-   * Constructs a resolver bound to {@code repositoryRoot}, canonicalizing it once. Fails fast if the
-   * configured root does not exist or is not a directory.
+   * Constructs a resolver bound to {@code repositoryRoot}, canonicalizing it once. Fails fast
+   * if the configured root does not exist or is not a directory.
    *
-   * @param repositoryRoot the configured repository root, absolute or relative to the process working
-   *                        directory
+   * @param repositoryRoot the configured repository root, absolute or relative to the process
+   *                        working directory
    * @throws IllegalStateException if the configured root does not exist, is not a directory, or
    *                                cannot be canonicalized
    */
@@ -98,26 +98,27 @@ public final class RepositoryPathResolver {
 
   /**
    * Security-only pre-check: runs exactly the same boundary rule as steps 1-3 of this class's
-   * algorithm (blank/whitespace input, an embedded NUL character, any absolute or drive-qualified
-   * form - Windows drive-absolute, Windows drive-relative, UNC, POSIX leading {@code /} - an
-   * alternate-data-stream-shaped colon, and {@code ..} containment against the canonical root once
-   * normalized) but, unlike {@link #resolveFile(String)}/{@link #listImmediateEntries(String, int)},
-   * never touches the filesystem: it does not require {@code relativePath} to exist, and does not
-   * require it to be a regular file rather than a directory.
+   * algorithm (blank/whitespace input, an embedded NUL character, any absolute or
+   * drive-qualified form - Windows drive-absolute, Windows drive-relative, UNC, POSIX leading
+   * {@code /} - an alternate-data-stream-shaped colon, and {@code ..} containment against the
+   * canonical root once normalized) but, unlike {@link #resolveFile(String)}/
+   * {@link #listImmediateEntries(String, int)}, never touches the filesystem: it does not
+   * require {@code relativePath} to exist, and does not require it to be a regular file rather
+   * than a directory.
    *
    * <p>Delegates directly to the same private {@link #validateAndResolve(String)} method those two
    * methods already call, so there is exactly one copy of the security rule in this class, never a
    * second copy that could silently drift from it.
    *
    * <p>Intended for an upfront, cheap rejection of an out-of-root or malformed
-   * {@code userInput} - e.g. by {@code CodeReviewController}, before the request ever reaches the
-   * agent/model - so a caller can observe the repository-root security boundary via a deterministic
-   * HTTP status code alone, with no model call spent on input that is rejected by construction. A
-   * syntactically valid, in-root path that does not (yet) exist, or that names a directory rather
-   * than a file, deliberately passes this check without error: existence/kind is intentionally out of
-   * scope here, since a missing file must still reach the agent so it can honestly report
-   * "file not found" itself (see {@link FileNotFoundInRepositoryException}), rather than being
-   * silently rejected upfront as if it were a security concern.
+   * {@code userInput} - e.g. by {@code CodeReviewController}, before the request ever reaches
+   * the agent/model - so a caller can observe the repository-root security boundary via a
+   * deterministic HTTP status code alone, with no model call spent on input that is rejected by
+   * construction. A syntactically valid, in-root path that does not (yet) exist, or that names a
+   * directory rather than a file, deliberately passes this check without error: existence/kind
+   * is intentionally out of scope here, since a missing file must still reach the agent so it
+   * can honestly report "file not found" itself (see {@link FileNotFoundInRepositoryException}),
+   * rather than being silently rejected upfront as if it were a security concern.
    *
    * @param relativePath a path relative to the repository root
    * @throws PathSecurityViolationException if {@code relativePath} fails the security boundary
@@ -133,10 +134,11 @@ public final class RepositoryPathResolver {
    * @param relativeDirectoryPath a directory path relative to the repository root
    * @param maxEntries            the maximum number of entries to return (must be positive)
    * @return an immutable, bounded, name-sorted list of immediate entries
-   * @throws PathSecurityViolationException    if {@code relativeDirectoryPath} fails the security
-   *                                            boundary
-   * @throws FileNotFoundInRepositoryException if {@code relativeDirectoryPath} passes the security
-   *                                            boundary but does not resolve to an existing directory
+   * @throws PathSecurityViolationException    if {@code relativeDirectoryPath} fails the
+   *                                            security boundary
+   * @throws FileNotFoundInRepositoryException if {@code relativeDirectoryPath} passes the
+   *                                            security boundary but does not resolve to an
+   *                                            existing directory
    */
   public List<RepositoryEntry> listImmediateEntries(String relativeDirectoryPath, int maxEntries) {
     if (maxEntries <= 0) {
@@ -151,12 +153,12 @@ public final class RepositoryPathResolver {
     }
     Path real = canonicalizeAndVerifyContainment(candidate, relativeDirectoryPath);
     try (Stream<Path> entries = Files.list(real)) {
-      // Deliberate trade-off: Files.list(...).sorted(...) materializes the full directory listing
-      // before limit() applies, so this is O(n log n) in the directory's total entry count regardless
-      // of maxEntries. Chosen anyway because deterministic, name-sorted output is required for
-      // reproducible tool results; fixture/repo scale here is small enough that bounding before
-      // sorting (which would make the result order depend on filesystem iteration order) is not worth
-      // the loss of determinism.
+      // Deliberate trade-off: Files.list(...).sorted(...) materializes the full directory
+      // listing before limit() applies, so this is O(n log n) in the directory's total entry
+      // count regardless of maxEntries. Chosen anyway because deterministic, name-sorted output
+      // is required for reproducible tool results; fixture/repo scale here is small enough that
+      // bounding before sorting (which would make the result order depend on filesystem
+      // iteration order) is not worth the loss of determinism.
       return entries
         .sorted(Comparator.comparing(path -> path.getFileName().toString(),
           String.CASE_INSENSITIVE_ORDER))
@@ -199,15 +201,15 @@ public final class RepositoryPathResolver {
   }
 
   /**
-   * Detects every absolute-or-drive-qualified form of input this resolver must reject before ever
-   * consulting the filesystem: POSIX-style leading {@code /}, a leading {@code \} (Windows
-   * root-without-drive, and the common prefix of a UNC path), any {@code <letter>:} drive designator
-   * (covers both fully-absolute {@code C:\...} and drive-relative {@code C:foo}, since
-   * {@link Path#isAbsolute()} alone does not flag the drive-relative form on Windows), and finally
-   * falls back to {@link Path#isAbsolute()} as a defense-in-depth catch-all. Also converts a
-   * malformed path string (e.g. one containing a colon-delimited alternate-data-stream suffix such as
-   * {@code notes.txt:hidden}) into a security violation instead of letting {@link InvalidPathException}
-   * escape uncaught.
+   * Detects every absolute-or-drive-qualified form of input this resolver must reject before
+   * ever consulting the filesystem: POSIX-style leading {@code /}, a leading {@code \} (Windows
+   * root-without-drive, and the common prefix of a UNC path), any {@code <letter>:} drive
+   * designator (covers both fully-absolute {@code C:\...} and drive-relative {@code C:foo},
+   * since {@link Path#isAbsolute()} alone does not flag the drive-relative form on Windows), and
+   * finally falls back to {@link Path#isAbsolute()} as a defense-in-depth catch-all. Also
+   * converts a malformed path string (e.g. one containing a colon-delimited alternate-data-stream
+   * suffix such as {@code notes.txt:hidden}) into a security violation instead of letting
+   * {@link InvalidPathException} escape uncaught.
    */
   private boolean looksAbsoluteOrDriveQualified(String candidate) {
     if (candidate.startsWith("/") || candidate.startsWith("\\")) {
@@ -229,16 +231,17 @@ public final class RepositoryPathResolver {
   }
 
   /**
-   * Step 6 of Architecture Note A1: canonicalizes an existing, already security-checked candidate with
-   * {@code toRealPath()} and re-checks containment, defeating a symlink whose target lies outside the
-   * repository root.
+   * Step 6 of Architecture Note A1: canonicalizes an existing, already security-checked
+   * candidate with {@code toRealPath()} and re-checks containment, defeating a symlink whose
+   * target lies outside the repository root.
    */
   private Path canonicalizeAndVerifyContainment(Path candidate, String originalInput) {
     Path real;
     try {
       real = candidate.toRealPath();
     } catch (IOException e) {
-      throw new FileNotFoundInRepositoryException("File not found in repository: " + originalInput, e);
+      throw new FileNotFoundInRepositoryException(
+        "File not found in repository: " + originalInput, e);
     }
     if (!isWithinRoot(real)) {
       throw new PathSecurityViolationException(

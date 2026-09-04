@@ -1,9 +1,9 @@
 package com.epam.codereviewagent.service;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.Test;
 
 class CodeMetricsAnalyzerTest {
 
@@ -48,14 +48,23 @@ class CodeMetricsAnalyzerTest {
   // Hand-computed: lineCount=40, longestMethodLineSpan=40-1+1=40, maxNestingDepth=1.
   private static final String FORTY_LINE_METHOD_SNIPPET = buildLongMethodSnippet();
 
-  private static String buildLongMethodSnippet() {
-    StringBuilder builder = new StringBuilder("public void longMethod() {\n");
-    for (int i = 1; i <= 38; i++) {
-      builder.append("  System.out.println(\"line ").append(i).append("\");\n");
-    }
-    builder.append("}");
-    return builder.toString();
-  }
+  // --- Medium 2 code-review fix: brace inside a string/char/comment/text-block literal must never
+  // be counted as structural, and must never corrupt the LIFO brace stack for the rest of the
+  // snippet. ---
+
+  // The reviewer's exact reproducer. Ground truth (hand-computed, verified by the reviewer against
+  // the real production method before the fix): lineCount=6, longestMethodLineSpan=6,
+  // maxNestingDepth=1. Before the lexer fix, the phantom '{' inside the string literal on line 2
+  // was pushed onto the same brace stack as the real method brace; the real closing '}' on line 6
+  // then popped that phantom entry instead (LIFO), reporting
+  // longestMethodLineSpan=5/maxNestingDepth=2 - both wrong.
+  private static final String STRING_LITERAL_WITH_BRACE_SNIPPET = String.join("\n",
+    "public void realMethod() {",
+    "  String regexLike = \"{\";",
+    "  doWork();",
+    "  doMoreWork();",
+    "  finalStep();",
+    "}");
 
   @Test
   void shouldComputeZeroSpanAndZeroNestingDepth_whenSnippetIsFlatTenLineFile() {
@@ -68,7 +77,8 @@ class CodeMetricsAnalyzerTest {
 
   @Test
   void shouldComputeMaxNestingDepthOfFour_whenSnippetHasFourLevelNestedBlock() {
-    CodeMetricsAnalyzer.CodeMetrics metrics = CodeMetricsAnalyzer.analyze(FOUR_LEVEL_NESTED_SNIPPET);
+    CodeMetricsAnalyzer.CodeMetrics metrics =
+      CodeMetricsAnalyzer.analyze(FOUR_LEVEL_NESTED_SNIPPET);
 
     assertThat(metrics.lineCount()).isEqualTo(9);
     assertThat(metrics.maxNestingDepth()).isEqualTo(4);
@@ -77,7 +87,8 @@ class CodeMetricsAnalyzerTest {
 
   @Test
   void shouldComputeLongestMethodSpanOfForty_whenSnippetHasFortyLineMethod() {
-    CodeMetricsAnalyzer.CodeMetrics metrics = CodeMetricsAnalyzer.analyze(FORTY_LINE_METHOD_SNIPPET);
+    CodeMetricsAnalyzer.CodeMetrics metrics =
+      CodeMetricsAnalyzer.analyze(FORTY_LINE_METHOD_SNIPPET);
 
     assertThat(metrics.lineCount()).isEqualTo(40);
     assertThat(metrics.longestMethodLineSpan()).isEqualTo(40);
@@ -116,25 +127,10 @@ class CodeMetricsAnalyzerTest {
     assertThat(metrics.longestMethodLineSpan()).isZero();
   }
 
-  // --- Medium 2 code-review fix: brace inside a string/char/comment/text-block literal must never be
-  // counted as structural, and must never corrupt the LIFO brace stack for the rest of the snippet. ---
-
-  // The reviewer's exact reproducer. Ground truth (hand-computed, verified by the reviewer against the
-  // real production method before the fix): lineCount=6, longestMethodLineSpan=6, maxNestingDepth=1.
-  // Before the lexer fix, the phantom '{' inside the string literal on line 2 was pushed onto the same
-  // brace stack as the real method brace; the real closing '}' on line 6 then popped that phantom entry
-  // instead (LIFO), reporting longestMethodLineSpan=5/maxNestingDepth=2 - both wrong.
-  private static final String STRING_LITERAL_WITH_BRACE_SNIPPET = String.join("\n",
-    "public void realMethod() {",
-    "  String regexLike = \"{\";",
-    "  doWork();",
-    "  doMoreWork();",
-    "  finalStep();",
-    "}");
-
   @Test
   void shouldNotCountBraceInsideStringLiteralAsStructural_whenSnippetIsTheReviewersExactReproducer() {
-    CodeMetricsAnalyzer.CodeMetrics metrics = CodeMetricsAnalyzer.analyze(STRING_LITERAL_WITH_BRACE_SNIPPET);
+    CodeMetricsAnalyzer.CodeMetrics metrics =
+      CodeMetricsAnalyzer.analyze(STRING_LITERAL_WITH_BRACE_SNIPPET);
 
     assertThat(metrics.lineCount()).isEqualTo(6);
     assertThat(metrics.longestMethodLineSpan()).isEqualTo(6);
@@ -223,11 +219,12 @@ class CodeMetricsAnalyzerTest {
 
   @Test
   void shouldNotLeakCorruptedDepthIntoALaterUnrelatedMethod_whenAnEarlierMethodContainsAStringLiteralBrace() {
-    // Directly proves the reviewer's broader claim: a phantom brace inside a string literal must not
-    // corrupt bookkeeping for the REST of the file, not just the line/method it appears on. Before the
-    // fix, the phantom '{' on line 2 was popped by the real '}' on line 3 (LIFO), leaving line 1's real
-    // brace "open" and leaking one extra level of depth into the second, otherwise-unrelated method -
-    // inflating maxNestingDepth to 3 instead of the correct 2.
+    // Directly proves the reviewer's broader claim: a phantom brace inside a string literal
+    // must not corrupt bookkeeping for the REST of the file, not just the line/method it
+    // appears on. Before the fix, the phantom '{' on line 2 was popped by the real '}' on line
+    // 3 (LIFO), leaving line 1's real brace "open" and leaking one extra level of depth into
+    // the second, otherwise-unrelated method - inflating maxNestingDepth to 3 instead of the
+    // correct 2.
     String snippet = String.join("\n",
       "public void first() {",
       "  String regexLike = \"{\";",
@@ -266,9 +263,10 @@ class CodeMetricsAnalyzerTest {
 
   @Test
   void shouldRecoverToNormalStateWithoutCorruptingLaterBraces_whenStringLiteralIsNeverClosedBeforeANewline() {
-    // Defensive recovery: this is not valid Java (an unescaped raw newline inside "..." is a compile
-    // error), but this is a heuristic lexer over arbitrary/pasted snippets, not a compiler - a
-    // malformed/truncated string must not leave the rest of the snippet stuck in STRING_LITERAL state.
+    // Defensive recovery: this is not valid Java (an unescaped raw newline inside "..." is a
+    // compile error), but this is a heuristic lexer over arbitrary/pasted snippets, not a
+    // compiler - a malformed/truncated string must not leave the rest of the snippet stuck in
+    // STRING_LITERAL state.
     String snippet = String.join("\n",
       "public void foo() {",
       "  String s = \"unterminated",
@@ -353,15 +351,17 @@ class CodeMetricsAnalyzerTest {
   }
 
   // --- Re-review branch-coverage correction: 5 of the 6 branches JaCoCo reports as missed in
-  // analyze()'s lexer are genuine untested paths (not the enum-switch synthetic default at line 83,
-  // the only one that is). Each degrades safely (no corruption, crash, or hang) but was previously
-  // untested. See context/PROGRESS.md for the corrected per-branch accounting. -----------------------
+  // analyze()'s lexer are genuine untested paths (not the enum-switch synthetic default at
+  // line 83, the only one that is). Each degrades safely (no corruption, crash, or hang) but
+  // was previously untested. See context/PROGRESS.md for the corrected per-branch
+  // accounting. -----------------------------------------------------------------------------
 
   @Test
   void shouldNotThrow_whenStringLiteralEndsWithATrailingBackslashAsTheLastCharacterOfTheEntireInput() {
-    // Exercises the false side of STRING_LITERAL's `index + 1 < length` guard: a trailing, unescaped
-    // backslash that is literally the last character of the whole input has no following character to
-    // peek at. The guard exists specifically so this does not throw StringIndexOutOfBoundsException.
+    // Exercises the false side of STRING_LITERAL's `index + 1 < length` guard: a trailing,
+    // unescaped backslash that is literally the last character of the whole input has no
+    // following character to peek at. The guard exists specifically so this does not throw
+    // StringIndexOutOfBoundsException.
     String snippet = "String s = \"abc\\";
 
     CodeMetricsAnalyzer.CodeMetrics metrics = CodeMetricsAnalyzer.analyze(snippet);
@@ -398,9 +398,10 @@ class CodeMetricsAnalyzerTest {
 
   @Test
   void shouldTreatEscapedNonNewlineCharacterAsAnOrdinaryEscape_insideACharLiteral() {
-    // CHAR_LITERAL's inner `code.charAt(index + 1) == '\n'` check already has its true side covered by
-    // shouldTreatBackslashNewlineAsAnEscapedContinuation_insideACharLiteral above; this covers the
-    // false side - a backslash escaping an ordinary (non-newline) character, here an escaped quote.
+    // CHAR_LITERAL's inner `code.charAt(index + 1) == '\n'` check already has its true side
+    // covered by shouldTreatBackslashNewlineAsAnEscapedContinuation_insideACharLiteral above;
+    // this covers the false side - a backslash escaping an ordinary (non-newline) character,
+    // here an escaped quote.
     String snippet = String.join("\n",
       "public void foo() {",
       "  char c = '\\'';",
@@ -431,5 +432,14 @@ class CodeMetricsAnalyzerTest {
     assertThat(metrics.lineCount()).isEqualTo(6);
     assertThat(metrics.longestMethodLineSpan()).isEqualTo(6);
     assertThat(metrics.maxNestingDepth()).isEqualTo(1);
+  }
+
+  private static String buildLongMethodSnippet() {
+    StringBuilder builder = new StringBuilder("public void longMethod() {\n");
+    for (int i = 1; i <= 38; i++) {
+      builder.append("  System.out.println(\"line ").append(i).append("\");\n");
+    }
+    builder.append("}");
+    return builder.toString();
   }
 }

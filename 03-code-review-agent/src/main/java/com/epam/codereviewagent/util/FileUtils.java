@@ -11,18 +11,19 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 /**
- * A bounded UTF-8 file reader operating only on a {@link Path} that the caller has already validated
- * against the repository-root security boundary (see {@link RepositoryPathResolver}). This class knows
- * nothing about path resolution, working-directory guessing, or candidate roots - that responsibility
- * belongs entirely to {@link RepositoryPathResolver}.
+ * A bounded UTF-8 file reader operating only on a {@link Path} that the caller has already
+ * validated against the repository-root security boundary (see {@link RepositoryPathResolver}).
+ * This class knows nothing about path resolution, working-directory guessing, or candidate
+ * roots - that responsibility belongs entirely to {@link RepositoryPathResolver}.
  *
- * <p><strong>TOCTOU note:</strong> {@code RepositoryPathResolver.resolveFile(...)} proves containment
- * via {@code toRealPath()} and returns a plain {@link Path}; the actual read happens later, in a
- * separate call to {@link #readFile(Path, int)}. This class narrows (but, given the two-call split,
- * cannot fully eliminate) the resulting race window by opening with
- * {@link LinkOption#NOFOLLOW_LINKS}: if the resolved location is replaced by a symbolic link between
- * the two calls, the read fails instead of silently following the link outside the repository root.
- * See {@code context/PROGRESS.md}'s "Recorded, considered gaps" for the full accepted-risk statement.</p>
+ * <p><strong>TOCTOU note:</strong> {@code RepositoryPathResolver.resolveFile(...)} proves
+ * containment via {@code toRealPath()} and returns a plain {@link Path}; the actual read happens
+ * later, in a separate call to {@link #readFile(Path, int)}. This class narrows (but, given the
+ * two-call split, cannot fully eliminate) the resulting race window by opening with
+ * {@link LinkOption#NOFOLLOW_LINKS}: if the resolved location is replaced by a symbolic link
+ * between the two calls, the read fails instead of silently following the link outside the
+ * repository root. See {@code context/PROGRESS.md}'s "Recorded, considered gaps" for the full
+ * accepted-risk statement.</p>
  */
 public final class FileUtils {
 
@@ -46,9 +47,9 @@ public final class FileUtils {
    * Reads the UTF-8 text content of {@code path}, truncating to {@code maxChars} characters if
    * necessary. The truncation cut point is codepoint-aware: if a raw {@code maxChars}-character cut
    * would split a surrogate pair in two, the cut backs off by one character so the returned content
-   * never ends in an unpaired (lone) surrogate. As a deliberate consequence, the returned content's
-   * length may be {@code maxChars - 1} rather than exactly {@code maxChars} in that specific case; a
-   * cut that already lands on a codepoint boundary is never backed off.
+   * never ends in an unpaired (lone) surrogate. As a deliberate consequence, the returned
+   * content's length may be {@code maxChars - 1} rather than exactly {@code maxChars} in that
+   * specific case; a cut that already lands on a codepoint boundary is never backed off.
    *
    * @param path     an already-resolved, already-validated path to a regular file
    * @param maxChars the maximum number of characters to return before truncation (must be positive)
@@ -83,8 +84,8 @@ public final class FileUtils {
   /**
    * Reads {@code path} as strict UTF-8 (malformed/unmappable input throws, matching the previous
    * {@code Files.readString} behavior), opened with {@link LinkOption#NOFOLLOW_LINKS} so that a
-   * symbolic link planted at this exact location after {@code RepositoryPathResolver} validated it is
-   * refused rather than silently followed (see the class-level TOCTOU note).
+   * symbolic link planted at this exact location after {@code RepositoryPathResolver} validated
+   * it is refused rather than silently followed (see the class-level TOCTOU note).
    */
   private static String readUtf8StrictNoFollowLinks(Path path) throws IOException {
     byte[] bytes;
@@ -98,10 +99,10 @@ public final class FileUtils {
   }
 
   /**
-   * Returns {@code maxChars}, unless a cut at that exact index would fall between the two {@code char}s
-   * of a surrogate pair (i.e. {@code content.charAt(maxChars - 1)} is a high surrogate), in which case
-   * it returns {@code maxChars - 1} so the cut lands before the pair instead of inside it. A cut that
-   * already lands on a codepoint boundary is returned unchanged.
+   * Returns {@code maxChars}, unless a cut at that exact index would fall between the two
+   * {@code char}s of a surrogate pair (i.e. {@code content.charAt(maxChars - 1)} is a high
+   * surrogate), in which case it returns {@code maxChars - 1} so the cut lands before the pair
+   * instead of inside it. A cut that already lands on a codepoint boundary is returned unchanged.
    */
   private static int codepointSafeCutLength(String content, int maxChars) {
     if (maxChars < content.length() && Character.isHighSurrogate(content.charAt(maxChars - 1))) {

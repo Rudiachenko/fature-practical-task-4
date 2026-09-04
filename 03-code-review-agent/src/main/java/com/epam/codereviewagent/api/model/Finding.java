@@ -43,7 +43,8 @@ public record Finding(
     }
     if (startLine != null && endLine != null && endLine < startLine) {
       throw new IllegalArgumentException(
-        "Finding.endLine (" + endLine + ") must not be less than Finding.startLine (" + startLine + ")");
+        "Finding.endLine (" + endLine + ") must not be less than Finding.startLine ("
+          + startLine + ")");
     }
   }
 }

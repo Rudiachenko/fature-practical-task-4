@@ -1,14 +1,13 @@
 package com.epam.codereviewagent.api.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 class CodeReviewResponseTest {
 
@@ -20,18 +19,32 @@ class CodeReviewResponseTest {
    */
   private static final String README_EXAMPLE_JSON = """
     {
-      "review": "### Code Review for `CodeReviewReactAgent.java`\\n\\n#### Violations Identified:\\n\\n1. **Naming Conventions**\\n   - Rule: \\"Never use prefix 'Code' for classes.\\"\\n     - The class name `CodeReviewReactAgent` violates this rule since it uses the prefix \\"Code\\".\\n     - Suggest renaming the class to `ReviewReactAgent` or similar.\\n\\n2. **Class Organization**\\n   - Rule: \\"Import statements should be organized and no wildcards.\\"\\n     - The import statements do not contain wildcards, so this is compliant.\\n     - However, ensure imports are grouped logically (e.g., third-party libraries vs. application-specific ones).\\n\\n3. **Comments and Documentation**\\n   - Rule: \\"Use JavaDoc for all public classes, interfaces, and methods.\\"\\n     - The `CodeReviewReactAgent` class and its `interact` method lack JavaDoc comments. Add JavaDoc that includes `@param`, `@return`, and any relevant `@throws` tags.\\n\\n### Summary:\\nViolations were found in naming conventions, class organization, comments/documentation, and method design. Address these points to ensure compliance with Java coding conventions."
+      "review": "### Code Review for `CodeReviewReactAgent.java`\\n\\n#### Violations \
+    Identified:\\n\\n1. **Naming Conventions**\\n   - Rule: \\"Never use prefix 'Code' for \
+    classes.\\"\\n     - The class name `CodeReviewReactAgent` violates this rule since it uses \
+    the prefix \\"Code\\".\\n     - Suggest renaming the class to `ReviewReactAgent` or \
+    similar.\\n\\n2. **Class Organization**\\n   - Rule: \\"Import statements should be organized \
+    and no wildcards.\\"\\n     - The import statements do not contain wildcards, so this is \
+    compliant.\\n     - However, ensure imports are grouped logically (e.g., third-party libraries \
+    vs. application-specific ones).\\n\\n3. **Comments and Documentation**\\n   - Rule: \\"Use \
+    JavaDoc for all public classes, interfaces, and methods.\\"\\n     - The \
+    `CodeReviewReactAgent` class and its `interact` method lack JavaDoc comments. Add JavaDoc that \
+    includes `@param`, `@return`, and any relevant `@throws` tags.\\n\\n### Summary:\\nViolations \
+    were found in naming conventions, class organization, comments/documentation, and method \
+    design. Address these points to ensure compliance with Java coding conventions."
     }
     """;
 
   private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
   @Test
-  void shouldDeserializeReadmeExampleJsonSuccessfully_whenOnlyReviewFieldIsPresent() throws Exception {
+  void shouldDeserializeReadmeExampleJsonSuccessfully_whenOnlyReviewFieldIsPresent()
+    throws Exception {
     // Arrange (README_EXAMPLE_JSON is the literal ticket example, defined above)
 
     // Act
-    CodeReviewResponse response = objectMapper.readValue(README_EXAMPLE_JSON, CodeReviewResponse.class);
+    CodeReviewResponse response =
+      objectMapper.readValue(README_EXAMPLE_JSON, CodeReviewResponse.class);
 
     // Assert
     assertThat(response.review()).startsWith("### Code Review for `CodeReviewReactAgent.java`");
@@ -65,7 +78,8 @@ class CodeReviewResponseTest {
   void shouldDefensivelyCopyFindings_whenConstructedWithAMutableList() {
     // Arrange
     List<Finding> mutableFindings = new ArrayList<>();
-    mutableFindings.add(new Finding("Foo.java", 1, 2, "rule", Severity.HIGH, "explanation", "recommendation"));
+    mutableFindings.add(
+      new Finding("Foo.java", 1, 2, "rule", Severity.HIGH, "explanation", "recommendation"));
 
     // Act
     CodeReviewResponse response = new CodeReviewResponse("review text", mutableFindings, false);
@@ -84,8 +98,9 @@ class CodeReviewResponseTest {
     // constructor was annotated @JsonCreator(mode = DISABLED), Jackson auto-detected it as an
     // implicit delegating creator for records, so a bare top-level JSON string silently
     // deserialized into a "successful" response with review=<the string> and empty findings -
-    // proven fixed here directly at the type's own boundary (CodeReviewStructuredOutputConverterTest
-    // proves the same fix through the actual convert(String) call path).
+    // proven fixed here directly at the type's own boundary
+    // (CodeReviewStructuredOutputConverterTest proves the same fix through the actual
+    // convert(String) call path).
     String json = "\"just a string\"";
 
     // Act / Assert
@@ -94,7 +109,8 @@ class CodeReviewResponseTest {
   }
 
   @Test
-  void shouldRoundTripFullResponse_whenFindingsAndTruncatedAreExplicitlyProvided() throws Exception {
+  void shouldRoundTripFullResponse_whenFindingsAndTruncatedAreExplicitlyProvided()
+    throws Exception {
     // Arrange
     CodeReviewResponse response = new CodeReviewResponse(
       "review text",

@@ -1,12 +1,11 @@
 package com.epam.codereviewagent.event;
 
-import com.epam.codereviewagent.api.model.CodeReviewResponse;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.epam.codereviewagent.api.model.CodeReviewResponse;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 class CodeReviewCompletedEventTest {
 

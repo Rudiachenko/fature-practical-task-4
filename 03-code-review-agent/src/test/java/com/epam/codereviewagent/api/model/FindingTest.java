@@ -1,9 +1,9 @@
 package com.epam.codereviewagent.api.model;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Not listed in {@code context/PLAN.md}'s literal Increment 4 "Files IN" test list (only
@@ -19,7 +19,8 @@ class FindingTest {
   @Test
   void shouldConstructSuccessfully_whenStartLineAndEndLineAreValidAndOrdered() {
     // Arrange / Act
-    Finding finding = new Finding("Foo.java", 5, 10, "rule", Severity.HIGH, "explanation", "recommendation");
+    Finding finding =
+      new Finding("Foo.java", 5, 10, "rule", Severity.HIGH, "explanation", "recommendation");
 
     // Assert
     assertThat(finding.startLine()).isEqualTo(5);
@@ -29,7 +30,8 @@ class FindingTest {
   @Test
   void shouldConstructSuccessfully_whenStartLineEqualsEndLine() {
     // Arrange / Act
-    Finding finding = new Finding("Foo.java", 5, 5, "rule", Severity.HIGH, "explanation", "recommendation");
+    Finding finding =
+      new Finding("Foo.java", 5, 5, "rule", Severity.HIGH, "explanation", "recommendation");
 
     // Assert
     assertThat(finding.startLine()).isEqualTo(5);
@@ -39,7 +41,8 @@ class FindingTest {
   @Test
   void shouldConstructSuccessfully_whenStartLineAndEndLineAreBothNull() {
     // Arrange / Act
-    Finding finding = new Finding("Foo.java", null, null, "rule", Severity.HIGH, "explanation", "recommendation");
+    Finding finding =
+      new Finding("Foo.java", null, null, "rule", Severity.HIGH, "explanation", "recommendation");
 
     // Assert
     assertThat(finding.startLine()).isNull();
@@ -49,7 +52,8 @@ class FindingTest {
   @Test
   void shouldConstructSuccessfully_whenOnlyStartLineIsProvided() {
     // Arrange / Act
-    Finding finding = new Finding("Foo.java", 3, null, "rule", Severity.HIGH, "explanation", "recommendation");
+    Finding finding =
+      new Finding("Foo.java", 3, null, "rule", Severity.HIGH, "explanation", "recommendation");
 
     // Assert
     assertThat(finding.startLine()).isEqualTo(3);
@@ -59,7 +63,8 @@ class FindingTest {
   @Test
   void shouldConstructSuccessfully_whenOnlyEndLineIsProvided() {
     // Arrange / Act
-    Finding finding = new Finding("Foo.java", null, 3, "rule", Severity.HIGH, "explanation", "recommendation");
+    Finding finding =
+      new Finding("Foo.java", null, 3, "rule", Severity.HIGH, "explanation", "recommendation");
 
     // Assert
     assertThat(finding.startLine()).isNull();
@@ -69,7 +74,8 @@ class FindingTest {
   @Test
   void shouldRejectZeroStartLine_whenStartLineIsZero() {
     // Act / Assert
-    assertThatThrownBy(() -> new Finding("Foo.java", 0, 5, "rule", Severity.HIGH, "explanation", "recommendation"))
+    assertThatThrownBy(
+      () -> new Finding("Foo.java", 0, 5, "rule", Severity.HIGH, "explanation", "recommendation"))
       .isInstanceOf(IllegalArgumentException.class)
       .hasMessageContaining("startLine")
       .hasMessageContaining("0");
@@ -78,7 +84,8 @@ class FindingTest {
   @Test
   void shouldRejectNegativeStartLine_whenStartLineIsNegative() {
     // Act / Assert
-    assertThatThrownBy(() -> new Finding("Foo.java", -1, 5, "rule", Severity.HIGH, "explanation", "recommendation"))
+    assertThatThrownBy(
+      () -> new Finding("Foo.java", -1, 5, "rule", Severity.HIGH, "explanation", "recommendation"))
       .isInstanceOf(IllegalArgumentException.class)
       .hasMessageContaining("startLine");
   }
@@ -86,7 +93,8 @@ class FindingTest {
   @Test
   void shouldRejectZeroEndLine_whenEndLineIsZero() {
     // Act / Assert
-    assertThatThrownBy(() -> new Finding("Foo.java", 1, 0, "rule", Severity.HIGH, "explanation", "recommendation"))
+    assertThatThrownBy(
+      () -> new Finding("Foo.java", 1, 0, "rule", Severity.HIGH, "explanation", "recommendation"))
       .isInstanceOf(IllegalArgumentException.class)
       .hasMessageContaining("endLine")
       .hasMessageContaining("0");
@@ -95,7 +103,8 @@ class FindingTest {
   @Test
   void shouldRejectNegativeEndLine_whenEndLineIsNegative() {
     // Act / Assert
-    assertThatThrownBy(() -> new Finding("Foo.java", 1, -5, "rule", Severity.HIGH, "explanation", "recommendation"))
+    assertThatThrownBy(
+      () -> new Finding("Foo.java", 1, -5, "rule", Severity.HIGH, "explanation", "recommendation"))
       .isInstanceOf(IllegalArgumentException.class)
       .hasMessageContaining("endLine");
   }
@@ -103,7 +112,8 @@ class FindingTest {
   @Test
   void shouldRejectEndLineLessThanStartLine_whenEndLineIsBeforeStartLine() {
     // Act / Assert
-    assertThatThrownBy(() -> new Finding("Foo.java", 10, 5, "rule", Severity.HIGH, "explanation", "recommendation"))
+    assertThatThrownBy(
+      () -> new Finding("Foo.java", 10, 5, "rule", Severity.HIGH, "explanation", "recommendation"))
       .isInstanceOf(IllegalArgumentException.class)
       .hasMessageContaining("endLine")
       .hasMessageContaining("startLine");

@@ -1,28 +1,31 @@
 package com.epam.codereviewagent.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Proves the {@code @Min(1)} constraint added to {@link CodeReviewProperties#getMaxIterations()} in
- * Increment 5 retry 1 (code review Medium finding) - a misconfigured {@code maxIterations} must fail
- * fast via Spring Boot's own JSR-303 configuration-properties validation at startup, rather than
- * silently exhausting the ReAct loop on every single request at runtime. Uses the same direct
- * {@code jakarta.validation.Validator} pattern already established by {@code 02-rag}'s
- * {@code RagPromptAndPropertiesTest.shouldRejectInvalidRetrievalBounds_whenConfigurationIsValidated()}.
+ * Increment 5 retry 1 (code review Medium finding) - a misconfigured {@code maxIterations}
+ * must fail fast via Spring Boot's own JSR-303 configuration-properties validation at
+ * startup, rather than silently exhausting the ReAct loop on every single request at runtime.
+ * Uses the same direct {@code jakarta.validation.Validator} pattern already established by
+ * {@code 02-rag}'s {@code
+ * RagPromptAndPropertiesTest.shouldRejectInvalidRetrievalBounds_whenConfigurationIsValidated()}.
  */
 class CodeReviewPropertiesTest {
 
   private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+  private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+    .withUserConfiguration(CodeReviewPropertiesConfiguration.class);
 
   @Test
   void shouldHaveNoViolations_whenMaxIterationsIsAtTheDefaultValue() {
@@ -69,16 +72,14 @@ class CodeReviewPropertiesTest {
 
   // -----------------------------------------------------------------------------------------------
   // Closes a Low finding carried over from Increment 5's review: the four tests above prove the
-  // @Min(1) annotation is individually correct via a direct jakarta.validation.Validator call, but do
-  // not prove a real Spring Boot application actually refuses to start with a bad value.
+  // @Min(1) annotation is individually correct via a direct jakarta.validation.Validator call,
+  // but do not prove a real Spring Boot application actually refuses to start with a bad value.
   // ApplicationContextRunner boots a real (minimal) Spring context and drives real
-  // @ConfigurationProperties binding/validation - unlike @SpringBootTest(webEnvironment = RANDOM_PORT),
-  // it needs no servlet container, so it runs fine in this sandboxed environment (see
+  // @ConfigurationProperties binding/validation - unlike @SpringBootTest(webEnvironment
+  // = RANDOM_PORT), it needs no servlet container, so it runs fine in this sandboxed
+  // environment (see
   // context/PROGRESS.md's "Known environment limit" note).
   // -----------------------------------------------------------------------------------------------
-
-  private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-    .withUserConfiguration(CodeReviewPropertiesConfiguration.class);
 
   @Test
   void shouldFailContextRefresh_whenMaxIterationsPropertyIsZero() {
@@ -93,7 +94,8 @@ class CodeReviewPropertiesTest {
         // assumed, so this test would fail loudly if Spring Boot ever changed which exception type
         // wraps a configuration-properties validation failure at context-refresh time.
         assertThat(context.getStartupFailure())
-          .isInstanceOf(org.springframework.boot.context.properties.ConfigurationPropertiesBindException.class);
+          .isInstanceOf(
+            org.springframework.boot.context.properties.ConfigurationPropertiesBindException.class);
 
         // Somewhere in the cause chain, the real Jakarta Bean Validation failure for exactly the
         // maxIterations field must be present - proves this is genuinely the @Min(1) constraint
@@ -102,7 +104,8 @@ class CodeReviewPropertiesTest {
           .as("expected a BindValidationException naming the maxIterations field somewhere in the "
             + "cause chain")
           .anySatisfy(cause -> assertThat(cause)
-            .isInstanceOf(org.springframework.boot.context.properties.bind.validation.BindValidationException.class)
+            .isInstanceOf(org.springframework.boot.context.properties.bind.validation
+              .BindValidationException.class)
             .hasMessageContaining("maxIterations")
             .hasMessageContaining("app.code-review"));
       });

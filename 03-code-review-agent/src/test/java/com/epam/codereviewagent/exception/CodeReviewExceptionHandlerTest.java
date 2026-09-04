@@ -1,11 +1,14 @@
 package com.epam.codereviewagent.exception;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import com.epam.codereviewagent.api.model.ApiError;
 import com.epam.codereviewagent.api.model.ApiViolation;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.retry.NonTransientAiException;
@@ -19,10 +22,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Proves each row of {@code context/PLAN.md} Increment 6's exception-to-response mapping table:
@@ -44,7 +43,8 @@ class CodeReviewExceptionHandlerTest {
   @Test
   void shouldExposeExactErrorCodeConstants_matchingThePlanMappingTableLiterally() {
     assertThat(CodeReviewExceptionHandler.VALIDATION_FAILED).isEqualTo("VALIDATION_FAILED");
-    assertThat(CodeReviewExceptionHandler.PATH_SECURITY_VIOLATION).isEqualTo("PATH_SECURITY_VIOLATION");
+    assertThat(CodeReviewExceptionHandler.PATH_SECURITY_VIOLATION)
+      .isEqualTo("PATH_SECURITY_VIOLATION");
     assertThat(CodeReviewExceptionHandler.FILE_NOT_FOUND).isEqualTo("FILE_NOT_FOUND");
     assertThat(CodeReviewExceptionHandler.AGENT_ITERATION_LIMIT_EXCEEDED)
       .isEqualTo("AGENT_ITERATION_LIMIT_EXCEEDED");
@@ -52,7 +52,8 @@ class CodeReviewExceptionHandlerTest {
     assertThat(CodeReviewExceptionHandler.AI_PROVIDER_FAILURE).isEqualTo("AI_PROVIDER_FAILURE");
     assertThat(CodeReviewExceptionHandler.MALFORMED_REQUEST).isEqualTo("MALFORMED_REQUEST");
     assertThat(CodeReviewExceptionHandler.METHOD_NOT_ALLOWED).isEqualTo("METHOD_NOT_ALLOWED");
-    assertThat(CodeReviewExceptionHandler.UNSUPPORTED_MEDIA_TYPE).isEqualTo("UNSUPPORTED_MEDIA_TYPE");
+    assertThat(CodeReviewExceptionHandler.UNSUPPORTED_MEDIA_TYPE)
+      .isEqualTo("UNSUPPORTED_MEDIA_TYPE");
     assertThat(CodeReviewExceptionHandler.INTERNAL_ERROR).isEqualTo("INTERNAL_ERROR");
   }
 
@@ -76,9 +77,11 @@ class CodeReviewExceptionHandlerTest {
   @Test
   void shouldReturnBadRequestWithFieldViolations_whenValidationFails() {
     // Arrange
-    BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "userRequest");
+    BeanPropertyBindingResult bindingResult =
+      new BeanPropertyBindingResult(new Object(), "userRequest");
     bindingResult.addError(new FieldError("userRequest", "userInput", "must not be blank"));
-    MethodArgumentNotValidException exception = new MethodArgumentNotValidException(null, bindingResult);
+    MethodArgumentNotValidException exception =
+      new MethodArgumentNotValidException(null, bindingResult);
 
     // Act
     ResponseEntity<ApiError> response = handler.handleValidationException(exception);
@@ -94,11 +97,13 @@ class CodeReviewExceptionHandlerTest {
   @Test
   void shouldSortViolationsByFieldThenMessage_whenMultipleValidationErrorsOccur() {
     // Arrange
-    BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "userRequest");
+    BeanPropertyBindingResult bindingResult =
+      new BeanPropertyBindingResult(new Object(), "userRequest");
     bindingResult.addError(new FieldError("userRequest", "zField", "must not be blank"));
     bindingResult.addError(new FieldError("userRequest", "aField", "must not be blank"));
     bindingResult.addError(new ObjectError("userRequest", "cross-field constraint violated"));
-    MethodArgumentNotValidException exception = new MethodArgumentNotValidException(null, bindingResult);
+    MethodArgumentNotValidException exception =
+      new MethodArgumentNotValidException(null, bindingResult);
 
     // Act
     ResponseEntity<ApiError> response = handler.handleValidationException(exception);
@@ -133,9 +138,11 @@ class CodeReviewExceptionHandlerTest {
 
   @Test
   void shouldNotLeakAbsolutePathText_whenPathSecurityViolationMessageCarriesAnAbsolutePath() {
-    // Arrange: mirrors the exact message RepositoryPathResolver produces for an absolute Windows path.
+    // Arrange: mirrors the exact message RepositoryPathResolver produces for an absolute
+    // Windows path.
     PathSecurityViolationException exception = new PathSecurityViolationException(
-      "Absolute or drive-qualified paths are not allowed: C:\\Windows\\System32\\drivers\\etc\\hosts");
+      "Absolute or drive-qualified paths are not allowed: "
+        + "C:\\Windows\\System32\\drivers\\etc\\hosts");
 
     // Act
     ResponseEntity<ApiError> response = handler.handlePathSecurityViolation(exception);
@@ -156,7 +163,8 @@ class CodeReviewExceptionHandlerTest {
 
     try {
       PathSecurityViolationException exception = new PathSecurityViolationException(
-        "Path escapes the repository root: ../x\n[FAKE] ERROR forged-log-line api-key=super-secret");
+        "Path escapes the repository root: ../x\n"
+          + "[FAKE] ERROR forged-log-line api-key=super-secret");
 
       // Act
       handler.handlePathSecurityViolation(exception);
@@ -236,7 +244,8 @@ class CodeReviewExceptionHandlerTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_GATEWAY);
     assertThat(response.getBody().code()).isEqualTo("AGENT_OUTPUT_INVALID");
     assertThat(response.getBody().message())
-      .isEqualTo("The AI model produced a response that could not be parsed into a valid code review.")
+      .isEqualTo("The AI model produced a response that could not be parsed into a valid code "
+        + "review.")
       .doesNotContain("offset 42");
   }
 
@@ -247,7 +256,8 @@ class CodeReviewExceptionHandlerTest {
   @Test
   void shouldReturnBadGatewayWithStaticMessage_whenTransientAiExceptionIsThrown() {
     // Arrange
-    TransientAiException exception = new TransientAiException("Authorization: secret-provider-token");
+    TransientAiException exception =
+      new TransientAiException("Authorization: secret-provider-token");
 
     // Act
     ResponseEntity<ApiError> response = handler.handleAiProviderFailure(exception);
@@ -280,17 +290,18 @@ class CodeReviewExceptionHandlerTest {
   // ---------------------------------------------------------------------------------------------
   // Framework-dispatch rows (retry 1, code review High finding): HttpMessageNotReadableException ->
   // 400 / MALFORMED_REQUEST, HttpRequestMethodNotSupportedException -> 405 / METHOD_NOT_ALLOWED,
-  // HttpMediaTypeNotSupportedException -> 415 / UNSUPPORTED_MEDIA_TYPE. Each of these three exception
-  // types would otherwise be intercepted by the catch-all handleUnexpectedException below (Row 7),
-  // since ExceptionHandlerExceptionResolver runs before Spring's own DefaultHandlerExceptionResolver -
-  // these tests prove each now gets its own, correct status/code, and is logged below ERROR.
+  // HttpMediaTypeNotSupportedException -> 415 / UNSUPPORTED_MEDIA_TYPE. Each of these three
+  // exception types would otherwise be intercepted by the catch-all handleUnexpectedException below
+  // (Row 7), since ExceptionHandlerExceptionResolver runs before Spring's own
+  // DefaultHandlerExceptionResolver - these tests prove each now gets its own, correct status/code,
+  // and is logged below ERROR.
   // ---------------------------------------------------------------------------------------------
 
   @Test
   void shouldReturnBadRequestWithMalformedRequestCode_whenRequestBodyIsNotValidJson() {
     // Arrange
-    HttpMessageNotReadableException exception =
-      new HttpMessageNotReadableException("JSON parse error: Unexpected character ('{' (code 123))", null);
+    HttpMessageNotReadableException exception = new HttpMessageNotReadableException(
+      "JSON parse error: Unexpected character ('{' (code 123))", null);
 
     // Act
     ResponseEntity<ApiError> response = handler.handleMalformedRequest(exception);
@@ -351,8 +362,8 @@ class CodeReviewExceptionHandlerTest {
 
   @Test
   void shouldNotLogAtErrorLevel_whenHttpMethodIsUnsupported() {
-    // Arrange: see shouldNotLogAtErrorLevel_whenRequestBodyIsMalformedJson's comment above for why the
-    // logger level is lowered explicitly here.
+    // Arrange: see shouldNotLogAtErrorLevel_whenRequestBodyIsMalformedJson's comment above for why
+    // the logger level is lowered explicitly here.
     Logger logbackLogger = (Logger) LoggerFactory.getLogger(CodeReviewExceptionHandler.class);
     Level originalLevel = logbackLogger.getLevel();
     logbackLogger.setLevel(Level.DEBUG);

@@ -1,18 +1,17 @@
 package com.epam.codereviewagent.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.epam.codereviewagent.api.model.CodeReviewResponse;
 import com.epam.codereviewagent.api.model.Finding;
 import com.epam.codereviewagent.api.model.Severity;
 import com.epam.codereviewagent.exception.AgentOutputParsingException;
-import org.junit.jupiter.api.Test;
-import org.springframework.ai.azure.openai.AzureOpenAiResponseFormat;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.Test;
+import org.springframework.ai.azure.openai.AzureOpenAiResponseFormat;
 
 /**
  * Hermetic, no-Spring-context, no-network unit tests for
@@ -23,14 +22,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * types, embedded newlines/quotes, and a completely empty model response); the wholly-unknown
  * severity edge case ({@code "critical"}, still rejected); and, added in code review retry 1, a
  * bare top-level JSON scalar (string/number, High finding), a case-insensitively-accepted severity
- * value ({@code "HIGH"}, Medium finding, no longer rejected), trailing content after otherwise-valid
- * JSON (Low finding), and a fractional numeric line value (Low finding). See {@link Severity}'s own
+ * value ({@code "HIGH"}, Medium finding, no longer rejected), trailing content after
+ * otherwise-valid JSON (Low finding), and a fractional numeric line value (Low finding). See
+ * {@link Severity}'s own
  * Javadoc and {@code SeverityTest} for the full case/whitespace/null matrix at the type's own
  * boundary, not duplicated exhaustively here.
  */
 class CodeReviewStructuredOutputConverterTest {
 
-  private final CodeReviewStructuredOutputConverter converter = new CodeReviewStructuredOutputConverter();
+  private final CodeReviewStructuredOutputConverter converter =
+    new CodeReviewStructuredOutputConverter();
 
   // ---------------------------------------------------------------------------------------
   // Valid input
@@ -89,7 +90,8 @@ class CodeReviewStructuredOutputConverterTest {
     CodeReviewResponse response = converter.convert(json);
 
     // Assert
-    assertThat(response.review()).isEqualTo("Line one.\nLine two with a \"quoted\" word.\nLine three.");
+    assertThat(response.review())
+      .isEqualTo("Line one.\nLine two with a \"quoted\" word.\nLine three.");
     assertThat(response.findings()).isEmpty();
   }
 
@@ -206,7 +208,8 @@ class CodeReviewStructuredOutputConverterTest {
   @Test
   void shouldThrowAgentOutputParsingException_whenFindingsFieldIsAStringInsteadOfAnArray() {
     // Arrange: valid JSON, but wrong field type for `findings`
-    String json = "{\"review\": \"Looks fine.\", \"findings\": \"not-an-array\", \"truncated\": false}";
+    String json =
+      "{\"review\": \"Looks fine.\", \"findings\": \"not-an-array\", \"truncated\": false}";
 
     // Act / Assert
     assertThatThrownBy(() -> converter.convert(json))
@@ -489,7 +492,8 @@ class CodeReviewStructuredOutputConverterTest {
     CodeReviewStructuredOutputConverter.correctSeverityEnumValuesInPlace(node);
 
     // Assert
-    assertThat((List<Object>) node.get("enum")).containsExactly("blocker", "high", "medium", "low", "info");
+    assertThat((List<Object>) node.get("enum"))
+      .containsExactly("blocker", "high", "medium", "low", "info");
   }
 
   @Test
@@ -502,7 +506,8 @@ class CodeReviewStructuredOutputConverterTest {
     CodeReviewStructuredOutputConverter.correctSeverityEnumValuesInPlace(node);
 
     // Assert: replaced with the canonical, Severity-declared order, not the input's order
-    assertThat((List<Object>) node.get("enum")).containsExactly("blocker", "high", "medium", "low", "info");
+    assertThat((List<Object>) node.get("enum"))
+      .containsExactly("blocker", "high", "medium", "low", "info");
   }
 
   @Test
@@ -528,7 +533,8 @@ class CodeReviewStructuredOutputConverterTest {
     CodeReviewStructuredOutputConverter.correctSeverityEnumValuesInPlace(node);
 
     // Assert
-    assertThat((List<Object>) node.get("enum")).containsExactly("RED", "GREEN", "BLUE", "YELLOW", "PURPLE");
+    assertThat((List<Object>) node.get("enum"))
+      .containsExactly("RED", "GREEN", "BLUE", "YELLOW", "PURPLE");
   }
 
   @Test
@@ -541,7 +547,8 @@ class CodeReviewStructuredOutputConverterTest {
     CodeReviewStructuredOutputConverter.correctSeverityEnumValuesInPlace(node);
 
     // Assert
-    assertThat((List<Object>) node.get("notEnum")).containsExactly("BLOCKER", "HIGH", "MEDIUM", "LOW", "INFO");
+    assertThat((List<Object>) node.get("notEnum"))
+      .containsExactly("BLOCKER", "HIGH", "MEDIUM", "LOW", "INFO");
   }
 
   @Test
@@ -559,7 +566,8 @@ class CodeReviewStructuredOutputConverterTest {
     CodeReviewStructuredOutputConverter.correctSeverityEnumValuesInPlace(root);
 
     // Assert
-    assertThat((List<Object>) severityNode.get("enum")).containsExactly("blocker", "high", "medium", "low", "info");
+    assertThat((List<Object>) severityNode.get("enum"))
+      .containsExactly("blocker", "high", "medium", "low", "info");
   }
 
   @Test
@@ -573,7 +581,8 @@ class CodeReviewStructuredOutputConverterTest {
   @Test
   void shouldReturnFalse_whenValueIsNotAList() {
     // Act / Assert
-    assertThat(CodeReviewStructuredOutputConverter.isSeverityConstantNameList("not-a-list")).isFalse();
+    assertThat(CodeReviewStructuredOutputConverter.isSeverityConstantNameList("not-a-list"))
+      .isFalse();
     assertThat(CodeReviewStructuredOutputConverter.isSeverityConstantNameList(null)).isFalse();
   }
 
@@ -584,10 +593,12 @@ class CodeReviewStructuredOutputConverterTest {
     schema.put("enum", List.of("BLOCKER", "HIGH", "MEDIUM", "LOW", "INFO"));
 
     // Act
-    Map<String, Object> result = CodeReviewStructuredOutputConverter.correctSeverityEnumValues(schema);
+    Map<String, Object> result =
+      CodeReviewStructuredOutputConverter.correctSeverityEnumValues(schema);
 
     // Assert
     assertThat(result).isSameAs(schema);
-    assertThat((List<Object>) result.get("enum")).containsExactly("blocker", "high", "medium", "low", "info");
+    assertThat((List<Object>) result.get("enum"))
+      .containsExactly("blocker", "high", "medium", "low", "info");
   }
 }

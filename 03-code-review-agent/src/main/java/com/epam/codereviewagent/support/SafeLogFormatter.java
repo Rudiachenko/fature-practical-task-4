@@ -18,20 +18,21 @@ import java.util.regex.Pattern;
  * modified.</b> The original port stripped only {@code \r\n\t} and redacted {@code api-key}/
  * {@code Authorization} substrings, which was sufficient for {@code 01-prompting-llm} because the
  * only attacker-influenceable input reaching it was end-user chat text. In this module,
- * {@link CodeReviewTools#readFile(String)}/{@link CodeReviewTools#exploreRepository(String)} return
- * real, attacker-influenceable repository file content that this class's caller
- * ({@code CodeReviewReactAgent}) can pass straight into a tool-call argument summary or, indirectly
- * (via {@code retrieveCodeLanguage}/{@code getCodebaseContext}'s {@code codeSnippet} argument), into
- * further logged text - so a reviewed file containing a raw ANSI/terminal escape sequence (the ESC
- * code point U+001B followed by a control-sequence body, e.g. {@code "[31m"}) in a comment could
- * forge colored or cursor-moving output in a live log stream once written by any ANSI-aware
- * terminal/log viewer. This class now also strips the full C0 control-character range (including the
- * ESC code point, U+001B, that begins every ANSI escape sequence) and the two Unicode line-separator
- * code points some log viewers honor as line breaks (U+2028 LINE SEPARATOR, U+0085 NEXT LINE/NEL) -
- * neither of which the original {@code \r\n\t}-only pattern touched. (Deliberately described here by
- * code point rather than embedded as literal characters in this Javadoc, to avoid the same
- * authoring-tool/source-encoding fragility already recorded for a literal NUL character in Increment
- * 1's {@code context/PROGRESS.md} entry.)
+ * {@link CodeReviewTools#readFile(String)}/{@link CodeReviewTools#exploreRepository(String)}
+ * return real, attacker-influenceable repository file content that this class's caller
+ * ({@code CodeReviewReactAgent}) can pass straight into a tool-call argument summary or,
+ * indirectly (via {@code retrieveCodeLanguage}/{@code getCodebaseContext}'s
+ * {@code codeSnippet} argument), into further logged text - so a reviewed file containing a raw
+ * ANSI/terminal escape sequence (the ESC code point U+001B followed by a control-sequence body,
+ * e.g. {@code "[31m"}) in a comment could forge colored or cursor-moving output in a live log
+ * stream once written by any ANSI-aware terminal/log viewer. This class now also strips the full
+ * C0 control-character range (including the ESC code point, U+001B, that begins every ANSI escape
+ * sequence) and the two Unicode line-separator code points some log viewers honor as line breaks
+ * (U+2028 LINE SEPARATOR, U+0085 NEXT LINE/NEL) - neither of which the original
+ * {@code \r\n\t}-only pattern touched. (Deliberately described here by code point rather than
+ * embedded as literal characters in this Javadoc, to avoid the same authoring-tool/source-encoding
+ * fragility already recorded for a literal NUL character in Increment 1's
+ * {@code context/PROGRESS.md} entry.)
  */
 public final class SafeLogFormatter {
 
@@ -57,6 +58,13 @@ public final class SafeLogFormatter {
   private SafeLogFormatter() {
   }
 
+  /**
+   * @param value the caller-supplied or repository-derived text to make log-safe; {@code null}
+   *              is accepted and rendered as the literal {@code "<null>"}
+   * @return {@code value} with unsafe control/line-separator characters collapsed to spaces,
+   *         {@code api-key}/{@code Authorization} values redacted, and length bounded to
+   *         {@link #MAX_LOG_VALUE_LENGTH} characters
+   */
   public static String format(String value) {
     if (value == null) {
       return "<null>";

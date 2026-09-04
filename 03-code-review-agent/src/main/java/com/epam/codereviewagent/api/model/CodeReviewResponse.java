@@ -1,7 +1,6 @@
 package com.epam.codereviewagent.api.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.util.List;
 
 /**
@@ -43,13 +42,14 @@ public record CodeReviewResponse(
    * {@code "just a string"}) reaching
    * {@code com.epam.codereviewagent.service.CodeReviewStructuredOutputConverter#convert(String)}
    * would otherwise silently deserialize into a "successful" {@code CodeReviewResponse} with
-   * {@code review} set to that raw string and {@code findings} left empty — indistinguishable from
-   * a genuine "no issues found" result. Explicitly disabling this constructor as a creator forces
-   * Jackson back onto the three-argument canonical constructor's property-based creator for all
-   * JSON deserialization, so a bare JSON scalar (string or number) at the top level correctly fails
-   * with a parse error instead of being silently accepted. This constructor remains fully usable
-   * from ordinary Java code (e.g. Increment 5's evidence-enforcement override) — only its use as a
-   * Jackson creator is disabled. See {@code CodeReviewStructuredOutputConverterTest}'s
+   * {@code review} set to that raw string and {@code findings} left empty — indistinguishable
+   * from a genuine "no issues found" result. Explicitly disabling this constructor as a creator
+   * forces Jackson back onto the three-argument canonical constructor's property-based creator
+   * for all JSON deserialization, so a bare JSON scalar (string or number) at the top level
+   * correctly fails with a parse error instead of being silently accepted. This constructor
+   * remains fully usable from ordinary Java code (e.g. Increment 5's evidence-enforcement
+   * override) — only its use as a Jackson creator is disabled. See
+   * {@code CodeReviewStructuredOutputConverterTest}'s
    * {@code shouldThrowAgentOutputParsingException_whenTopLevelJsonIsABareString}/
    * {@code ...ABareNumber} for the regression tests proving this.
    */

@@ -1,20 +1,19 @@
 package com.epam.codereviewagent.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.epam.codereviewagent.exception.FileNotFoundInRepositoryException;
 import com.epam.codereviewagent.exception.PathSecurityViolationException;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class RepositoryPathResolverTest {
 
@@ -88,16 +87,17 @@ class RepositoryPathResolverTest {
   @Test
   void shouldRejectDriveRelativePath_whenPathOmitsBackslashAfterDriveLetter() {
     // "C:foo" is neither absolute per java.nio.file.Path.isAbsolute() nor traversal-based, but is a
-    // Windows drive-qualified path that must still be rejected as a security violation, not silently
-    // resolved relative to the drive's own current directory.
+    // Windows drive-qualified path that must still be rejected as a security violation, not
+    // silently resolved relative to the drive's own current directory.
     assertSecurityViolation("C:foo");
   }
 
   @Test
   void shouldRejectPathWithIllegalCharacters_whenPathContainsAlternateDataStreamColon() {
-    // On Windows, java.nio.file.Path.of(...) itself rejects an embedded ':' outside the drive-letter
-    // position (verified directly: throws InvalidPathException) - this proves that failure is
-    // converted into a PathSecurityViolationException rather than escaping as a raw NIO exception.
+    // On Windows, java.nio.file.Path.of(...) itself rejects an embedded ':' outside the
+    // drive-letter position (verified directly: throws InvalidPathException) - this proves that
+    // failure is converted into a PathSecurityViolationException rather than escaping as a raw
+    // NIO exception.
     assertSecurityViolation("notes.txt:hidden-stream");
   }
 
@@ -224,8 +224,8 @@ class RepositoryPathResolverTest {
 
   @Test
   void shouldNotThrow_whenValidateSecurityBoundaryIsCalledWithAnOrdinaryInRootRelativePath() {
-    // Neither existence nor "file vs directory" is checked by this method - proved separately below -
-    // but an ordinary, unremarkable in-root path must not throw either.
+    // Neither existence nor "file vs directory" is checked by this method - proved separately
+    // below - but an ordinary, unremarkable in-root path must not throw either.
     assertThatCode(() -> resolver.validateSecurityBoundary("nested/nested-file.txt"))
       .doesNotThrowAnyException();
   }
@@ -241,9 +241,9 @@ class RepositoryPathResolverTest {
 
   @Test
   void shouldNotThrow_whenValidateSecurityBoundaryIsCalledWithASyntacticallyValidButNonExistentPath() {
-    // Existence is deliberately out of scope for this security-only check - a missing file must still
-    // reach the agent so it can honestly report "file not found" itself (Experiment #4's own
-    // dependency on this, per the coordinator's decision).
+    // Existence is deliberately out of scope for this security-only check - a missing file must
+    // still reach the agent so it can honestly report "file not found" itself (Experiment #4's
+    // own dependency on this, per the coordinator's decision).
     assertThatCode(() -> resolver.validateSecurityBoundary("nested/does-not-exist.txt"))
       .doesNotThrowAnyException();
   }
@@ -265,7 +265,8 @@ class RepositoryPathResolverTest {
       return;
     }
 
-    RepositoryPathResolver symlinkAwareResolver = new RepositoryPathResolver(allowedRoot.toString());
+    RepositoryPathResolver symlinkAwareResolver =
+      new RepositoryPathResolver(allowedRoot.toString());
 
     assertThatThrownBy(() -> symlinkAwareResolver.resolveFile("escape-link.txt"))
       .isInstanceOf(PathSecurityViolationException.class);

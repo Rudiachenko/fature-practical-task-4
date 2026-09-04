@@ -1,9 +1,9 @@
 package com.epam.codereviewagent.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -11,13 +11,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 /**
  * Increment 8 — proves the evaluation assets under {@code evaluation/} actually have the exact
- * structure {@code context/PLAN.md}'s Increment 8 Acceptance Criteria require, per
- * {@code context/RETROSPECTIVE.md}'s lesson 7 ("a schema-validating test's coverage is defined by its
+ * structure {@code context/PLAN.md}'s Increment 8 Acceptance Criteria require, per {@code
+ * context/RETROSPECTIVE.md}'s lesson 7 ("a schema-validating test's coverage is defined by its
  * assertions, not its name"): every assertion below walks real JSON structure and checks concrete
  * values, never merely {@code objectMapper.readTree(...)} without a follow-up assertion.
  */
@@ -91,7 +90,8 @@ class EvaluationAssetsTest {
 
     // Act / Assert: every experiment entry must declare a disposition for both halves, so no
     // experiment can silently omit one - each hermeticStatus.status is one of the declared values,
-    // and every experiment declares a non-blank name/trigger/whatToObserve (the ticket's own columns).
+    // and every experiment declares a non-blank name/trigger/whatToObserve (the ticket's own
+    // columns).
     experiments.path("experiments").forEach(experiment -> {
       assertThat(experiment.path("name").asText()).isNotBlank();
       assertThat(experiment.path("trigger").asText()).isNotBlank();
@@ -152,8 +152,9 @@ class EvaluationAssetsTest {
   @Test
   void shouldContainSixModelRunEntriesCoveringEachDeploymentTwiceAllUnpopulated_whenRunTemplateIsLoaded()
     throws Exception {
-    // Arrange: read the schema's own deployment enum rather than re-hardcoding it here, so this test
-    // fails loudly if the template and the schema it must validate against ever drift apart.
+    // Arrange: read the schema's own deployment enum rather than re-hardcoding it here, so this
+    // test fails loudly if the template and the schema it must validate against ever drift
+    // apart.
     JsonNode schema = objectMapper.readTree(MODEL_COMPARISON_SCHEMA.toFile());
     List<String> namedDeployments = textValues(schema.path("properties").path("modelRuns")
       .path("items").path("properties").path("deployment").path("enum"));
@@ -179,8 +180,8 @@ class EvaluationAssetsTest {
         .containsExactlyInAnyOrder(1, 2);
     }
 
-    // Assert: every score/verdict field starts unpopulated, so nobody can later mistake this template
-    // for real, filled-in results.
+    // Assert: every score/verdict field starts unpopulated, so nobody can later mistake this
+    // template for real, filled-in results.
     runs.forEach(run -> {
       String deployment = run.path("deployment").asText();
       assertThat(run.path("status").asText()).as("status for %s", deployment).isEqualTo("PENDING");
@@ -188,7 +189,8 @@ class EvaluationAssetsTest {
       assertThat(run.path("requestTimestampUtc").isNull())
         .as("requestTimestampUtc is null for %s", deployment).isTrue();
       assertThat(run.path("notes").isNull()).as("notes is null for %s", deployment).isTrue();
-      assertThat(run.path("genericTemplatedClaimsFlagged")).as("no flagged claims for %s", deployment)
+      assertThat(run.path("genericTemplatedClaimsFlagged"))
+        .as("no flagged claims for %s", deployment)
         .isEmpty();
       assertThat(run.path("blindSpots")).as("no blind spots for %s", deployment).isEmpty();
       run.path("findingsByCategory").fields().forEachRemaining(category ->
@@ -222,8 +224,8 @@ class EvaluationAssetsTest {
 
     // Assert: assert positively on the script's own zero-failure count rather than a finite list of
     // excluded substrings, which would silently miss FAIL: 6-9 and only catch FAIL: 10-19 by
-    // coincidental substring overlap with the excluded values - this proves zero failures, not merely
-    // the absence of five specific counts.
+    // coincidental substring overlap with the excluded values - this proves zero failures, not
+    // merely the absence of five specific counts.
     assertThat(finished).as("PowerShell harness finished within 60 seconds").isTrue();
     assertThat(output).contains("Hermetic citations checked:");
     assertThat(output).contains("FAIL: 0;");

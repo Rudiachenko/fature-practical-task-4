@@ -1,11 +1,17 @@
 package com.epam.codereviewagent.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.KeyCredential;
 import com.epam.codereviewagent.service.CodeReviewTools;
 import com.epam.codereviewagent.service.ConventionService;
 import com.epam.codereviewagent.support.RecordingChatModel;
 import com.epam.codereviewagent.util.RepositoryPathResolver;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.azure.openai.AzureOpenAiChatModel;
@@ -16,18 +22,12 @@ import org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiChatPr
 import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.tool.ToolCallback;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 /**
- * Focused unit/slice test isolating {@link AgentConfig}'s two {@code @Bean} factory methods, called
- * directly against hand-constructed collaborators (no Spring context). Full-context wiring, including
- * proof that Spring actually invokes these bean methods unconditionally during a real context refresh
- * (Architecture Note A3), is separately proven by {@code HermeticApplicationContextIT}.
+ * Focused unit/slice test isolating {@link AgentConfig}'s two {@code @Bean} factory methods,
+ * called directly against hand-constructed collaborators (no Spring context). Full-context
+ * wiring, including proof that Spring actually invokes these bean methods unconditionally
+ * during a real context refresh (Architecture Note A3), is separately proven by
+ * {@code HermeticApplicationContextIT}.
  */
 class AgentConfigTest {
 
@@ -63,7 +63,8 @@ class AgentConfigTest {
 
     RepositoryPathResolver resolver = agentConfig.repositoryPathResolver(codeReviewProperties);
 
-    assertThat(java.nio.file.Files.isSameFile(resolver.getRoot(), java.nio.file.Path.of(FIXTURE_ROOT)))
+    assertThat(
+      java.nio.file.Files.isSameFile(resolver.getRoot(), java.nio.file.Path.of(FIXTURE_ROOT)))
       .isTrue();
     assertThat(resolver.resolveFile("top-level.txt")).exists();
   }
@@ -72,7 +73,8 @@ class AgentConfigTest {
 
   @Test
   void shouldAttachExactlyTheSixCodeReviewToolsToolCallbacks_whenChatOptionsBeanIsBuilt() {
-    ChatOptions chatOptions = agentConfig.chatOptions(codeReviewTools, defaultAzureOpenAiChatProperties());
+    ChatOptions chatOptions =
+      agentConfig.chatOptions(codeReviewTools, defaultAzureOpenAiChatProperties());
 
     List<ToolCallback> toolCallbacks = ((AzureOpenAiChatOptions) chatOptions).getToolCallbacks();
     Set<String> toolNames = toolCallbacks.stream()
@@ -95,7 +97,8 @@ class AgentConfigTest {
 
   @Test
   void shouldDisableInternalToolExecution_whenChatOptionsBeanIsBuilt() {
-    ChatOptions chatOptions = agentConfig.chatOptions(codeReviewTools, defaultAzureOpenAiChatProperties());
+    ChatOptions chatOptions =
+      agentConfig.chatOptions(codeReviewTools, defaultAzureOpenAiChatProperties());
 
     assertThat(((AzureOpenAiChatOptions) chatOptions).getInternalToolExecutionEnabled()).isFalse();
   }

@@ -1,12 +1,16 @@
 package com.epam.codereviewagent.config;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
 
-import java.util.List;
-
+/**
+ * Configuration properties for the coding-convention documents loaded by {@link
+ * com.epam.codereviewagent.service.ConventionService}, bound under the {@code app.conventions}
+ * prefix.
+ */
 @ConfigurationProperties(prefix = "app.conventions")
 @Getter
 @Setter

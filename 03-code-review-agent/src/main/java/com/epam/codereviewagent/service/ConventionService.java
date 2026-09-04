@@ -1,6 +1,12 @@
 package com.epam.codereviewagent.service;
 
 import com.epam.codereviewagent.config.ConventionProperties;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -9,13 +15,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+/**
+ * Loads coding-convention documents (from {@link ConventionProperties}) at application startup
+ * and serves them back by language to {@code CodeReviewTools#retrieveCodeConvention(String)}.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -24,6 +27,10 @@ public class ConventionService {
   private final ConventionProperties properties;
   private final Map<String, String> conventions = new HashMap<>();
 
+  /**
+   * Reads every configured convention resource and indexes it by language, derived from its
+   * filename prefix (e.g. {@code java-convention.md} -&gt; {@code java}).
+   */
   @EventListener(ApplicationReadyEvent.class)
   public void loadConventions() {
     List<Resource> resources = properties.getResources();
@@ -71,14 +78,14 @@ public class ConventionService {
   /**
    * Get all available language conventions
    */
-  public Map<String, String> getAllConventions() {
+  Map<String, String> getAllConventions() {
     return Map.copyOf(conventions);
   }
 
   /**
    * Get list of supported languages
    */
-  public List<String> getSupportedLanguages() {
+  List<String> getSupportedLanguages() {
     return List.copyOf(conventions.keySet());
   }
 }

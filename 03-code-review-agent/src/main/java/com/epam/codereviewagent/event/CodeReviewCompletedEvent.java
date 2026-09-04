@@ -1,7 +1,6 @@
 package com.epam.codereviewagent.event;
 
 import com.epam.codereviewagent.api.model.CodeReviewResponse;
-
 import java.util.Objects;
 
 /**
@@ -13,9 +12,10 @@ import java.util.Objects;
  * <p><b>Structural decoupling (retry 1, code review Medium finding).</b> This event, not a direct
  * method call, is the only link between the primary review path ({@code CodeReviewController}/
  * {@code CodeReviewReactAgent}) and {@code ExecutiveSummaryEventListener}/{@code
- * ExecutiveSummarySubAgent}: {@code CodeReviewController} only knows how to publish this record via
- * the generic {@link org.springframework.context.ApplicationEventPublisher}; it holds no reference to
- * {@code ExecutiveSummarySubAgent} or {@code ExecutiveSummaryEventListener} at all (grep-verifiable).
+ * ExecutiveSummarySubAgent}: {@code CodeReviewController} only knows how to publish this record
+ * via the generic {@link org.springframework.context.ApplicationEventPublisher}; it holds no
+ * reference to {@code ExecutiveSummarySubAgent} or {@code ExecutiveSummaryEventListener} at all
+ * (grep-verifiable).
  * {@code CodeReviewReactAgent} is untouched by this change and still holds no reference to either
  * class, preserving the isolation already established in Increment 7's original implementation.
  */

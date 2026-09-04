@@ -1,19 +1,19 @@
 package com.epam.codereviewagent.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Loads the real {@code code-review-system-prompt.md} classpath resource and asserts the normative
- * phrases Increment 3's plan requires are actually present. This is a content-regression guard, not a
- * semantic proof: it cannot verify a real model actually behaves as instructed, only that the
+ * phrases Increment 3's plan requires are actually present. This is a content-regression
+ * guard, not a semantic proof: it cannot verify a real model actually behaves as
+ * instructed, only that the
  * instructions are actually shipped in the prompt text a real model would receive.
  */
 class SystemPromptContentTest {
@@ -22,8 +22,8 @@ class SystemPromptContentTest {
 
   /**
    * Whitespace-collapsed (soft line-wraps in the markdown source turned into single spaces),
-   * lowercased view of {@link #promptContent}, used for every multi-word substring assertion below so
-   * this test does not depend on exactly where the prose happens to wrap in the source file.
+   * lowercased view of {@link #promptContent}, used for every multi-word substring assertion below
+   * so this test does not depend on exactly where the prose happens to wrap in the source file.
    */
   private static String normalizedLowerCasePromptContent;
 

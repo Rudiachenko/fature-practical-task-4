@@ -1,10 +1,17 @@
 package com.epam.codereviewagent.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.epam.codereviewagent.api.model.CodeReviewResponse;
 import com.epam.codereviewagent.api.model.Finding;
 import com.epam.codereviewagent.api.model.Severity;
 import com.epam.codereviewagent.config.CodeReviewProperties;
 import com.epam.codereviewagent.support.RecordingChatModel;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.retry.TransientAiException;
@@ -12,24 +19,18 @@ import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 /**
- * Hermetic tests for {@link ExecutiveSummarySubAgent#summarize(CodeReviewResponse)}, using {@link
- * RecordingChatModel} (Increment 2/3's shared hermetic {@code ChatModel} test double) so the exact
- * call count, the captured {@link org.springframework.ai.chat.prompt.Prompt}'s option shape, and the
- * rendered prompt text are all effect-verified, not merely "a non-null summary came back" -
- * per this module's own retrospective lesson (status-verified vs. effect-verified tests).
+ * Hermetic tests for {@link ExecutiveSummarySubAgent#summarize(CodeReviewResponse)}, using
+ * {@link RecordingChatModel} (Increment 2/3's shared hermetic {@code ChatModel} test double)
+ * so the exact call count, the captured {@link org.springframework.ai.chat.prompt.Prompt}'s
+ * option shape, and the rendered prompt text are all effect-verified, not merely "a non-null
+ * summary came back" - per this module's own retrospective lesson (status-verified vs.
+ * effect-verified tests).
  */
 class ExecutiveSummarySubAgentTest {
 
-  private static final String SYSTEM_PROMPT_TEXT = "You are a test executive-summary system prompt.";
+  private static final String SYSTEM_PROMPT_TEXT =
+    "You are a test executive-summary system prompt.";
 
   private RecordingChatModel chatModel;
   private CodeReviewProperties properties;
@@ -39,13 +40,9 @@ class ExecutiveSummarySubAgentTest {
   void setUp() {
     chatModel = new RecordingChatModel();
     properties = new CodeReviewProperties();
-    properties.setExecutiveSummaryPrompt(new ByteArrayResource(SYSTEM_PROMPT_TEXT.getBytes(StandardCharsets.UTF_8)));
+    properties.setExecutiveSummaryPrompt(
+      new ByteArrayResource(SYSTEM_PROMPT_TEXT.getBytes(StandardCharsets.UTF_8)));
     subAgent = new ExecutiveSummarySubAgent(chatModel, properties);
-  }
-
-  private static Finding findingWith(String file, Integer startLine, Integer endLine, String rule,
-                                      Severity severity, String explanation, String recommendation) {
-    return new Finding(file, startLine, endLine, rule, severity, explanation, recommendation);
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -57,7 +54,8 @@ class ExecutiveSummarySubAgentTest {
     // Arrange
     chatModel.setResponse("  Executive summary: two issues found, one high severity.  ");
     CodeReviewResponse response = new CodeReviewResponse("Two issues found.",
-      List.of(findingWith("Foo.java", 10, 12, "rule-1", Severity.HIGH, "explanation", "recommendation")),
+      List.of(
+        findingWith("Foo.java", 10, 12, "rule-1", Severity.HIGH, "explanation", "recommendation")),
       false);
 
     // Act
@@ -340,7 +338,8 @@ class ExecutiveSummarySubAgentTest {
   // ---------------------------------------------------------------------------------------------
 
   @Test
-  void shouldLoadANonBlankPromptWithNoTodoPlaceholder_fromTheRealClasspathResource() throws IOException {
+  void shouldLoadANonBlankPromptWithNoTodoPlaceholder_fromTheRealClasspathResource()
+    throws IOException {
     // Arrange
     CodeReviewProperties realProperties = new CodeReviewProperties();
     realProperties.setExecutiveSummaryPrompt(
@@ -355,6 +354,11 @@ class ExecutiveSummarySubAgentTest {
     String systemPromptText = chatModel.prompts().get(0).getSystemMessage().getText();
     assertThat(systemPromptText).isNotBlank();
     assertThat(systemPromptText).doesNotContain("TODO");
+  }
+
+  private static Finding findingWith(String file, Integer startLine, Integer endLine,
+    String rule, Severity severity, String explanation, String recommendation) {
+    return new Finding(file, startLine, endLine, rule, severity, explanation, recommendation);
   }
 
   private static long countOccurrences(String haystack, String needle) {

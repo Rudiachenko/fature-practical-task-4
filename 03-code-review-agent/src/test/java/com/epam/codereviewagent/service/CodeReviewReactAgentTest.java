@@ -1,5 +1,8 @@
 package com.epam.codereviewagent.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -10,6 +13,12 @@ import com.epam.codereviewagent.exception.AgentOutputParsingException;
 import com.epam.codereviewagent.support.FakeToolCallingManager;
 import com.epam.codereviewagent.util.FileUtils;
 import com.epam.codereviewagent.util.RepositoryPathResolver;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
@@ -26,16 +35,6 @@ import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.ByteArrayResource;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 /**
  * Hermetic tests for {@link CodeReviewReactAgent#interact(String)}, using hand-written fakes
  * ({@link FakeReactChatModel}, {@link FakeToolCallingManager}) with observable call-count/argument
@@ -43,12 +42,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * unambiguous, per this increment's own Test Strategy.
  *
  * <p>{@link CodeReviewStructuredOutputConverter} is used directly, unmocked (it is a plain,
- * dependency-free {@code @Component} with no Spring context required - see Increment 4), so phase 2's
- * real JSON parsing/validation contract is genuinely exercised, not stubbed.
+ * dependency-free {@code @Component} with no Spring context required - see Increment 4), so
+ * phase 2's real JSON parsing/validation contract is genuinely exercised, not stubbed.
  */
 class CodeReviewReactAgentTest {
 
-  private static final String SYSTEM_PROMPT_TEXT = "You are a test system prompt for the ReAct loop.";
+  private static final String SYSTEM_PROMPT_TEXT =
+    "You are a test system prompt for the ReAct loop.";
   private static final String FIXTURE_ROOT = "src/test/resources/fixtures/repo-root";
 
   private CodeReviewProperties properties;
@@ -58,58 +58,11 @@ class CodeReviewReactAgentTest {
   @BeforeEach
   void setUp() {
     properties = new CodeReviewProperties();
-    properties.setSystemPrompt(new ByteArrayResource(SYSTEM_PROMPT_TEXT.getBytes(StandardCharsets.UTF_8)));
+    properties.setSystemPrompt(
+      new ByteArrayResource(SYSTEM_PROMPT_TEXT.getBytes(StandardCharsets.UTF_8)));
     properties.setMaxIterations(8);
     fakeToolCallingManager = new FakeToolCallingManager();
     structuredOutputConverter = new CodeReviewStructuredOutputConverter();
-  }
-
-  private CodeReviewReactAgent agentWith(ChatModel chatModel, ChatOptions chatOptions) {
-    return new CodeReviewReactAgent(chatModel, chatOptions, fakeToolCallingManager, properties,
-      structuredOutputConverter);
-  }
-
-  private static AzureOpenAiChatOptions optionsWithToolCallbacks() {
-    return AzureOpenAiChatOptions.builder()
-      .deploymentName("test-deployment")
-      .toolCallbacks(List.of(fakeToolCallback()))
-      .internalToolExecutionEnabled(false)
-      .build();
-  }
-
-  private static ToolCallback fakeToolCallback() {
-    return new ToolCallback() {
-      @Override
-      public ToolDefinition getToolDefinition() {
-        return ToolDefinition.builder()
-          .name("fakeTool")
-          .description("A fake tool callback used only to prove phase 1 vs phase 2 option separation.")
-          .inputSchema("{}")
-          .build();
-      }
-
-      @Override
-      public String call(String toolInput) {
-        return "unused";
-      }
-    };
-  }
-
-  private static AssistantMessage.ToolCall toolCall(String id, String toolName, String argumentsJson) {
-    return new AssistantMessage.ToolCall(id, "function", toolName, argumentsJson);
-  }
-
-  private static ChatResponse toolCallResponse(AssistantMessage.ToolCall... toolCalls) {
-    return new ChatResponse(List.of(new Generation(
-      AssistantMessage.builder().toolCalls(List.of(toolCalls)).build())));
-  }
-
-  private static ChatResponse textResponse(String text) {
-    return new ChatResponse(List.of(new Generation(new AssistantMessage(text))));
-  }
-
-  private static String wrappedRealContent(String content) {
-    return CodeReviewTools.CODE_SNIPPET_BEGIN_MARKER + content + CodeReviewTools.CODE_SNIPPET_END_MARKER;
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -151,7 +104,8 @@ class CodeReviewReactAgentTest {
     fakeToolCallingManager.setToolResponseFunction(assistantMessage -> {
       AssistantMessage.ToolCall call = assistantMessage.getToolCalls().get(0);
       return ToolResponseMessage.builder()
-        .responses(List.of(new ToolResponseMessage.ToolResponse(call.id(), call.name(), "irrelevant")))
+        .responses(
+          List.of(new ToolResponseMessage.ToolResponse(call.id(), call.name(), "irrelevant")))
         .build();
     });
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
@@ -191,8 +145,9 @@ class CodeReviewReactAgentTest {
 
   @Test
   void shouldThrowAgentIterationLimitExceededExceptionWithZeroChatModelCalls_whenMaxIterationsIsNegative() {
-    // Arrange: same honest-exhaustion path as maxIterations=0 - a negative configured value must not
-    // be treated as "unlimited" or otherwise misbehave, just fail the same way, immediately.
+    // Arrange: same honest-exhaustion path as maxIterations=0 - a negative configured value
+    // must not be treated as "unlimited" or otherwise misbehave, just fail the same way,
+    // immediately.
     properties.setMaxIterations(-1);
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of());
     CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
@@ -206,14 +161,16 @@ class CodeReviewReactAgentTest {
 
   @Test
   void shouldThrowAgentIterationLimitExceededExceptionAfterExactlyOneChatModelCall_whenMaxIterationsIsOneAndModelRequestsATool() {
-    // Arrange: maxIterations=1 allows exactly one chatModel call; if the model uses that one call to
-    // request a tool rather than answering, the loop exhausts immediately afterward - one call, one
-    // tool-execution batch, then the honest exhaustion exception, never a partial/fabricated answer.
+    // Arrange: maxIterations=1 allows exactly one chatModel call; if the model uses that one
+    // call to request a tool rather than answering, the loop exhausts immediately afterward -
+    // one call, one tool-execution batch, then the honest exhaustion exception, never a
+    // partial/fabricated answer.
     properties.setMaxIterations(1);
     fakeToolCallingManager.setToolResponseFunction(assistantMessage -> {
       AssistantMessage.ToolCall call = assistantMessage.getToolCalls().get(0);
       return ToolResponseMessage.builder()
-        .responses(List.of(new ToolResponseMessage.ToolResponse(call.id(), call.name(), "irrelevant")))
+        .responses(
+          List.of(new ToolResponseMessage.ToolResponse(call.id(), call.name(), "irrelevant")))
         .build();
     });
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
@@ -229,9 +186,10 @@ class CodeReviewReactAgentTest {
 
   @Test
   void shouldReturnPopulatedResponseAfterExactlyOnePhaseOneCall_whenMaxIterationsIsOneAndModelAnswersImmediately() {
-    // Arrange: maxIterations=1 must not be mistaken for "always exhausted" - a model that answers on
-    // its very first phase-1 call (no tool calls requested) still gets a normal, successful outcome:
-    // exactly 1 phase-1 call plus phase 2's own structured-output call, no exception at all.
+    // Arrange: maxIterations=1 must not be mistaken for "always exhausted" - a model that
+    // answers on its very first phase-1 call (no tool calls requested) still gets a normal,
+    // successful outcome: exactly 1 phase-1 call plus phase 2's own structured-output call, no
+    // exception at all.
     properties.setMaxIterations(1);
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
       textResponse("no tools needed; answering immediately."),
@@ -264,8 +222,10 @@ class CodeReviewReactAgentTest {
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
       toolCallResponse(toolCall("call-1", "readFile", "{\"relativePath\":\"missing.txt\"}")),
       textResponse("I could not find the file, but I will report findings anyway."),
-      textResponse("{\"review\":\"Found issues.\",\"findings\":[{\"file\":\"missing.txt\",\"startLine\":1,"
-        + "\"endLine\":1,\"rule\":\"fabricated-rule\",\"severity\":\"high\",\"explanation\":\"fabricated\","
+      textResponse("{\"review\":\"Found issues.\","
+        + "\"findings\":[{\"file\":\"missing.txt\",\"startLine\":1,"
+        + "\"endLine\":1,\"rule\":\"fabricated-rule\","
+        + "\"severity\":\"high\",\"explanation\":\"fabricated\","
         + "\"recommendation\":\"fabricated\"}],\"truncated\":false}")));
     CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
 
@@ -280,29 +240,34 @@ class CodeReviewReactAgentTest {
   @Test
   void shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings() {
     // Arrange: retry 1 (code review, High finding) - context/TICKET.md's Experiment #4 trigger,
-    // "Make readFile return empty". Uses the real, production CodeReviewTools.readFile(...) against a
-    // real, in-root, zero-byte fixture file, so the tool response fed into the fake tool-calling
-    // manager below is the actual message Increment 2 produces - not a hand-constructed literal that
-    // merely resembles it - proving the fix tracks the real sentinel, not an assumption about its text.
+    // "Make readFile return empty". Uses the real, production CodeReviewTools.readFile(...)
+    // against a real, in-root, zero-byte fixture file, so the tool response fed into the fake
+    // tool-calling manager below is the actual message Increment 2 produces - not a
+    // hand-constructed literal that merely resembles it - proving the fix tracks the real
+    // sentinel, not an assumption about its text.
     RepositoryPathResolver repositoryPathResolver = new RepositoryPathResolver(FIXTURE_ROOT);
     CodeReviewTools realTools = new CodeReviewTools(repositoryPathResolver, null, null, properties);
     String emptyFileMessage = realTools.readFile("empty.txt");
     // Sanity check on the fixture/message shape this test relies on: the empty-file sentinel must
-    // never be READ_ERROR_PREFIX-prefixed (Increment 2's own design decision) - if that ever changed,
+    // never be READ_ERROR_PREFIX-prefixed (Increment 2's own design decision) - if that ever
+    // changed,
     // this test would otherwise degenerate into testing the already-covered error-sentinel case.
     assertThat(emptyFileMessage).doesNotStartWith(FileUtils.READ_ERROR_PREFIX);
 
     fakeToolCallingManager.setToolResponseFunction(assistantMessage -> {
       AssistantMessage.ToolCall call = assistantMessage.getToolCalls().get(0);
       return ToolResponseMessage.builder()
-        .responses(List.of(new ToolResponseMessage.ToolResponse(call.id(), call.name(), emptyFileMessage)))
+        .responses(
+          List.of(new ToolResponseMessage.ToolResponse(call.id(), call.name(), emptyFileMessage)))
         .build();
     });
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
       toolCallResponse(toolCall("call-1", "readFile", "{\"relativePath\":\"empty.txt\"}")),
       textResponse("The file is empty, but I will report findings anyway."),
-      textResponse("{\"review\":\"Found issues.\",\"findings\":[{\"file\":\"empty.txt\",\"startLine\":1,"
-        + "\"endLine\":1,\"rule\":\"fabricated-rule\",\"severity\":\"high\",\"explanation\":\"fabricated\","
+      textResponse("{\"review\":\"Found issues.\","
+        + "\"findings\":[{\"file\":\"empty.txt\",\"startLine\":1,"
+        + "\"endLine\":1,\"rule\":\"fabricated-rule\","
+        + "\"severity\":\"high\",\"explanation\":\"fabricated\","
         + "\"recommendation\":\"fabricated\"}],\"truncated\":false}")));
     CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
 
@@ -325,10 +290,13 @@ class CodeReviewReactAgentTest {
         .build();
     });
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
-      toolCallResponse(toolCall("call-1", "exploreRepository", "{\"relativeDirectoryPath\":\".\"}")),
+      toolCallResponse(
+        toolCall("call-1", "exploreRepository", "{\"relativeDirectoryPath\":\".\"}")),
       textResponse("Directory explored, reporting findings without reading any file."),
-      textResponse("{\"review\":\"Found issues.\",\"findings\":[{\"file\":\"a.txt\",\"startLine\":1,"
-        + "\"endLine\":1,\"rule\":\"r\",\"severity\":\"low\",\"explanation\":\"e\",\"recommendation\":\"r\"}],"
+      textResponse("{\"review\":\"Found issues.\","
+        + "\"findings\":[{\"file\":\"a.txt\",\"startLine\":1,"
+        + "\"endLine\":1,\"rule\":\"r\",\"severity\":\"low\","
+        + "\"explanation\":\"e\",\"recommendation\":\"r\"}],"
         + "\"truncated\":false}")));
     CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
 
@@ -344,7 +312,8 @@ class CodeReviewReactAgentTest {
   void shouldNotOverride_whenModelHonestlyReportsNoFindingsDespiteNoEvidence() {
     // Arrange: no tool calls at all in phase 1 (natural exit on the first call, its own text
     // discarded per A5), and phase 2's structured answer already has empty findings - nothing
-    // fabricated to correct, so the override must not fire and the model's own honest text survives.
+    // fabricated to correct, so the override must not fire and the model's own honest text
+    // survives.
     FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
       textResponse("no tools needed; nothing to report."),
       textResponse("{\"review\":\"Nothing to report; no evidence was gathered.\",\"findings\":[],"
@@ -524,7 +493,8 @@ class CodeReviewReactAgentTest {
     assertThat(prompts.get(0).getOptions()).isSameAs(phaseOneOptions);
 
     ChatOptions phaseTwoOptionsUsed = prompts.get(1).getOptions();
-    assertThat(phaseTwoOptionsUsed).isNotSameAs(phaseOneOptions).isInstanceOf(AzureOpenAiChatOptions.class);
+    assertThat(phaseTwoOptionsUsed).isNotSameAs(phaseOneOptions)
+      .isInstanceOf(AzureOpenAiChatOptions.class);
     AzureOpenAiChatOptions azurePhaseTwoOptions = (AzureOpenAiChatOptions) phaseTwoOptionsUsed;
     assertThat(azurePhaseTwoOptions.getToolCallbacks()).isEmpty();
     assertThat(azurePhaseTwoOptions.getResponseFormat()).isNotNull();
@@ -570,6 +540,57 @@ class CodeReviewReactAgentTest {
     }
   }
 
+  private CodeReviewReactAgent agentWith(ChatModel chatModel, ChatOptions chatOptions) {
+    return new CodeReviewReactAgent(chatModel, chatOptions, fakeToolCallingManager, properties,
+      structuredOutputConverter);
+  }
+
+  private static AzureOpenAiChatOptions optionsWithToolCallbacks() {
+    return AzureOpenAiChatOptions.builder()
+      .deploymentName("test-deployment")
+      .toolCallbacks(List.of(fakeToolCallback()))
+      .internalToolExecutionEnabled(false)
+      .build();
+  }
+
+  private static ToolCallback fakeToolCallback() {
+    return new ToolCallback() {
+      @Override
+      public ToolDefinition getToolDefinition() {
+        return ToolDefinition.builder()
+          .name("fakeTool")
+          .description(
+            "A fake tool callback used only to prove phase 1 vs phase 2 option separation.")
+          .inputSchema("{}")
+          .build();
+      }
+
+      @Override
+      public String call(String toolInput) {
+        return "unused";
+      }
+    };
+  }
+
+  private static AssistantMessage.ToolCall toolCall(
+    String id, String toolName, String argumentsJson) {
+    return new AssistantMessage.ToolCall(id, "function", toolName, argumentsJson);
+  }
+
+  private static ChatResponse toolCallResponse(AssistantMessage.ToolCall... toolCalls) {
+    return new ChatResponse(List.of(new Generation(
+      AssistantMessage.builder().toolCalls(List.of(toolCalls)).build())));
+  }
+
+  private static ChatResponse textResponse(String text) {
+    return new ChatResponse(List.of(new Generation(new AssistantMessage(text))));
+  }
+
+  private static String wrappedRealContent(String content) {
+    return CodeReviewTools.CODE_SNIPPET_BEGIN_MARKER + content
+      + CodeReviewTools.CODE_SNIPPET_END_MARKER;
+  }
+
   /**
    * Hermetic {@link ChatModel} test double purpose-built for exact-call-count control-flow proofs:
    * an ordered queue of canned {@link ChatResponse}s, one per expected {@code call(Prompt)}
@@ -595,7 +616,8 @@ class CodeReviewReactAgentTest {
       ChatResponse next = queuedResponses.pollFirst();
       if (next == null) {
         throw new IllegalStateException(
-          "FakeReactChatModel ran out of queued responses after " + recordedPrompts.size() + " call(s)");
+          "FakeReactChatModel ran out of queued responses after " + recordedPrompts.size()
+            + " call(s)");
       }
       return next;
     }

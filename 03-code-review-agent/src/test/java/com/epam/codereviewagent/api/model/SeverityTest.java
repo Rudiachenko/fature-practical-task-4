@@ -1,18 +1,19 @@
 package com.epam.codereviewagent.api.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SeverityTest {
 
   private final ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
   @Test
-  void shouldSerializeAndDeserializeExactLowercaseJsonString_whenSeverityIsBlocker() throws Exception {
+  void shouldSerializeAndDeserializeExactLowercaseJsonString_whenSeverityIsBlocker()
+    throws Exception {
     // Arrange
     Severity severity = Severity.BLOCKER;
 
@@ -40,7 +41,8 @@ class SeverityTest {
   }
 
   @Test
-  void shouldSerializeAndDeserializeExactLowercaseJsonString_whenSeverityIsMedium() throws Exception {
+  void shouldSerializeAndDeserializeExactLowercaseJsonString_whenSeverityIsMedium()
+    throws Exception {
     // Arrange
     Severity severity = Severity.MEDIUM;
 
@@ -100,7 +102,8 @@ class SeverityTest {
   // ---------------------------------------------------------------------------------------
 
   @Test
-  void shouldAcceptFullyUppercaseSeverityValue_whenDeserializingUppercaseVariantOfAValidSeverity() throws Exception {
+  void shouldAcceptFullyUppercaseSeverityValue_whenDeserializingUppercaseVariantOfAValidSeverity()
+    throws Exception {
     // Arrange
     String json = "\"HIGH\"";
 
@@ -112,7 +115,8 @@ class SeverityTest {
   }
 
   @Test
-  void shouldAcceptTitleCaseSeverityValue_whenDeserializingTitleCaseVariantOfAValidSeverity() throws Exception {
+  void shouldAcceptTitleCaseSeverityValue_whenDeserializingTitleCaseVariantOfAValidSeverity()
+    throws Exception {
     // Arrange
     String json = "\"High\"";
 
@@ -124,7 +128,8 @@ class SeverityTest {
   }
 
   @Test
-  void shouldAcceptLowercaseSeverityValue_whenDeserializingTheCanonicalLowercaseForm() throws Exception {
+  void shouldAcceptLowercaseSeverityValue_whenDeserializingTheCanonicalLowercaseForm()
+    throws Exception {
     // Arrange
     String json = "\"high\"";
 
@@ -136,7 +141,8 @@ class SeverityTest {
   }
 
   @Test
-  void shouldAcceptAndTrimSurroundingWhitespace_whenDeserializingAPaddedSeverityValue() throws Exception {
+  void shouldAcceptAndTrimSurroundingWhitespace_whenDeserializingAPaddedSeverityValue()
+    throws Exception {
     // Arrange: this project's documented decision is to trim - see Severity's own Javadoc.
     String json = "\" high \"";
 
