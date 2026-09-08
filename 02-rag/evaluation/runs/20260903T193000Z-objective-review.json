@@ -1,0 +1,3003 @@
+{
+  "schemaVersion": 2,
+  "status": "COMPLETED",
+  "reviewType": "agent-review",
+  "schema": "evaluation/objective-review-schema.json",
+  "sourceRunArtifact": "evaluation/runs/20260903T193000Z.json",
+  "chunkManifestArtifact": "evaluation/runs/20260903T193000Z-chunk-manifest.json",
+  "reviewedAtUtc": "2026-09-03T09:11:55Z",
+  "reviewAudit": {
+    "previousRecordedReviewedAtUtc": "2026-09-03T20:10:00Z",
+    "timestampNote": "The previous review timestamp lay in the future at audit time. reviewedAtUtc now records this artifact audit, not the live execution time; sourceRunArtifact.generatedAtUtc is the capture timestamp.",
+    "scope": "Schema repair, recomputed aggregate metrics, source-reference integrity, offline manifest reproduction and documentation reconciliation. No live calls or per-result semantic verdict changes.",
+    "verifiedRepositoryCommit": "d7d572fbd3133b4c408547e4fc5b1205f307cdf0"
+  },
+  "reviewMethod": [
+    "response-vs-rubric",
+    "reconstructed-ingestion-manifest",
+    "chunk-content-inspection"
+  ],
+  "generatorSelection": {
+    "configuredDefaultDeployment": "gpt-5-mini-2025-08-07",
+    "resolvedDeployment": "gpt-5-mini-2025-08-07",
+    "usedConfiguredDefault": false,
+    "note": "This run sets the deployment explicitly for every generator, because the model-comparison sweep needs all three. The companion run evaluation/runs/20260903T190000Z-configured-default.json exercises the same five core-contract questions with no override at all (usedConfiguredDefault true, deploymentEnvironmentVariable empty) and is the proof that the configured default is the deployment measured here."
+  },
+  "evidenceBasis": {
+    "corpus": "EPAM_JavaSecureCodingGD.md",
+    "ingestionLocation": "file:02-rag/EPAM_JavaSecureCodingGD.md",
+    "documentId": "1b3b73274a3e2a46bec8c33a588887ae2423bdfc9e4f318fbbae33a603d5a2ab",
+    "corpusFingerprint": "eec3a631901e203ac3095a7b84b8fd79dd5aabfb2afef67923236e90e03a3be6",
+    "manifestChunkCount": 41,
+    "chunkIdFormula": "sha256(documentId | chunkIndex | chunkText | embeddingModel)",
+    "embeddingDeployment": "text-embedding-3-small-1",
+    "collection": "task2-evaluation-20260903T193000Z",
+    "retrievalConfiguration": "topK 5, similarityThreshold 0.3, mmr-enabled false - the shipped defaults",
+    "reconstruction": "The index was rebuilt offline by driving the committed ingestion pipeline (DocumentReaderFactory -> ProvenanceDocumentTransformer, including the heading-only-stub filter) with the shipped app.documents.processing defaults. No embedding call, no vector store and no network access are involved.",
+    "reproduction": {
+      "repositoryCommit": "ec1d7f80857a97ad3e60ba428e9cdbf2b6abdc4c",
+      "workingTreeCleanFor": [
+        "This run was captured against uncommitted changes on top of ec1d7f8: the default generator moved from gpt-4o to gpt-5-mini-2025-08-07 in src/main/resources/application.yml, the system prompt gained the rule that its enumeration stays internal, GeneratorDeploymentReporter was added, and scripts/run-live-evaluation.ps1 gained -UseConfiguredDefaultGenerator.",
+        "The corpus file 02-rag/EPAM_JavaSecureCodingGD.md is unmodified."
+      ],
+      "toolchain": "JDK 21 (Corretto 21.0.6), invoked via $env:JAVA_HOME to avoid an older java on PATH",
+      "tool": "evaluation/tools/ManifestDump.java",
+      "commands": [
+        ".\\mvnw.cmd -pl 02-rag clean package '-DskipTests'",
+        "jar xf 02-rag/target/02-rag-0.0.1-SNAPSHOT-exec.jar BOOT-INF/lib BOOT-INF/classes (into a scratch directory)",
+        "javac -cp classes;lib/* -d out evaluation/tools/ManifestDump.java",
+        "java -cp out;classes;lib/* com.epam.docqachatbot.ingestion.ManifestDump 02-rag/EPAM_JavaSecureCodingGD.md file:02-rag/EPAM_JavaSecureCodingGD.md EPAM_JavaSecureCodingGD.md text-embedding-3-small-1 <output>"
+      ],
+      "manifestDeterminism": "Manifest content is determined by the ingestion classes, corpus bytes, ingest location and embedding-model name. Serialized bytes also depend on line-ending convention.",
+      "expectedOutcome": "Offline reproduction at d7d572fbd3133b4c408547e4fc5b1205f307cdf0 yields the same 41 chunks, IDs, content hashes and metadata. JSON content and bytes after CRLF/LF normalization match the committed manifest; literal file hashes differ because of line endings."
+    },
+    "verification": "Independently checked all 35 raw/review result identities and all 183 source references against the 41-chunk manifest. Recomputed per-source counts: 88 direct, 44 contextual, 51 irrelevant. Reproduced the manifest offline at the audited repository commit; content matches after line-ending normalization.",
+    "notRun": [
+      "No new DIAL or Chroma evaluation was executed during this audit.",
+      "The raw live captures contain no source Git SHA or executable digest that independently binds them to the audited commit.",
+      "The reported 20-per-generator repetition study has no complete linked raw evidence in evaluation/runs and is not used for current model-selection claims."
+    ]
+  },
+  "axisDefinitions": {
+    "answerStatus": "Response text only, judged against evaluation/questions.json and the README. Extra returned sources never affect it.",
+    "sourceTraceabilityStatus": "Every nonblank chunkId exists in this run's manifest and its documentName matches the chunk metadata.",
+    "sourceCoverageStatus": "At least one returned chunk directly supports every material claim the answer uses to satisfy the rubric. An omission is scored on answerStatus, not here; an unsupported or contradicted claim fails here. An exact refusal with no sources is PASS only for a genuinely unsupported question.",
+    "sourcePrecision": "Measured, not a verdict. Every returned chunkId is classified individually in classifiedSources: direct substantiates a named claim, contextual is on-topic but unused, irrelevant is unrelated. precisionAtK = (direct + contextual) / returned, null when nothing was returned.",
+    "readmeScope": "Which README obligation a result exercises: core-contract, model-comparison, experiment-default-config, or experiment-variant.",
+    "requirementStatus": "Present for every readmeScope except experiment-variant. PASS only when both answerStatus and sourceCoverageStatus are PASS.",
+    "fiveBulletSummaryRule": "Exactly five bullets, no preface/conclusion, every bullet grounded and about a different topic; document ownership/approval/review is administrative, never a security theme."
+  },
+  "results": [
+    {
+      "resultNumber": 1,
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Simple",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 3,
+        "precisionAtK": 0.4,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the prohibition on storing secrets in code or data and the insufficiency of code obfuscation (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "1 INTRODUCTION is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+            "chunkIndex": 12,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Names all three examples the policy gives and both reasons obfuscation is insufficient. Both parts of the two-part question are answered and every claim is grounded in 2.1.6.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 2,
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Detail",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "FAIL",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "FAIL",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 2,
+        "irrelevantSourceCount": 2,
+        "precisionAtK": 0.6,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+            "chunkIndex": 19,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.3 Define Wrappers Around Native Methods",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.3: do not declare a native method public; declare it private and expose its functionality through a public Java-based wrapper that clones mutable input and validates offset < 0 || len < 0 || offset > data.length - len."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+            "chunkIndex": 39,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "States the private native method, the public Java wrapper and the defensive copy, but gives the bounds check in the addition form - \"Ensure offset + length does not exceed the bounds of the input data array\" - which is the computation 2.3.3 explicitly warns overflows. The policy prescribes the subtraction form offset > data.length - len, and this answer never states it. Coverage fails with it: no returned chunk supports the addition-form check, because the retrieved passage says the opposite.",
+      "requirementStatus": "FAIL"
+    },
+    {
+      "resultNumber": 3,
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Synthesis",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.8,
+        "evidenceComment": "3 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+            "chunkIndex": 20,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.4 Normalize Strings before Validating them",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.4: normalize strings before validating them, because the same Unicode string has several representations and blacklisting alone is insufficient."
+          },
+          {
+            "chunkId": "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+            "chunkIndex": 21,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.5 Do not Log Unsensitized User Input",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.5: do not log unsensitized user input; unsanitized log input allows log injection, forged entries and data leakage across a trust boundary."
+          },
+          {
+            "chunkId": "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+            "chunkIndex": 17,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.1: input from untrusted sources must be validated before use, after any defensive copy, against attacks such as integer overflow and directory traversal."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for handling untrusted text from validation through Unicode normalization to logging (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information is unrelated to handling untrusted text from validation through Unicode normalization to logging and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Covers all three named sections in order: validate untrusted input after defensive copying (2.3.1), normalize before validating (2.3.4), sanitize before logging with the log-injection consequence (2.3.5).",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 4,
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Analysis",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.8,
+        "evidenceComment": "3 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+            "chunkIndex": 11,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.4 Make Everything Final",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.2.4: make everything final unless there is a good reason not to, because a non-final class or method can be extended in dangerous and unforeseen ways - at the cost of extensibility."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for making classes and methods final, least privilege, and the extensibility trade-off (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+            "chunkIndex": 3,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.3: operate with reduced privileges (principle of least privilege), statically through policy files and dynamically through java.security.AccessController.doPrivileged."
+          },
+          {
+            "chunkId": "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a",
+            "chunkIndex": 28,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope is unrelated to making classes and methods final, least privilege, and the extensibility trade-off and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Separates the two mechanisms and states the acknowledged loss of extensibility.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 5,
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "FiveBulletSummary",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "Exactly five bullets, five distinct passages, five distinct themes, no governance content and no preface.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 6,
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Simple",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 3,
+        "precisionAtK": 0.4,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the prohibition on storing secrets in code or data and the insufficiency of code obfuscation (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "1 INTRODUCTION is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+            "chunkIndex": 12,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Answers both parts from 2.1.6, including the hostile-JVM reason.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 7,
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Detail",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "FAIL",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 2,
+        "irrelevantSourceCount": 2,
+        "precisionAtK": 0.6,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+            "chunkIndex": 19,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.3 Define Wrappers Around Native Methods",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.3: do not declare a native method public; declare it private and expose its functionality through a public Java-based wrapper that clones mutable input and validates offset < 0 || len < 0 || offset > data.length - len."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+            "chunkIndex": 39,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "States the defensive copy, the non-negative checks and the correct subtraction-form bound, but never states that the native method must be private or that its functionality must be exposed through a public Java wrapper - both of which the retrieved 2.3.3 passage states. Coverage passes: every claim the answer does make is supported by a returned chunk; the failure is omission, which is scored on answerStatus.",
+      "requirementStatus": "FAIL"
+    },
+    {
+      "resultNumber": 8,
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Synthesis",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.8,
+        "evidenceComment": "3 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+            "chunkIndex": 20,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.4 Normalize Strings before Validating them",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.4: normalize strings before validating them, because the same Unicode string has several representations and blacklisting alone is insufficient."
+          },
+          {
+            "chunkId": "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+            "chunkIndex": 21,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.5 Do not Log Unsensitized User Input",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.5: do not log unsensitized user input; unsanitized log input allows log injection, forged entries and data leakage across a trust boundary."
+          },
+          {
+            "chunkId": "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+            "chunkIndex": 17,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.1: input from untrusted sources must be validated before use, after any defensive copy, against attacks such as integer overflow and directory traversal."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for handling untrusted text from validation through Unicode normalization to logging (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information is unrelated to handling untrusted text from validation through Unicode normalization to logging and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Covers normalization before validation, validation after defensive copying, and log sanitization with its consequence. Terser than the other two generators but complete on the three named sections.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 9,
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Analysis",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.8,
+        "evidenceComment": "3 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+            "chunkIndex": 11,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.4 Make Everything Final",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.2.4: make everything final unless there is a good reason not to, because a non-final class or method can be extended in dangerous and unforeseen ways - at the cost of extensibility."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for making classes and methods final, least privilege, and the extensibility trade-off (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+            "chunkIndex": 3,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.3: operate with reduced privileges (principle of least privilege), statically through policy files and dynamically through java.security.AccessController.doPrivileged."
+          },
+          {
+            "chunkId": "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a",
+            "chunkIndex": 28,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope is unrelated to making classes and methods final, least privilege, and the extensibility trade-off and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Separates the two mechanisms and states the acknowledged loss of extensibility.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 10,
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "FiveBulletSummary",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "model-comparison",
+      "readmeScopeReason": "A generator other than the shipped default answering the same five questions on the same fixed index - the README's separate model-choice subtask, not the module's core contract.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "Exactly five bullets from five distinct passages, no governance content. Bullet 3 paraphrases 2.1.1 awkwardly but preserves its sense.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 11,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Simple",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "core-contract",
+      "readmeScopeReason": "gpt-5-mini-2025-08-07, the shipped default generator, answering a rubric question at the shipped default retrieval configuration (topK 5, similarityThreshold 0.3, no query transformation, expansion or MMR). This is the module's primary README requirement.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 3,
+        "precisionAtK": 0.4,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the prohibition on storing secrets in code or data and the insufficiency of code obfuscation (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "1 INTRODUCTION is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+            "chunkIndex": 12,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Names all three examples and both reasons, quoting the policy for the obfuscation clause, with nothing outside the context.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 12,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Detail",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "core-contract",
+      "readmeScopeReason": "gpt-5-mini-2025-08-07, the shipped default generator, answering a rubric question at the shipped default retrieval configuration (topK 5, similarityThreshold 0.3, no query transformation, expansion or MMR). This is the module's primary README requirement.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 2,
+        "irrelevantSourceCount": 2,
+        "precisionAtK": 0.6,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+            "chunkIndex": 19,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.3 Define Wrappers Around Native Methods",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.3: do not declare a native method public; declare it private and expose its functionality through a public Java-based wrapper that clones mutable input and validates offset < 0 || len < 0 || offset > data.length - len."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+            "chunkIndex": 39,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Rubric-complete: the private native method, the public Java wrapper, the defensive copy (data.clone()), and the bound in the subtraction form the policy prescribes (offset <= data.length - len, with the guard shown as offset > data.length - len). It states explicitly that the check must avoid computing offset+len directly, which is the reason the policy gives for the subtraction form.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 13,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Synthesis",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "core-contract",
+      "readmeScopeReason": "gpt-5-mini-2025-08-07, the shipped default generator, answering a rubric question at the shipped default retrieval configuration (topK 5, similarityThreshold 0.3, no query transformation, expansion or MMR). This is the module's primary README requirement.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.8,
+        "evidenceComment": "3 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+            "chunkIndex": 20,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.4 Normalize Strings before Validating them",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.4: normalize strings before validating them, because the same Unicode string has several representations and blacklisting alone is insufficient."
+          },
+          {
+            "chunkId": "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+            "chunkIndex": 21,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.5 Do not Log Unsensitized User Input",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.5: do not log unsensitized user input; unsanitized log input allows log injection, forged entries and data leakage across a trust boundary."
+          },
+          {
+            "chunkId": "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+            "chunkIndex": 17,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.1: input from untrusted sources must be validated before use, after any defensive copy, against attacks such as integer overflow and directory traversal."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for handling untrusted text from validation through Unicode normalization to logging (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information is unrelated to handling untrusted text from validation through Unicode normalization to logging and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Covers all three named sections and preserves both ordering constraints the policy states - validation after defensive copying, normalization before validation - and adds the policy's own caveat that blacklisting alone is insufficient.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 14,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Analysis",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "core-contract",
+      "readmeScopeReason": "gpt-5-mini-2025-08-07, the shipped default generator, answering a rubric question at the shipped default retrieval configuration (topK 5, similarityThreshold 0.3, no query transformation, expansion or MMR). This is the module's primary README requirement.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.8,
+        "evidenceComment": "3 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+            "chunkIndex": 11,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.4 Make Everything Final",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.2.4: make everything final unless there is a good reason not to, because a non-final class or method can be extended in dangerous and unforeseen ways - at the cost of extensibility."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for making classes and methods final, least privilege, and the extensibility trade-off (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+            "chunkIndex": 3,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.3: operate with reduced privileges (principle of least privilege), statically through policy files and dynamically through java.security.AccessController.doPrivileged."
+          },
+          {
+            "chunkId": "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a",
+            "chunkIndex": 28,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope is unrelated to making classes and methods final, least privilege, and the extensibility trade-off and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Distinguishes the two mechanisms, quotes the policy for each, and identifies the acknowledged trade-off in the policy's own words (\"loss of extensibility\" in exchange for security).",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 15,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "FiveBulletSummary",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "core-contract",
+      "readmeScopeReason": "gpt-5-mini-2025-08-07, the shipped default generator, answering a rubric question at the shipped default retrieval configuration (topK 5, similarityThreshold 0.3, no query transformation, expansion or MMR). This is the module's primary README requirement.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "Exactly five bullets, no preface or conclusion, each grounded in a different retrieved passage and about a different theme: following the guidelines (1 INTRODUCTION), API security documentation (2.1.5), obviously-no-flaws design (2.1.1), designing APIs for security including finality (2.1.2), and minimizing permission checks in favour of capabilities (2.1.4). No bullet states who owns, approves, reviews or publishes the document, even though the INTRODUCTION passage it uses contains that sentence.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 16,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "TopK",
+      "case": "topK-1",
+      "experimentObservation": "topK-1: 1 returned sources, 8261 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 0 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 1,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "topK 1"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 1,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "1 of 1 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+            "chunkIndex": 19,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.3 Define Wrappers Around Native Methods",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.3: do not declare a native method public; declare it private and expose its functionality through a public Java-based wrapper that clones mutable input and validates offset < 0 || len < 0 || offset > data.length - len."
+          }
+        ]
+      },
+      "rationale": "A single retrieved chunk carries the whole rubric, and the answer states the private native method, the public wrapper, the defensive copy and the subtraction-form bound."
+    },
+    {
+      "resultNumber": 17,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "TopK",
+      "case": "topK-4",
+      "experimentObservation": "topK-4: 4 returned sources, 9922 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 2 contextual and 1 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 4,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "topK 4"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 4,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 2,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.75,
+        "evidenceComment": "1 of 4 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+            "chunkIndex": 19,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.3 Define Wrappers Around Native Methods",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.3: do not declare a native method public; declare it private and expose its functionality through a public Java-based wrapper that clones mutable input and validates offset < 0 || len < 0 || offset > data.length - len."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+            "chunkIndex": 39,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Rubric-complete, and it states the policy's own rationale for the subtraction form (offset = 1 with len = Integer.MAX_VALUE overflows)."
+    },
+    {
+      "resultNumber": 18,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "TopK",
+      "case": "topK-20",
+      "experimentObservation": "topK-20: 20 returned sources, 9626 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 8 contextual and 11 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "topK 20"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 20,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 8,
+        "irrelevantSourceCount": 11,
+        "precisionAtK": 0.45,
+        "evidenceComment": "1 of 20 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+            "chunkIndex": 19,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.3 Define Wrappers Around Native Methods",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.3: do not declare a native method public; declare it private and expose its functionality through a public Java-based wrapper that clones mutable input and validates offset < 0 || len < 0 || offset > data.length - len."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+            "chunkIndex": 39,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.6 CONCURRENCY > 2.6.3 Do not Override Thread-Safe Methods with Methods that are not Thread-Safe) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "e02eb500eaced399c3e8fb90a6a3da56fb56a0ac5ac217551594de70565dcec6",
+            "chunkIndex": 16,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.9 Defend Against Cloning of non-Final Classes",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.9 Defend Against Cloning of non-Final Classes is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "19d0c03dba5f5c76e7d13a0c71e843a2f1363bf83ab6fc54e8837b8712c2cf26",
+            "chunkIndex": 15,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.8 Prevent Constructors from Calling Methods that Can be Overridden",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.8 Prevent Constructors from Calling Methods that Can be Overridden is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "21f7ff431c3d008be4750f05424bd6d81e9c29e38cff4c9718ecf0199e1bb06e",
+            "chunkIndex": 26,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.3 Isolate Unrelated Code",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.3 Isolate Unrelated Code is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+            "chunkIndex": 17,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "66f033f2a5f7922a6bee3920c87f2657aeb1a71f96eea8f98abc47503833b271",
+            "chunkIndex": 8,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.1 Never Return a Mutable Object to Potentially Malicious Code",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.1 Never Return a Mutable Object to Potentially Malicious Code is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "5eb5d8bc9710468bf772f1d38941a6b1926fa5bfe90244d35cc424eeba7c08e7",
+            "chunkIndex": 33,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.2 Guard Sensitive Data During Serialization",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.2 Guard Sensitive Data During Serialization is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+            "chunkIndex": 3,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the native method wrapper, its defensive copy and its overflow-safe bounds check (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "054dcdef79d538f1129e19560308f745fe5115ac551e960c157ad66da1fd0f46",
+            "chunkIndex": 9,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.2 Never Store User Given Mutable Objects",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.2 Never Store User Given Mutable Objects is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "e061c9dd2a0247461242a516c6033508bb15ff172a93c482d600000270771f1f",
+            "chunkIndex": 14,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.7 Do not Use Public Static Nonfinal Fields",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.7 Do not Use Public Static Nonfinal Fields is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "ca552543887582d4d2545094b05f3994a2f95d8316f7bd5a07e847524364b2b8",
+            "chunkIndex": 34,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.3 View Deserialization the Same as Object Construction",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.3 View Deserialization the Same as Object Construction is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "32fd67d6fc84eaa5f53395b883c0b7c8440f3be7c56182a4536c4c095b8bbc0e",
+            "chunkIndex": 24,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.1 Limit the Accessibility of Classes, Interfaces, Methods, and Fields",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.1 Limit the Accessibility of Classes, Interfaces, Methods, and Fields is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          },
+          {
+            "chunkId": "df93512970ae9ad50b22bdc97850c302d4732a50c4939ead653e0c485f66fa2f",
+            "chunkIndex": 35,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.4 Understand the Security Permissions Given to Serialization and Deserialization",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.4 Understand the Security Permissions Given to Serialization and Deserialization is unrelated to the native method wrapper, its defensive copy and its overflow-safe bounds check and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Rubric-complete. Nineteen of the twenty returned chunks ground no claim, so the extra breadth is a precision cost rather than a correctness benefit at this question."
+    },
+    {
+      "resultNumber": 19,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "SimilarityThreshold",
+      "case": "threshold-0.1",
+      "experimentObservation": "threshold-0.1: 5 returned sources, 10983 ms; answer PASS, traceability PASS, coverage PASS; 3 direct, 1 contextual and 1 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.1,
+        "nonDefaultFeature": "similarityThreshold 0.1"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 1,
+        "precisionAtK": 0.8,
+        "evidenceComment": "3 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+            "chunkIndex": 20,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.4 Normalize Strings before Validating them",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.4: normalize strings before validating them, because the same Unicode string has several representations and blacklisting alone is insufficient."
+          },
+          {
+            "chunkId": "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+            "chunkIndex": 21,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.5 Do not Log Unsensitized User Input",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.5: do not log unsensitized user input; unsanitized log input allows log injection, forged entries and data leakage across a trust boundary."
+          },
+          {
+            "chunkId": "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+            "chunkIndex": 17,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.1: input from untrusted sources must be validated before use, after any defensive copy, against attacks such as integer overflow and directory traversal."
+          },
+          {
+            "chunkId": "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+            "chunkIndex": 18,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for handling untrusted text from validation through Unicode normalization to logging (2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.2 Validate Output from Untrusted Objects as Input) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information is unrelated to handling untrusted text from validation through Unicode normalization to logging and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "A permissive threshold (0.1) admits the same five chunks as the default and the answer covers all three named sections."
+    },
+    {
+      "resultNumber": 20,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "SimilarityThreshold",
+      "case": "threshold-0.5",
+      "experimentObservation": "threshold-0.5: 3 returned sources, 16083 ms; answer PASS, traceability PASS, coverage PASS; 3 direct, 0 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.5,
+        "nonDefaultFeature": "similarityThreshold 0.5"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 3,
+        "directlySupportingSourceCount": 3,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "3 of 3 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+            "chunkIndex": 21,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.5 Do not Log Unsensitized User Input",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.5: do not log unsensitized user input; unsanitized log input allows log injection, forged entries and data leakage across a trust boundary."
+          },
+          {
+            "chunkId": "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+            "chunkIndex": 20,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.4 Normalize Strings before Validating them",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.4: normalize strings before validating them, because the same Unicode string has several representations and blacklisting alone is insufficient."
+          },
+          {
+            "chunkId": "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+            "chunkIndex": 17,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.1: input from untrusted sources must be validated before use, after any defensive copy, against attacks such as integer overflow and directory traversal."
+          }
+        ]
+      },
+      "rationale": "A stricter threshold (0.5) narrows retrieval to exactly the three sections the question names - the cleanest source list in the run, 3 of 3 directly supporting - and the answer is complete, ending with the explicit ordering the policy implies."
+    },
+    {
+      "resultNumber": 21,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "SimilarityThreshold",
+      "case": "threshold-0.8",
+      "experimentObservation": "threshold-0.8: 0 returned sources, 5269 ms; answer FAIL, traceability PASS, coverage FAIL; 0 direct, 0 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.8,
+        "nonDefaultFeature": "similarityThreshold 0.8"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "FAIL",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "FAIL",
+      "sourcePrecision": {
+        "returnedSourceCount": 0,
+        "directlySupportingSourceCount": 0,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": null,
+        "evidenceComment": "No sources were returned: the empty-context path fired, so there is nothing to classify.",
+        "classifiedSources": []
+      },
+      "rationale": "At threshold 0.8 nothing clears the bar, so the empty-context path fires the exact refusal on a question the corpus does answer. The refusal string and the empty source list are exactly correct for an empty context; the answer is still wrong for the question, and coverage fails because a supported question returned no supporting chunk. This is the measured under-retrieval boundary of the threshold, not a defect of the shipped default (0.3)."
+    },
+    {
+      "resultNumber": 22,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "GroundingRefusalSources",
+      "case": "Supported",
+      "experimentObservation": "Supported: 5 returned sources, 7151 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 0 contextual and 4 irrelevant source references. Measured at the default configuration; counted separately from core-contract questions.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "experiment-default-config",
+      "readmeScopeReason": "An Experiments & Edge Cases case captured at the shipped default configuration, so it carries a requirement verdict.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 4,
+        "precisionAtK": 0.2,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "054dcdef79d538f1129e19560308f745fe5115ac551e960c157ad66da1fd0f46",
+            "chunkIndex": 9,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.2 Never Store User Given Mutable Objects",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.2 Never Store User Given Mutable Objects is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "66f033f2a5f7922a6bee3920c87f2657aeb1a71f96eea8f98abc47503833b271",
+            "chunkIndex": 8,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.1 Never Return a Mutable Object to Potentially Malicious Code",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.1 Never Return a Mutable Object to Potentially Malicious Code is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Answers the \"why\" directly from 2.1.6 with both reasons and adds nothing outside the context.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 23,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "GroundingRefusalSources",
+      "case": "Unsupported",
+      "experimentObservation": "Unsupported: 0 returned sources, 3395 ms; answer PASS, traceability PASS, coverage PASS; 0 direct, 0 contextual and 0 irrelevant source references. Measured at the default configuration; counted separately from core-contract questions.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "experiment-default-config",
+      "readmeScopeReason": "An Experiments & Edge Cases case captured at the shipped default configuration, so it carries a requirement verdict.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 0,
+        "directlySupportingSourceCount": 0,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": null,
+        "evidenceComment": "No sources were returned: the empty-context path fired, so there is nothing to classify.",
+        "classifiedSources": []
+      },
+      "rationale": "An out-of-corpus question returns the exact refusal string and an empty source list. Both the answer and coverage pass: there is no supporting chunk to return.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 24,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryTransformationExpansion",
+      "case": "baseline",
+      "experimentObservation": "baseline: 5 returned sources, 10596 ms; answer PASS, traceability PASS, coverage PASS; 5 direct, 0 contextual and 0 irrelevant source references. Measured at the default configuration; counted separately from core-contract questions.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "experiment-default-config",
+      "readmeScopeReason": "An Experiments & Edge Cases case captured at the shipped default configuration, so it carries a requirement verdict.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "Five bullets, five distinct passages, five distinct themes, no governance content.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 25,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryTransformationExpansion",
+      "case": "expansionOnly",
+      "experimentObservation": "expansionOnly: 5 returned sources, 21055 ms; answer PASS, traceability PASS, coverage PASS; 5 direct, 0 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "query expansion enabled"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "Query expansion changes the wording but not the outcome; it doubles latency for no correctness benefit here."
+    },
+    {
+      "resultNumber": 26,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryTransformationExpansion",
+      "case": "rewriteOnly",
+      "experimentObservation": "rewriteOnly: 5 returned sources, 15896 ms; answer PASS, traceability PASS, coverage PASS; 5 direct, 0 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "query rewrite enabled"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "Query rewrite retrieves the same five passages and the answer keeps them distinct."
+    },
+    {
+      "resultNumber": 27,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryTransformationExpansion",
+      "case": "expansionAndRewrite",
+      "experimentObservation": "expansionAndRewrite: 5 returned sources, 22575 ms; answer PASS, traceability PASS, coverage PASS; 5 direct, 0 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "query expansion and rewrite enabled"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "Expansion and rewrite together produce a correct five-bullet answer at the highest latency in the run, with no correctness benefit over the unmodified baseline."
+    },
+    {
+      "resultNumber": 28,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryCompression",
+      "case": "compressionOff-Turn1",
+      "experimentObservation": "compressionOff-Turn1: 5 returned sources, 6145 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 1 contextual and 3 irrelevant source references. Measured at the default configuration; counted separately from core-contract questions.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "experiment-default-config",
+      "readmeScopeReason": "An Experiments & Edge Cases case captured at the shipped default configuration, so it carries a requirement verdict.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 3,
+        "precisionAtK": 0.4,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "d2bec3032e202f304f55524aa56f59f1a7ec38fef2e747fb89be0e6c2c46cad5",
+            "chunkIndex": 7,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.7 If You Must Sign Your Code, Put it all in One Archive",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the prohibition on storing secrets in code or data and the insufficiency of code obfuscation (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.7 If You Must Sign Your Code, Put it all in One Archive) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Turn 1 with compression off answers both parts from 2.1.6, quoting the policy.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 29,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryCompression",
+      "case": "compressionOff-Turn2",
+      "experimentObservation": "compressionOff-Turn2: 0 returned sources, 3590 ms; answer FAIL, traceability PASS, coverage FAIL; 0 direct, 0 contextual and 0 irrelevant source references. Measured at the default configuration; counted separately from core-contract questions.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "experiment-default-config",
+      "readmeScopeReason": "An Experiments & Edge Cases case captured at the shipped default configuration, so it carries a requirement verdict.",
+      "answerStatus": "FAIL",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "FAIL",
+      "sourcePrecision": {
+        "returnedSourceCount": 0,
+        "directlySupportingSourceCount": 0,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": null,
+        "evidenceComment": "No sources were returned: the empty-context path fired, so there is nothing to classify.",
+        "classifiedSources": []
+      },
+      "rationale": "With compression off the elliptical follow-up is issued verbatim as the retrieval query, so it carries no subject, retrieves nothing, and the empty-context path returns the exact refusal. The previous turn established the subject and the corpus answers the question, so the answer is wrong and coverage fails. This is the module's recorded multi-turn limitation at the shipped default.",
+      "requirementStatus": "FAIL"
+    },
+    {
+      "resultNumber": 30,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryCompression",
+      "case": "compressionOn-Turn1",
+      "experimentObservation": "compressionOn-Turn1: 5 returned sources, 10768 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 1 contextual and 3 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "query compression enabled"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 3,
+        "precisionAtK": 0.4,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "d2bec3032e202f304f55524aa56f59f1a7ec38fef2e747fb89be0e6c2c46cad5",
+            "chunkIndex": 7,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.7 If You Must Sign Your Code, Put it all in One Archive",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the prohibition on storing secrets in code or data and the insufficiency of code obfuscation (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.7 If You Must Sign Your Code, Put it all in One Archive) but not used by any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Turn 1 with compression on answers both parts from 2.1.6, quoting the policy."
+    },
+    {
+      "resultNumber": 31,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "QueryCompression",
+      "case": "compressionOn-Turn2",
+      "experimentObservation": "compressionOn-Turn2: 5 returned sources, 10691 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 0 contextual and 4 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "query compression enabled"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 4,
+        "precisionAtK": 0.2,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws is unrelated to whether the previously described protection holds against a determined attacker and to any claim in the answer."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns is unrelated to whether the previously described protection holds against a determined attacker and to any claim in the answer."
+          },
+          {
+            "chunkId": "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+            "chunkIndex": 3,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges is unrelated to whether the previously described protection holds against a determined attacker and to any claim in the answer."
+          },
+          {
+            "chunkId": "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a",
+            "chunkIndex": 28,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope is unrelated to whether the previously described protection holds against a determined attacker and to any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "With compression on, the elliptical follow-up now resolves: the transformer folded the first turn's subject into the query, five chunks were retrieved, and the answer is correct and grounded (\"No - hostile JVMs can quickly view such data, and code obfuscation doesn't really hide the code from serious attackers\"). Compression therefore does resolve this follow-up under the current default generator, which is a change from the previous default and the reason the variant is worth keeping available."
+    },
+    {
+      "resultNumber": 32,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Reranking",
+      "case": "baseline",
+      "experimentObservation": "baseline: 5 returned sources, 10904 ms; answer PASS, traceability PASS, coverage PASS; 5 direct, 0 contextual and 0 irrelevant source references. Measured at the default configuration; counted separately from core-contract questions.",
+      "configuration": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": null
+      },
+      "readmeScope": "experiment-default-config",
+      "readmeScopeReason": "An Experiments & Edge Cases case captured at the shipped default configuration, so it carries a requirement verdict.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.1: design and write code that does not require clever logic to see that it is safe, and follow the guidelines unless there is a very strong reason not to."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.2: design APIs with security in mind rather than retrofitting it; making a class final prevents a malicious subclass from adding finalizers, cloning and overriding random methods."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.4: treat SecurityManager checks as a last resort, check at a few defined points and return a capability so client code needs no further permission checks."
+          }
+        ]
+      },
+      "rationale": "The shipped default (MMR off) satisfies the five-bullet rule with five distinct passages and no governance content.",
+      "requirementStatus": "PASS"
+    },
+    {
+      "resultNumber": 33,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Reranking",
+      "case": "mmrEnabled",
+      "experimentObservation": "mmrEnabled: 5 returned sources, 13582 ms; answer PASS, traceability PASS, coverage PASS; 5 direct, 0 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "mmr-enabled true"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 0,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 1 INTRODUCTION: Java developers should follow the recommended secure coding guidelines to minimize vulnerabilities caused by programmer error, combining Oracle guidelines with secure coding community recommendations."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.5: API documentation should cover required permissions, security-related exceptions, caller sensitivity and security-relevant pre/postconditions, kept up to date through a tool such as JavaDoc."
+          },
+          {
+            "chunkId": "32fd67d6fc84eaa5f53395b883c0b7c8440f3be7c56182a4536c4c095b8bbc0e",
+            "chunkIndex": 24,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.1 Limit the Accessibility of Classes, Interfaces, Methods, and Fields",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.4.1: declare classes, interfaces, methods and fields public only as part of a published API, otherwise private or package-private, and seal packages in the jar manifest."
+          },
+          {
+            "chunkId": "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+            "chunkIndex": 11,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.4 Make Everything Final",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.2.4: make everything final unless there is a good reason not to, because a non-final class or method can be extended in dangerous and unforeseen ways - at the cost of extensibility."
+          },
+          {
+            "chunkId": "5eb5d8bc9710468bf772f1d38941a6b1926fa5bfe90244d35cc424eeba7c08e7",
+            "chunkIndex": 33,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.2 Guard Sensitive Data During Serialization",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.5.2: do not serialize sensitive data; use transient, serialPersistentFields, writeObject/writeReplace or Externalizable to keep sensitive fields out of the serialized form."
+          }
+        ]
+      },
+      "rationale": "Heading-aware reranking spreads retrieval across four different top-level themes (2.1 CORE, 2.4 ACCESSIBILITY, 2.2 OBJECTS, 2.5 SERIALIZATION) and the five bullets follow it - the thematically broadest summary in the run, which is what this variant is for."
+    },
+    {
+      "resultNumber": 34,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Reranking",
+      "case": "topK20Unnarrowed",
+      "experimentObservation": "topK20Unnarrowed: 20 returned sources, 16624 ms; answer PASS, traceability PASS, coverage PASS; 5 direct, 15 contextual and 0 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "topK 20 with mmr-enabled false"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 20,
+        "directlySupportingSourceCount": 5,
+        "contextuallyRelevantSourceCount": 15,
+        "irrelevantSourceCount": 0,
+        "precisionAtK": 1,
+        "evidenceComment": "5 of 20 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (1 INTRODUCTION) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+            "chunkIndex": 5,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.5 Document Security-Related Information) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+            "chunkIndex": 1,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.1 Prefer to Have Obviously no Flaws Rather than no Obvious Flaws) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+            "chunkIndex": 2,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.2 Design APIs to Avoid Security Concerns) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+            "chunkIndex": 4,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.4 Minimize the Number of Permission checks) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "d2bec3032e202f304f55524aa56f59f1a7ec38fef2e747fb89be0e6c2c46cad5",
+            "chunkIndex": 7,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.7 If You Must Sign Your Code, Put it all in One Archive",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.7 If You Must Sign Your Code, Put it all in One Archive) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+            "chunkIndex": 3,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.3 Restrict Privileges",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.3: operate with reduced privileges (principle of least privilege), statically through policy files and dynamically through java.security.AccessController.doPrivileged."
+          },
+          {
+            "chunkId": "32fd67d6fc84eaa5f53395b883c0b7c8440f3be7c56182a4536c4c095b8bbc0e",
+            "chunkIndex": 24,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.1 Limit the Accessibility of Classes, Interfaces, Methods, and Fields",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.4.1: declare classes, interfaces, methods and fields public only as part of a published API, otherwise private or package-private, and seal packages in the jar manifest."
+          },
+          {
+            "chunkId": "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a",
+            "chunkIndex": 28,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.5 Don't Depend on Package Scope) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+            "chunkIndex": 11,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.4 Make Everything Final",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.4 Make Everything Final) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "5eb5d8bc9710468bf772f1d38941a6b1926fa5bfe90244d35cc424eeba7c08e7",
+            "chunkIndex": 33,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.2 Guard Sensitive Data During Serialization",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.5.2: do not serialize sensitive data; use transient, serialPersistentFields, writeObject/writeReplace or Externalizable to keep sensitive fields out of the serialized form."
+          },
+          {
+            "chunkId": "d95d55dd95f0487273272b000e7e008de423d6b7052e7fbc7aac41cbb42cdb0b",
+            "chunkIndex": 25,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.2 Limit the Accessibility of Packages",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.2 Limit the Accessibility of Packages) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "21f7ff431c3d008be4750f05424bd6d81e9c29e38cff4c9718ecf0199e1bb06e",
+            "chunkIndex": 26,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.3 Isolate Unrelated Code",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.3 Isolate Unrelated Code) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "3a66b6de8b20b6bd5c261a5ae232285e4cd4d6043a02d891d4e47630e22a4f5a",
+            "chunkIndex": 32,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.1 Avoid Serialization for Security-Sensitive Classes",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.1 Avoid Serialization for Security-Sensitive Classes) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "e061c9dd2a0247461242a516c6033508bb15ff172a93c482d600000270771f1f",
+            "chunkIndex": 14,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.7 Do not Use Public Static Nonfinal Fields",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.7 Do not Use Public Static Nonfinal Fields) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+            "chunkIndex": 12,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes) but not used by any claim in the answer."
+          },
+          {
+            "chunkId": "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+            "chunkIndex": 17,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.3 INPUT AND OUTPUT > 2.3.1 Validate Inputs",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.3.1: input from untrusted sources must be validated before use, after any defensive copy, against attacks such as integer overflow and directory traversal."
+          },
+          {
+            "chunkId": "01464204610466a803146c5bdeff977920783c0e79c93004b24c84f5e6ad761c",
+            "chunkIndex": 13,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.6 Compare Classes and not Class Names",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for a five-bullet, five-theme summary of the whole policy (2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.6 Compare Classes and not Class Names) but not used by any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "Five distinct bullets from five distinct passages, drawn from a twenty-chunk pool. Fifteen returned chunks ground no bullet: for a whole-document summary every policy section is on topic, so none is irrelevant, but exposing twenty sources for five used claims is a precision cost the shipped default does not pay."
+    },
+    {
+      "resultNumber": 35,
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Reranking",
+      "case": "ordinaryQuestionMmrEnabled",
+      "experimentObservation": "ordinaryQuestionMmrEnabled: 5 returned sources, 7480 ms; answer PASS, traceability PASS, coverage PASS; 1 direct, 1 contextual and 3 irrelevant source references. Deliberately non-default configuration; excluded from core-contract compliance.",
+      "configuration": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "nonDefaultFeature": "mmr-enabled true"
+      },
+      "readmeScope": "experiment-variant",
+      "readmeScopeReason": "A deliberately non-default configuration. It carries no requirementStatus, so a configuration trade-off is never reported as a module failure; the outcome is an experiment observation.",
+      "answerStatus": "PASS",
+      "sourceTraceabilityStatus": "PASS",
+      "sourceCoverageStatus": "PASS",
+      "sourcePrecision": {
+        "returnedSourceCount": 5,
+        "directlySupportingSourceCount": 1,
+        "contextuallyRelevantSourceCount": 1,
+        "irrelevantSourceCount": 3,
+        "precisionAtK": 0.4,
+        "evidenceComment": "1 of 5 returned chunks substantiate a claim; see classifiedSources for the role and justification of every individual chunkId.",
+        "classifiedSources": [
+          {
+            "chunkId": "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+            "chunkIndex": 6,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.1 CORE > 2.1.6 Don't Store Secrets",
+            "manifestMatch": true,
+            "role": "direct",
+            "note": "Supports: 2.1.6: do not store secrets (cryptographic keys, passwords, or algorithm) in code or data; hostile JVMs can quickly view this data and code obfuscation does not really hide it from serious attackers."
+          },
+          {
+            "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+            "chunkIndex": 0,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "1 INTRODUCTION",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "1 INTRODUCTION is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+            "chunkIndex": 12,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.2 OBJECTS > 2.2.5 Avoid Inner Classes is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+            "chunkIndex": 30,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private",
+            "manifestMatch": true,
+            "role": "irrelevant",
+            "note": "2 SECURE CODING GUIDELINES > 2.4 ACCESSIBILITY > 2.4.7 Make Methods Private is unrelated to the prohibition on storing secrets in code or data and the insufficiency of code obfuscation and to any claim in the answer."
+          },
+          {
+            "chunkId": "5eb5d8bc9710468bf772f1d38941a6b1926fa5bfe90244d35cc424eeba7c08e7",
+            "chunkIndex": 33,
+            "documentName": "EPAM_JavaSecureCodingGD.md",
+            "headingPath": "2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.2 Guard Sensitive Data During Serialization",
+            "manifestMatch": true,
+            "role": "contextual",
+            "note": "On topic for the prohibition on storing secrets in code or data and the insufficiency of code obfuscation (2 SECURE CODING GUIDELINES > 2.5 SERIALIZATION > 2.5.2 Guard Sensitive Data During Serialization) but not used by any claim in the answer."
+          }
+        ]
+      },
+      "rationale": "An ordinary, narrow question under heading-aware reranking still answers both parts from 2.1.6: the reranker does not damage a question that needs only one section."
+    }
+  ],
+  "summary": {
+    "resultCount": 35,
+    "resultsByReadmeScope": {
+      "core-contract": 5,
+      "model-comparison": 10,
+      "experiment-default-config": 6,
+      "experiment-variant": 14
+    },
+    "answerCorrectness": {
+      "all": {
+        "pass": 31,
+        "fail": 4
+      },
+      "byReadmeScope": {
+        "core-contract": {
+          "pass": 5,
+          "fail": 0
+        },
+        "model-comparison": {
+          "pass": 8,
+          "fail": 2
+        },
+        "experiment-default-config": {
+          "pass": 5,
+          "fail": 1
+        },
+        "experiment-variant": {
+          "pass": 13,
+          "fail": 1
+        }
+      }
+    },
+    "sourceTraceability": {
+      "all": {
+        "pass": 35,
+        "fail": 0
+      },
+      "note": "All 183 returned chunk references resolve to this run's 41-chunk manifest and every documentName matches the chunk metadata."
+    },
+    "sourceCoverage": {
+      "all": {
+        "pass": 32,
+        "fail": 3
+      },
+      "byReadmeScope": {
+        "core-contract": {
+          "pass": 5,
+          "fail": 0
+        },
+        "model-comparison": {
+          "pass": 9,
+          "fail": 1
+        },
+        "experiment-default-config": {
+          "pass": 5,
+          "fail": 1
+        },
+        "experiment-variant": {
+          "pass": 13,
+          "fail": 1
+        }
+      }
+    },
+    "sourcePrecisionMetrics": {
+      "all": {
+        "resultsWithSources": 32,
+        "resultsWithoutSources": 3,
+        "returnedSourceCount": 183,
+        "directlySupportingSourceCount": 88,
+        "contextuallyRelevantSourceCount": 44,
+        "irrelevantSourceCount": 51,
+        "directlySupportingShare": 0.481,
+        "irrelevantShare": 0.279,
+        "meanPrecisionAtK": 0.731
+      },
+      "byReadmeScope": {
+        "model-comparison": {
+          "resultsWithSources": 10,
+          "resultsWithoutSources": 0,
+          "returnedSourceCount": 50,
+          "directlySupportingSourceCount": 26,
+          "contextuallyRelevantSourceCount": 10,
+          "irrelevantSourceCount": 14,
+          "directlySupportingShare": 0.52,
+          "irrelevantShare": 0.28,
+          "meanPrecisionAtK": 0.72
+        },
+        "core-contract": {
+          "resultsWithSources": 5,
+          "resultsWithoutSources": 0,
+          "returnedSourceCount": 25,
+          "directlySupportingSourceCount": 13,
+          "contextuallyRelevantSourceCount": 5,
+          "irrelevantSourceCount": 7,
+          "directlySupportingShare": 0.52,
+          "irrelevantShare": 0.28,
+          "meanPrecisionAtK": 0.72
+        },
+        "experiment-variant": {
+          "resultsWithSources": 13,
+          "resultsWithoutSources": 1,
+          "returnedSourceCount": 88,
+          "directlySupportingSourceCount": 37,
+          "contextuallyRelevantSourceCount": 28,
+          "irrelevantSourceCount": 23,
+          "directlySupportingShare": 0.42,
+          "irrelevantShare": 0.261,
+          "meanPrecisionAtK": 0.769
+        },
+        "experiment-default-config": {
+          "resultsWithSources": 4,
+          "resultsWithoutSources": 2,
+          "returnedSourceCount": 20,
+          "directlySupportingSourceCount": 12,
+          "contextuallyRelevantSourceCount": 1,
+          "irrelevantSourceCount": 7,
+          "directlySupportingShare": 0.6,
+          "irrelevantShare": 0.35,
+          "meanPrecisionAtK": 0.65
+        }
+      },
+      "interpretation": "The serving path exposes the full retrieved set. Counts are derived from all classifiedSources, not from model scores; meanPrecisionAtK averages non-empty result sets only."
+    },
+    "readmeRequirementCompliance": {
+      "note": "The README states three separate obligations, tallied separately. There is no combined figure.",
+      "groups": [
+        {
+          "readmeScope": "core-contract",
+          "requirement": "Extend /chat with RAG: answer only from retrieved policy context, refuse when the context is insufficient, and return the structured response with its source list - using the shipped default generator and retrieval configuration.",
+          "resultCount": 5,
+          "resultNumbers": [
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "answerTally": {
+            "pass": 5,
+            "fail": 0
+          },
+          "requirementTally": {
+            "pass": 5,
+            "fail": 0
+          }
+        },
+        {
+          "readmeScope": "model-comparison",
+          "requirement": "Subtask: index the reference document once, keep the index and embedding model fixed, run the same five questions against each additional generator, and record pass/fail per question plus a 1-5 score per model.",
+          "resultCount": 10,
+          "resultNumbers": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "answerTally": {
+            "pass": 8,
+            "fail": 2
+          },
+          "requirementTally": {
+            "pass": 8,
+            "fail": 2
+          },
+          "byDeployment": [
+            {
+              "deployment": "gpt-4o",
+              "requirementTally": {
+                "pass": 4,
+                "fail": 1
+              }
+            },
+            {
+              "deployment": "gpt-4.1-nano-2025-04-14",
+              "requirementTally": {
+                "pass": 4,
+                "fail": 1
+              }
+            }
+          ]
+        },
+        {
+          "readmeScope": "experiment-default-config",
+          "requirement": "Experiments & Edge Cases: grounding/refusal behaviour and the baseline arm of each sweep, all captured at the shipped default configuration.",
+          "resultCount": 6,
+          "resultNumbers": [
+            22,
+            23,
+            24,
+            28,
+            29,
+            32
+          ],
+          "answerTally": {
+            "pass": 5,
+            "fail": 1
+          },
+          "requirementTally": {
+            "pass": 5,
+            "fail": 1
+          }
+        },
+        {
+          "readmeScope": "experiment-variant",
+          "requirement": "Experiments & Edge Cases at a deliberately non-default configuration. Not scored for requirement compliance: a configuration trade-off is a finding about that configuration, not a module failure.",
+          "resultCount": 14,
+          "resultNumbers": [
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            25,
+            26,
+            27,
+            30,
+            31,
+            33,
+            34,
+            35
+          ],
+          "answerTally": {
+            "pass": 13,
+            "fail": 1
+          },
+          "note": "Deliberately non-default configurations. Their outcomes are findings about those configurations and are never summed into a README compliance figure."
+        }
+      ]
+    }
+  },
+  "modelScores": [
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "isConfiguredDefault": true,
+      "comparisonCaseCount": 5,
+      "answerPassCount": 5,
+      "score": 5,
+      "passedCases": [
+        "Simple",
+        "Detail",
+        "Synthesis",
+        "Analysis",
+        "FiveBulletSummary"
+      ],
+      "failedCases": [],
+      "sharedRetrievalQuality": {
+        "returnedSourceCount": 25,
+        "directlySupportingSourceCount": 13,
+        "note": "Every deployment queried the same corpus, the same fixed index and the same retrieval configuration, and the three returned identical chunk id lists for each of the five questions. Retrieval-internal scores are not captured by this run."
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "isConfiguredDefault": false,
+      "comparisonCaseCount": 5,
+      "answerPassCount": 4,
+      "score": 4,
+      "passedCases": [
+        "Simple",
+        "Synthesis",
+        "Analysis",
+        "FiveBulletSummary"
+      ],
+      "failedCases": [
+        "Detail"
+      ],
+      "sharedRetrievalQuality": {
+        "returnedSourceCount": 25,
+        "directlySupportingSourceCount": 13,
+        "note": "Every deployment queried the same corpus, the same fixed index and the same retrieval configuration, and the three returned identical chunk id lists for each of the five questions. Retrieval-internal scores are not captured by this run."
+      }
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "isConfiguredDefault": false,
+      "comparisonCaseCount": 5,
+      "answerPassCount": 4,
+      "score": 4,
+      "passedCases": [
+        "Simple",
+        "Synthesis",
+        "Analysis",
+        "FiveBulletSummary"
+      ],
+      "failedCases": [
+        "Detail"
+      ],
+      "sharedRetrievalQuality": {
+        "returnedSourceCount": 25,
+        "directlySupportingSourceCount": 13,
+        "note": "Every deployment queried the same corpus, the same fixed index and the same retrieval configuration, and the three returned identical chunk id lists for each of the five questions. Retrieval-internal scores are not captured by this run."
+      }
+    }
+  ]
+}

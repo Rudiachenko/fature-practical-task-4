@@ -1,0 +1,6 @@
+# Machine-generated evaluation evidence. These files are the byte-for-byte output of
+# scripts/run-live-evaluation.ps1 and evaluation/tools/ManifestDump.java, and their value as
+# evidence rests on nobody having edited them - including an editor's JSON reformatter, which
+# silently rewrote every one of them once. Marking them binary keeps a diff from inviting that,
+# and makes any reformatting show up as a whole-file change rather than as noise.
+evaluation/runs/*.json -diff

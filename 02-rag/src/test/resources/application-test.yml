@@ -1,0 +1,29 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiChatAutoConfiguration
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiImageAutoConfiguration
+      - org.springframework.ai.model.azure.openai.autoconfigure.AzureOpenAiAudioTranscriptionAutoConfiguration
+
+app:
+  azure:
+    endpoint: http://127.0.0.1:1
+    api-key: hermetic-test-key
+  vectorstore:
+    provider: in-memory
+    chroma:
+      base-url: http://127.0.0.1:1
+  documents:
+    default:
+      bootstrap-enabled: false
+    processing:
+      embedding-model: deterministic-test-embedding
+      allowed-file-roots:
+        - .
+  rag:
+    query-transformation:
+      compression-enabled: false
+      rewrite-enabled: false
+    query-expansion:
+      enabled: false

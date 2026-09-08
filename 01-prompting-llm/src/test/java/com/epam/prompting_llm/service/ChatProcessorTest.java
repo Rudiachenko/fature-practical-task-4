@@ -201,6 +201,7 @@ class ChatProcessorTest {
   void shouldRejectResponseWhenStructuredConverterReturnsNull() {
     // Arrange
     ChatStructuredOutputConverter outputConverter = mock(ChatStructuredOutputConverter.class);
+    when(outputConverter.getFormat()).thenReturn("format-instructions");
     when(outputConverter.convert(any(String.class))).thenReturn(null);
     when(chatModel.call(any(Prompt.class)))
       .thenReturn(rawResponse("{\"response\":\"answer\",\"tone\":\"NEUTRAL\"}"));

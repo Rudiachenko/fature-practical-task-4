@@ -1,0 +1,99 @@
+{
+  "artifactType": "live-smoke-review",
+  "schemaVersion": 2,
+  "status": "COMPLETED",
+  "reviewedAtUtc": "2026-09-03T09:19:21Z",
+  "reviewAudit": {
+    "previousRecordedReviewedAtUtc": "2026-09-03T23:20:00Z",
+    "timestampNote": "The previous review timestamp lay in the future at audit time. reviewedAtUtc now denotes metadata reconciliation, not the historical live execution time.",
+    "scope": "Clarified synchronous application ingestion and the recorded readiness procedure. Preserved all smoke verdicts and counts; no new live smoke was run."
+  },
+  "scopeNote": "A separate live run on its own Chroma collection (the policy plus llm_context_document.pdf) and its own lifecycle document. The evaluation runner deliberately does not perform these checks, because they need several documents and lifecycle calls. It records answerStatus per case, never a blended finalStatus, consistent with evaluation/objective-review-schema.json's axis separation.",
+  "comparisonNote": "The noisy-corpus questions use the same corpus, generator and retrieval configuration as the main run's core-contract cases, but on a different, contaminated collection (policy plus a genuinely off-topic PDF). Its answerStatus values are therefore comparable in kind to evaluation/runs/20260903T193000Z-objective-review.json, but its PASS/FAIL counts must not be summed into that run's totals.",
+  "collection": "task2-live-smokes-20260903T230000Z",
+  "configuration": {
+    "deployment": "gpt-5-mini-2025-08-07",
+    "generatorOverrideUsed": false,
+    "generatorOverrideNote": "The application was started with no AZURE_OPEN_AI_DEPLOYMENT_NAME and no deployment-name argument. Its startup log reported 'Resolved generator deployment=gpt-5-mini-2025-08-07', so these smokes exercise the configured default.",
+    "embeddingDeployment": "text-embedding-3-small-1",
+    "topK": 5,
+    "similarityThreshold": 0.3,
+    "mmrEnabled": false
+  },
+  "readinessMethod": {
+    "note": "The controller calls document ingestion synchronously before returning. This smoke checks stored chunks and additionally waits on the search path it evaluates; its recorded create step needed one search attempt. These observations do not independently establish a general claim about Chroma's internal atomicity.",
+    "ingestion": "poll Chroma until the expected chunk count for the document is present",
+    "createSearchability": "poll /doc-qa/chat until the question returns at least one source; this run needed one attempt",
+    "replacement": "poll until none of the v1 chunk ids remain - the chunk id is a hash of the chunk text, so a count alone cannot distinguish 'replaced' from 'not started'",
+    "deletion": "poll Chroma until zero chunks remain for the document name"
+  },
+  "noisyCorpus": {
+    "ingestStatus": "PASS",
+    "rationale": "POST /doc-qa/documents returned 202 after ingesting EPAM_JavaSecureCodingGD.md and llm_context_document.pdf into a fresh collection. A direct Chroma query confirmed 41 policy chunks and 33 PDF chunks before any question was asked, matching the 41-chunk policy manifest exactly.",
+    "verdicts": [
+      {
+        "case": "Simple",
+        "answerStatus": "PASS",
+        "sourceDocuments": [
+          "EPAM_JavaSecureCodingGD.md"
+        ],
+        "rationale": "Names all three examples (cryptographic keys, passwords, algorithm) and both reasons (hostile JVMs can quickly view the data; obfuscation does not hide the code from serious attackers), exactly as section 2.1.6 states them. All five returned sources are policy chunks: the distractor PDF did not displace the policy."
+      },
+      {
+        "case": "Synthesis",
+        "answerStatus": "PASS",
+        "sourceDocuments": [
+          "EPAM_JavaSecureCodingGD.md"
+        ],
+        "rationale": "Combines all three named sections with both ordering constraints preserved - validation after defensive copying (2.3.1), normalization before validation (2.3.4), sanitization before logging with the log-injection and cross-trust-boundary consequences (2.3.5) - and adds the policy's own caveat that blacklisting alone is insufficient."
+      },
+      {
+        "case": "FiveBulletSummary",
+        "answerStatus": "PASS",
+        "sourceDocuments": [
+          "EPAM_JavaSecureCodingGD.md"
+        ],
+        "rationale": "Exactly five bullets, each grounded in a different policy passage and about a different theme, with no preface or conclusion. No bullet states who owns, approves, reviews or publishes the document, and no bullet is grounded in the distractor PDF: the distinctness and governance rules hold under corpus contamination."
+      },
+      {
+        "case": "DistractorTopicProbe",
+        "answerStatus": "PASS",
+        "sourceDocuments": [
+          "llm_context_document.pdf"
+        ],
+        "rationale": "A question about long-context language-model input and output length limits is answered entirely from llm_context_document.pdf; all five returned sources are PDF chunks and no policy chunk leaked into the answer. Retrieval discriminates between the two co-ingested documents in both directions."
+      },
+      {
+        "case": "Unsupported",
+        "answerStatus": "PASS",
+        "sourceDocuments": [],
+        "rationale": "The out-of-corpus Kubernetes question returns the exact refusal string with an empty source array, despite the larger and noisier corpus offering more plausible-looking material to over-retrieve."
+      }
+    ]
+  },
+  "lifecycle": {
+    "createV1": {
+      "httpStatus": 202,
+      "status": "PASS"
+    },
+    "createV1IndexedChunks": 1,
+    "createV1SearchableAfterMs": 7041,
+    "createV1AnswerStatus": "PASS",
+    "createV1Rationale": "After ingesting v1, the chat answer states the v1 content - do not hardcode API keys in configuration files committed to source control, because anyone with repository read access could recover the secret - and cites five sources. It also adds the policy's own 2.1.6 guidance, which is grounded in the co-ingested corpus, not invented.",
+    "replaceV2": {
+      "httpStatus": 200,
+      "status": "PASS"
+    },
+    "replaceV2StaleV1ChunksRemaining": 0,
+    "replaceV2AnswerStatus": "PASS",
+    "replaceV2Rationale": "After PUT-replacing with v2, none of v1's chunk ids remain in the collection, and the chat answer is exactly the v2 content: rotate API keys automatically on a fixed schedule and store them only in a managed secret vault. No stale v1 content leaked into the answer.",
+    "deleteByDocumentName": {
+      "httpStatus": 204,
+      "status": "PASS"
+    },
+    "postDeleteRefusalStatus": "PASS",
+    "postDeleteRefusalRationale": "The follow-up chat call after DELETE returned the exact refusal string with an empty source array.",
+    "manifestAbsenceStatus": "PASS",
+    "manifestAbsenceRationale": "A direct Chroma query after deletion returned 74 chunks split exactly 41 EPAM_JavaSecureCodingGD.md / 33 llm_context_document.pdf, with zero chunks under documentName secure-notes.md."
+  }
+}

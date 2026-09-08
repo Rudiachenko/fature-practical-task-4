@@ -1,0 +1,982 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.epam:02-rag >---------------------------
+[INFO] Building doc-qa-chatbot 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ 02-rag ---
+[INFO] Deleting C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag\target
+[INFO] 
+[INFO] --- jacoco:0.8.13:prepare-agent (prepare-agent) @ 02-rag ---
+[INFO] argLine set to -javaagent:C:\\Users\\Fedir_Rudiachenko\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.13\\org.jacoco.agent-0.8.13-runtime.jar=destfile=C:\\Users\\Fedir_Rudiachenko\\IdeaProjects\\myProjects\\spring-ai-skeleton\\02-rag\\target\\jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ 02-rag ---
+[INFO] Copying 5 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ 02-rag ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 38 source files with javac [debug release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ 02-rag ---
+[INFO] Copying 8 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ 02-rag ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 33 source files with javac [debug release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.3.0:test (default-test) @ 02-rag ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.epam.docqachatbot.api.model.ApiRequestValidationTest
+12:59:04.738 [main] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 9.0.1.Final
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.688 s -- in com.epam.docqachatbot.api.model.ApiRequestValidationTest
+[INFO] Running com.epam.docqachatbot.api.model.RagChatResponseJsonTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.872 s -- in com.epam.docqachatbot.api.model.RagChatResponseJsonTest
+[INFO] Running com.epam.docqachatbot.api.RagApiContractTest
+12:59:25.808 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:25.820 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:25.856 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 30 ms
+12:59:28.496 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:28.498 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:28.498 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:28.664 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:28.669 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:28.671 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+12:59:29.373 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:29.375 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:29.375 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:29.484 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:29.486 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:29.486 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:29.582 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:29.583 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:29.583 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:29.708 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:29.709 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:29.709 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:29.826 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:29.826 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:29.826 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:29.953 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:29.953 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:29.954 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:30.044 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.045 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.046 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+12:59:30.074 [main] ERROR com.epam.docqachatbot.exception.ApiExceptionHandler -- Unexpected document QA request failure, type=java.lang.IllegalStateException
+12:59:30.219 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.220 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.222 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+12:59:30.302 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.303 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.303 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:30.353 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.355 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.355 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:30.467 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.467 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.470 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 2 ms
+12:59:30.588 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.589 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.589 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:30.678 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.678 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.679 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+12:59:30.753 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.753 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.753 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:30.838 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.839 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.840 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+12:59:30.938 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:30.938 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:30.938 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:31.028 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:31.028 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:31.028 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:31.158 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:31.158 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:31.159 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+12:59:31.214 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:31.214 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:31.215 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:31.348 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:31.348 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:31.349 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:31.356 [main] ERROR com.epam.docqachatbot.exception.ApiExceptionHandler -- Unexpected document QA request failure, type=java.lang.IllegalStateException
+12:59:31.424 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:31.425 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:31.425 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:31.510 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+12:59:31.510 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+12:59:31.510 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+12:59:31.549 [main] ERROR com.epam.docqachatbot.exception.ApiExceptionHandler -- Unexpected document QA request failure, type=java.lang.IllegalStateException
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 21.21 s -- in com.epam.docqachatbot.api.RagApiContractTest
+[INFO] Running com.epam.docqachatbot.config.AdvancedRagConfigTest
+12:59:32.309 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.6, topK=1
+12:59:32.323 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:32.332 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:32.392 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:32.492 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:33.286 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.7, topK=5
+12:59:33.287 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:33.288 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:33.291 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:33.293 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:33.305 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.72, topK=2
+12:59:33.318 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.751 s -- in com.epam.docqachatbot.config.AdvancedRagConfigTest
+[INFO] Running com.epam.docqachatbot.config.AzureOpenAiReasoningModelTemperatureCustomizerTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.887 s -- in com.epam.docqachatbot.config.AzureOpenAiReasoningModelTemperatureCustomizerTest
+[INFO] Running com.epam.docqachatbot.config.GeneratorDeploymentReporterTest
+12:59:34.252 [main] INFO com.epam.docqachatbot.config.GeneratorDeploymentReporter -- Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+12:59:34.300 [main] INFO com.epam.docqachatbot.config.GeneratorDeploymentReporter -- Resolved generator deployment=gpt-5-mini-2025-08-07, embedding deployment=text-embedding-3-small-1
+12:59:34.305 [main] INFO com.epam.docqachatbot.config.GeneratorDeploymentReporter -- Resolved generator deployment=gpt-4o, embedding deployment=text-embedding-3-small-1
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 s -- in com.epam.docqachatbot.config.GeneratorDeploymentReporterTest
+[INFO] Running com.epam.docqachatbot.config.OptionalRagComponentsTest
+12:59:37.363 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.7, topK=5
+12:59:37.366 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:37.414 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:37.456 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Enabling MaximalMarginalRelevanceDocumentPostProcessor with finalTopK=5, lambda=0.5
+12:59:37.468 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:37.472 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:37.694 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.7, topK=5
+12:59:37.695 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:37.696 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:37.703 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Enabling CompressionQueryTransformer for conversation-aware retrieval
+12:59:37.737 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:37.738 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:37.749 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:37.749 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:37.880 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.7, topK=3
+12:59:37.881 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:37.886 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:37.891 [main] WARN com.epam.docqachatbot.config.AdvancedRagConfig -- Clamping mmrFinalTopK from 5 to topK=3: the reranker cannot return more documents than retrieval supplied
+12:59:37.892 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Enabling MaximalMarginalRelevanceDocumentPostProcessor with finalTopK=3, lambda=0.5
+12:59:37.894 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:37.896 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:37.990 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.7, topK=5
+12:59:37.990 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:37.993 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:38.006 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:38.009 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:38.019 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:38.021 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:38.141 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.7, topK=5
+12:59:38.144 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:38.147 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:38.160 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Enabling RewriteQueryTransformer for query optimization
+12:59:38.188 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:38.191 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+12:59:38.336 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring VectorStoreDocumentRetriever with similarityThreshold=0.7, topK=5
+12:59:38.338 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ConcatenationDocumentJoiner for multi-query result combination
+12:59:38.339 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:38.342 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring Modular RAG with document retrieval, joining, and query augmentation
+12:59:38.344 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Enabling MultiQueryExpander with 2 query variations, includeOriginal=true
+12:59:38.355 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Modular RAG pipeline configured successfully
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.087 s -- in com.epam.docqachatbot.config.OptionalRagComponentsTest
+[INFO] Running com.epam.docqachatbot.config.RagPromptAndPropertiesTest
+12:59:38.815 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:38.864 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:38.895 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:38.943 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+12:59:38.971 [main] INFO com.epam.docqachatbot.config.AdvancedRagConfig -- Configuring ContextualQueryAugmenter with allowEmptyContext=false
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.567 s -- in com.epam.docqachatbot.config.RagPromptAndPropertiesTest
+[INFO] Running com.epam.docqachatbot.exception.ApiExceptionHandlerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.epam.docqachatbot.exception.ApiExceptionHandlerTest
+[INFO] Running com.epam.docqachatbot.ingestion.BootstrapDefaultResourceIngestionTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T12:59:41.374+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] .i.BootstrapDefaultResourceIngestionTest : Starting BootstrapDefaultResourceIngestionTest using Java 21.0.6 with PID 45488 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T12:59:41.379+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] .i.BootstrapDefaultResourceIngestionTest : The following 1 profile is active: "test"
+2026-09-03T12:59:45.542+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.3, topK=5
+2026-09-03T12:59:45.548+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T12:59:45.553+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T12:59:45.560+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T12:59:45.561+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T12:59:45.940+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T12:59:49.825+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] .i.BootstrapDefaultResourceIngestionTest : Started BootstrapDefaultResourceIngestionTest in 10.124 seconds (process running for 53.668)
+2026-09-03T12:59:49.838+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+2026-09-03T12:59:56.957+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 29f7868b72aa16859a8067f8ddb98f1a00acbeb32bb63e0b8da4ef11aa3342bb
+2026-09-03T12:59:56.976+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 864061109cbace067a64733944c1af19526ebf64a5f32dbd2c66818ffb427a22
+2026-09-03T12:59:56.981+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a6aebc2c7ca5e9f1fb1d30ebea690c68469c8c62e082dd4351ee49714c97616d
+2026-09-03T12:59:56.994+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b35f52b7e933dc4a7fb8c8a32affb68fd3ec2fe5820e6b4f6e09822adedee547
+2026-09-03T12:59:56.995+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d081df0f49cfed6de21a30f79039e78d9e1b53a524120726b4a8ff1606143ec5
+2026-09-03T12:59:56.996+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 916c6c71e9c413c76fac4bb9564e8a62609158633d68471863fd87baa82c3a3c
+2026-09-03T12:59:57.001+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 5b5f67e62d3a34709a4a329753bcd5066ba79e3fb56ade07aba529d5d4e12b40
+2026-09-03T12:59:57.001+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 73ec58dfde4b2f9d8954d9b0fcd851631611241b5f5ba3048cd99a00ada619f1
+2026-09-03T12:59:57.002+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 66137ddea5a135dc2dc26437212c969e8894851ce03b3074cf4f1ea1606737ca
+2026-09-03T12:59:57.002+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 17d20693fd5e08d065d9422843226457a18dd222776a923a583df9804318975c
+2026-09-03T12:59:57.009+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c16a762dca371766ef255dfd5f08586fd1833a25fe3f33b2d4564b000e33a0ba
+2026-09-03T12:59:57.010+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d0065af02a75b1c5fa5d0ba0bb30984d69537855a8e40f84decd7a0289f9810e
+2026-09-03T12:59:57.011+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3c3bd984bbb25d70829b1470bbd3187032818393f61e0704691782c2f76de373
+2026-09-03T12:59:57.016+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b4068e7ff3b2feb7e559bc7665f27bb3c032b20a0e6836b2aef1dd72955b48b8
+2026-09-03T12:59:57.031+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a7a019ed5c3f75dbfdd5111460e866aa70c79262b76eadc13a4c524ea81be7c6
+2026-09-03T12:59:57.032+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 575ea78fa8085a03df7946f60b2a2ff94685efdb0b2ef3ae2cc5d3b33fa6096d
+2026-09-03T12:59:57.032+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e0c46ceccbe19dbe5396944800247060e2b3194728b56831b71e0263ced5d0b7
+2026-09-03T12:59:57.033+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f3f6e12487d77ec91fff52a24c9ef1165d05ed801a75768407007e7d49a4e01e
+2026-09-03T12:59:57.037+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 6ed07069380e7705593c0b71056440cf8aebe2060a2cb220eaca9862c0d499f4
+2026-09-03T12:59:57.038+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 2dea3fd0bd7fb191f380d814b9c0d154c74caecf972cf27dd7a9699be20c15e0
+2026-09-03T12:59:57.039+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e9e4810b2162bf6fd281131c29002c452e4c6de0ec78fc73ec0b25122f198a17
+2026-09-03T12:59:57.040+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e7359e348b70ad9b2d208b1b72e961fa30d8b73022a983e9e196df1af7e2474a
+2026-09-03T12:59:57.040+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1310729981204a52102df53ae57aa0acda0d763707fc9488e8471d0f5fc7e173
+2026-09-03T12:59:57.043+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7569ccf64b5d07844ac331d3302580ac15ccba0cfe396dc04b828147e3450e7d
+2026-09-03T12:59:57.045+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7653efc6e868ad44fa2d72635d839b3519b02296b0efe7e07c2e67ca4fa4d744
+2026-09-03T12:59:57.046+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b3e3c367d206154a3f35a50b6ab5d8d57d218881132cfb1e3e639054b3d29aaa
+2026-09-03T12:59:57.047+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a7ae41101f45a33638ca4ff664adf15e6fd09da695849b7f0efb783ddd896a4d
+2026-09-03T12:59:57.048+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 2268c2fd380202da56c020a3a74c7c8706ec8d09014074c3505c46ce58c4f9a6
+2026-09-03T12:59:57.051+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8b148758a70ccbf03d9f1cad48aa4c63cda0ff88166cf7f645bef2229920c93c
+2026-09-03T12:59:57.052+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = ecd824a69822c8dee723dc68b71345bf19f4cc1f71841ba94637514819734266
+2026-09-03T12:59:57.052+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 22404a09016bd15bd6f5852c2edefb5960af7e770e28990c27826ea5dcba84c5
+2026-09-03T12:59:57.052+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 734b3596f09f76baa6f03cb52f33d75f9d064f47ab0f052519825890c7a6993b
+2026-09-03T12:59:57.052+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c3f1aa8ae9662ff1efafbe50ce76ccff017d678f9e02256bb5015c95bceb7f30
+2026-09-03T12:59:57.053+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b618a14df4c1e07507c53f3c210f6889ee3e2ddd2729f3714ff5ec8205213cb2
+2026-09-03T12:59:57.053+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a30a1223ff2bc8e786b02e80fcd171dd8ac5a4a03ceb04212ecae73ae96d4fc9
+2026-09-03T12:59:57.054+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 27073f39ed380dcb9fd7ec86d4ce130a83bded71524cbc7fa117a1467cbc4977
+2026-09-03T12:59:57.054+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 35b048802ee4c1681934d0864ee1335a7774efde4de4818f7691e6c3e2210ca7
+2026-09-03T12:59:57.059+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 78307f21dac6814b75404278a86bd0cbd167b5da6126439ce336d8968f1ff257
+2026-09-03T12:59:57.060+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f1d99d34f2a134e5e7354e9ba2b69c368f9054c77822c9562b5d637640359c38
+2026-09-03T12:59:57.068+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 44d2b6874f66f107d8de18bbbc572e5977f8fa22633603843075b2e04496c1a6
+2026-09-03T12:59:57.069+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c7aeffd9ebcf739c9864b7fc1a2b2f2a612844aa55bc125084be8ec3e69e22e3
+2026-09-03T12:59:57.075+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=EPAM_JavaSecureCodingGD.md, chunks=41
+2026-09-03T12:59:57.075+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Bootstrap ingestion completed: resources=1, chunks=41, failures=0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.25 s -- in com.epam.docqachatbot.ingestion.BootstrapDefaultResourceIngestionTest
+[INFO] Running com.epam.docqachatbot.ingestion.DocumentFormatTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.060 s -- in com.epam.docqachatbot.ingestion.DocumentFormatTest
+[INFO] Running com.epam.docqachatbot.ingestion.DocumentReaderFactoryTest
+2026-09-03T12:59:58.208+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 1
+2026-09-03T13:00:00.194+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 2
+2026-09-03T13:00:00.441+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 3
+2026-09-03T13:00:00.794+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 4
+2026-09-03T13:00:01.015+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 5
+2026-09-03T13:00:01.184+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 6
+2026-09-03T13:00:01.347+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 7
+2026-09-03T13:00:01.473+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 8
+2026-09-03T13:00:01.840+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 9
+2026-09-03T13:00:01.959+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 10
+2026-09-03T13:00:02.015+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 11
+2026-09-03T13:00:02.033+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 12
+2026-09-03T13:00:02.068+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 13
+2026-09-03T13:00:02.114+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 14
+2026-09-03T13:00:02.137+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 15
+2026-09-03T13:00:02.356+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 16
+2026-09-03T13:00:02.412+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 17
+2026-09-03T13:00:02.433+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processed total 17 pages
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.150 s -- in com.epam.docqachatbot.ingestion.DocumentReaderFactoryTest
+[INFO] Running com.epam.docqachatbot.ingestion.IngestionMetadataTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 s -- in com.epam.docqachatbot.ingestion.IngestionMetadataTest
+[INFO] Running com.epam.docqachatbot.ingestion.MarkdownSectionDocumentReaderTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.epam.docqachatbot.ingestion.MarkdownSectionDocumentReaderTest
+[INFO] Running com.epam.docqachatbot.ingestion.ProvenanceDocumentTransformerTest
+2026-09-03T13:00:03.116+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 13 chunks.
+2026-09-03T13:00:03.428+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 13 chunks.
+2026-09-03T13:00:07.946+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:00:08.671+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 5 chunks.
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.013 s -- in com.epam.docqachatbot.ingestion.ProvenanceDocumentTransformerTest
+[INFO] Running com.epam.docqachatbot.ingestion.SafeDocumentResourceLoaderTest
+[WARNING] Tests run: 8, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.305 s -- in com.epam.docqachatbot.ingestion.SafeDocumentResourceLoaderTest
+[INFO] Running com.epam.docqachatbot.retrieval.MaximalMarginalRelevanceDocumentPostProcessorTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.056 s -- in com.epam.docqachatbot.retrieval.MaximalMarginalRelevanceDocumentPostProcessorTest
+[INFO] Running com.epam.docqachatbot.service.AzureModelServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.epam.docqachatbot.service.AzureModelServiceTest
+[INFO] Running com.epam.docqachatbot.service.DocumentDeletionRealStoreTest
+2026-09-03T13:00:12.519+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c2116c6553f353a7f4b2da8f1a47436a997fb24514cae5379a385c10310cd65d
+2026-09-03T13:00:12.520+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:12.705+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by id: count=1
+2026-09-03T13:00:12.707+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by id: count=1
+2026-09-03T13:00:13.289+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = dbc42a8a43783c8b1ddebd17808fd1c57738d323be0bf5683e815b8bacd999cc
+2026-09-03T13:00:13.290+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:13.293+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=33
+2026-09-03T13:00:13.296+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=1
+2026-09-03T13:00:13.831+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 2c65e78be0d927a14cb57d01a2fabf75923c7be7303104ad13b3ab3e698a009a
+2026-09-03T13:00:13.831+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:14.123+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 32c4a9cffd98b83893fb20b26651449fb67467ecd4de7bef97092dec28d99420
+2026-09-03T13:00:14.124+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-b.txt, chunks=1
+2026-09-03T13:00:14.128+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by id: count=1
+2026-09-03T13:00:14.745+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 01bb25dab92f788911cd423bd7681476003bd7b6d9b0fe2f7bb5fee46b86bb54
+2026-09-03T13:00:14.746+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:15.392+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e18d0af7135aa00f1192293b098d5f13374e1ec5cad39f29d612cbc834cfc15b
+2026-09-03T13:00:15.394+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=O_Brien_report.md, chunks=1
+2026-09-03T13:00:15.394+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=17
+2026-09-03T13:00:15.397+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:15.397+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:16.070+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e2bb7f2ccbd72bebba44a507fd92debbd6e936a6c598c39edd86de74ae8a8e9e
+2026-09-03T13:00:16.071+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:16.071+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:16.074+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:16.075+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:16.077+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:16.078+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=1
+2026-09-03T13:00:17.319+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d3cbab93aa1e11688bd7f798b4f6b6570ffa11be33045a07cad21c668eafe7c6
+2026-09-03T13:00:17.320+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:17.940+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 09863b9ca507ed96c6bee6390a22611f183b33959a7ceb435e94b930028671eb
+2026-09-03T13:00:17.942+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:17.942+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=27
+2026-09-03T13:00:17.944+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=1
+2026-09-03T13:00:18.580+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:18.582+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:18.586+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=15
+2026-09-03T13:00:18.588+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:18.590+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:18.786+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 97033d44186992d2b8d3d491dcf3929ea90fe3779bc8dd848d6d723f30a8f486
+2026-09-03T13:00:18.787+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:19.427+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e4d3a784026cd9812f7210db665f993594106815c1d2a7ae55d941c1aff3233a
+2026-09-03T13:00:19.427+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:21.237+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = ad12b35afa6d70d20671be826ff5181d3798119300c2c326ebcb194e01337af7
+2026-09-03T13:00:21.237+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=multi-page-doc.txt, chunks=1
+2026-09-03T13:00:21.653+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a26c64c10f988c767d31708032dc98dae818599c1963175657342a95c9e2265f
+2026-09-03T13:00:21.654+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=multi-page-doc.txt, chunks=1
+2026-09-03T13:00:22.015+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 72b9e554a073b46f95e474f0dd06f7d48141649da32f7472ea16c790c62c87ce
+2026-09-03T13:00:22.017+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=multi-page-doc.txt, chunks=1
+2026-09-03T13:00:22.019+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=18
+2026-09-03T13:00:22.020+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:22.020+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=2, chunks=1
+2026-09-03T13:00:22.021+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=3, chunks=1
+2026-09-03T13:00:22.021+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=4
+2026-09-03T13:00:22.808+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:22.808+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:23.032+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 97033d44186992d2b8d3d491dcf3929ea90fe3779bc8dd848d6d723f30a8f486
+2026-09-03T13:00:23.032+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:23.035+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=15
+2026-09-03T13:00:23.038+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=2
+2026-09-03T13:00:23.038+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:23.705+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 89dd89633e92afafed71bcf0b9f9bbbec0c48684b50bb7fab8ac01a384b83705
+2026-09-03T13:00:23.707+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:23.707+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by id: count=1
+2026-09-03T13:00:24.297+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 805bafb3931b7cbc01d6a1ff238cea4e399b26524503811319b65f3fd86cbb30
+2026-09-03T13:00:24.298+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=zzz-unrelated-marker-file.txt, chunks=1
+2026-09-03T13:00:24.301+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=29
+2026-09-03T13:00:24.303+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:24.303+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:24.900+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a1fcbcc33827be29ca0df6c729419239ff417a096d58de8895fd9dfb5269747a
+2026-09-03T13:00:24.900+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:25.075+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a91676e81c591df83ab554dd2c2a073c36a441e9052f01da86bfd78a491bac4a
+2026-09-03T13:00:25.075+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-b.txt, chunks=1
+2026-09-03T13:00:25.077+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:25.078+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:25.079+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:25.692+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 66fe15c7df29d1e077216eed48cc21d16cb4dd42a9b200e0d3dcc760bab55e7b
+2026-09-03T13:00:25.692+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=multi-page-doc.txt, chunks=1
+2026-09-03T13:00:25.885+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7288e0cafd806949b42210bd0c0c494a4297dcfa041718babd028d5acc2d0cba
+2026-09-03T13:00:25.887+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=multi-page-doc.txt, chunks=1
+2026-09-03T13:00:26.102+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 9b4f66675c75db5ac52ea18037f5486561755ac351fa57d43ab80a0cbafb30d0
+2026-09-03T13:00:26.103+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=multi-page-doc.txt, chunks=1
+2026-09-03T13:00:26.107+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=18
+2026-09-03T13:00:26.110+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:26.113+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=2, chunks=1
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.17 s -- in com.epam.docqachatbot.service.DocumentDeletionRealStoreTest
+[INFO] Running com.epam.docqachatbot.service.DocumentIngestionServiceTest
+2026-09-03T13:00:26.981+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:26.993+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:27.004+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=2, chunks=1
+2026-09-03T13:00:27.073+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion rejected: code=DOCUMENT_NOT_FOUND, locationLength=20
+2026-09-03T13:00:27.092+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.104+03:00 ERROR 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Bootstrap ingestion failed, type=com.epam.docqachatbot.ingestion.DocumentIngestionException
+2026-09-03T13:00:27.151+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.151+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=1
+2026-09-03T13:00:27.151+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:27.182+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.185+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:27.185+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:27.186+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:27.256+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=2
+2026-09-03T13:00:27.307+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion rejected: code=DOCUMENT_NOT_FOUND, locationLength=20
+2026-09-03T13:00:27.316+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion rejected: code=EMPTY_DOCUMENT, locationLength=18
+2026-09-03T13:00:27.326+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.386+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.435+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-6] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.449+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-8] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.452+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-2] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.458+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-4] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.471+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-7] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.500+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-7] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:27.502+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-1] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.530+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-1] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:27.604+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-3] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.639+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-3] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:27.673+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-5] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.703+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-5-thread-5] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:27.712+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by id: count=2
+2026-09-03T13:00:27.740+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.741+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:27.742+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=2, chunks=1
+2026-09-03T13:00:27.750+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion rejected: code=DOCUMENT_NOT_FOUND, locationLength=20
+2026-09-03T13:00:27.753+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.772+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=2
+2026-09-03T13:00:27.773+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=2
+2026-09-03T13:00:27.785+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.788+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:27.788+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=2, chunks=1
+2026-09-03T13:00:27.789+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=3
+2026-09-03T13:00:27.823+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.825+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=1
+2026-09-03T13:00:27.866+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.869+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Deleting document chunks by documentName: nameLength=9
+2026-09-03T13:00:27.889+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=policy.md, chunks=1
+2026-09-03T13:00:27.890+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Bootstrap ingestion completed: resources=1, chunks=1, failures=0
+[INFO] Tests run: 33, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.771 s -- in com.epam.docqachatbot.service.DocumentIngestionServiceTest
+[INFO] Running com.epam.docqachatbot.service.DocumentReplacementRealStoreTest
+2026-09-03T13:00:28.567+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:28.567+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:28.791+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 97033d44186992d2b8d3d491dcf3929ea90fe3779bc8dd848d6d723f30a8f486
+2026-09-03T13:00:28.791+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:28.827+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:28.830+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:28.831+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:29.407+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 36750029adf8959e411f9d64ee02f7fbb0f2e31d73d1ac2a6ca08d9eaa0d80b4
+2026-09-03T13:00:29.408+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:29.605+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:29.605+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:29.843+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 97033d44186992d2b8d3d491dcf3929ea90fe3779bc8dd848d6d723f30a8f486
+2026-09-03T13:00:29.844+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:29.850+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:29.852+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:29.852+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:30.401+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = aa28d01145dcb88c3d14f3e3947aaf054cf7e56096da55226f9a6c818d809545
+2026-09-03T13:00:30.402+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:30.596+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 90ed6bc033b59d601dfd53a7600970c8ba7fb3838accf329409948068caf00d4
+2026-09-03T13:00:30.598+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:30.835+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = aa28d01145dcb88c3d14f3e3947aaf054cf7e56096da55226f9a6c818d809545
+2026-09-03T13:00:30.837+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=doc-a.txt, chunks=1
+2026-09-03T13:00:30.840+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback deleted page: pass=1, chunks=1
+2026-09-03T13:00:30.842+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=2
+2026-09-03T13:00:30.842+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:31.561+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:31.562+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:31.866+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:31.866+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:31.868+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=1
+2026-09-03T13:00:31.870+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+2026-09-03T13:00:33.064+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:33.065+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:33.663+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7d661f2006132baafe4c9b2fe557820674b9ba485abcb8248daa3ec92cd7bb2a
+2026-09-03T13:00:33.663+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=secure-notes.md, chunks=1
+2026-09-03T13:00:33.664+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Filter-delete fallback resolved: passes=1
+2026-09-03T13:00:33.665+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document replace completed: newChunks=1
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.767 s -- in com.epam.docqachatbot.service.DocumentReplacementRealStoreTest
+[INFO] Running com.epam.docqachatbot.service.RagChatServiceTest
+2026-09-03T13:00:33.690+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-6-thread-2] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd68, sources=0
+2026-09-03T13:00:33.690+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-6-thread-1] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd67, sources=0
+2026-09-03T13:00:33.697+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd97, sources=0
+2026-09-03T13:00:33.697+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd98, sources=0
+2026-09-03T13:00:33.700+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat failed: conversationKey=9c18cd97, type=IllegalStateException
+2026-09-03T13:00:33.713+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=243a3aea, sources=0
+2026-09-03T13:00:33.721+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=430de9d, sources=0
+2026-09-03T13:00:33.722+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=430de9d, sources=0
+2026-09-03T13:00:33.724+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=430de9d, sources=0
+2026-09-03T13:00:33.737+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=f084fee4, sources=0
+2026-09-03T13:00:33.739+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat failed: conversationKey=f084fee4, type=IllegalStateException
+2026-09-03T13:00:33.740+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=f084fee4, sources=0
+2026-09-03T13:00:33.740+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat failed: conversationKey=f084fee4, type=IllegalStateException
+2026-09-03T13:00:33.742+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=f084fee4, sources=0
+2026-09-03T13:00:33.742+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat failed: conversationKey=f084fee4, type=IllegalStateException
+2026-09-03T13:00:33.743+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=f084fee4, sources=0
+2026-09-03T13:00:33.743+03:00  WARN 45488 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat failed: conversationKey=f084fee4, type=IllegalStateException
+2026-09-03T13:00:33.913+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-7-thread-1] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=ca24ac65, sources=0
+2026-09-03T13:00:33.915+03:00  INFO 45488 --- [doc-qa-chatbot] [pool-7-thread-2] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=ca24ac65, sources=0
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.247 s -- in com.epam.docqachatbot.service.RagChatServiceTest
+[INFO] Running com.epam.docqachatbot.support.EvaluationAssetsTest
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.963 s -- in com.epam.docqachatbot.support.EvaluationAssetsTest
+[INFO] Running com.epam.docqachatbot.support.HermeticRagTestConfigurationTest
+2026-09-03T13:00:44.332+03:00  INFO 45488 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = chunk-1
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.452 s -- in com.epam.docqachatbot.support.HermeticRagTestConfigurationTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[WARNING] Tests run: 209, Failures: 0, Errors: 0, Skipped: 1
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.1:jar (default-jar) @ 02-rag ---
+[INFO] Building jar: C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag\target\02-rag-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:4.0.2:repackage (default) @ 02-rag ---
+[INFO] Attaching repackaged archive C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag\target\02-rag-0.0.1-SNAPSHOT-exec.jar with classifier exec
+[INFO] 
+[INFO] --- failsafe:3.5.3:integration-test (integration-tests) @ 02-rag ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.epam.docqachatbot.config.ChromaVectorStoreWiringIT
+13:01:00.241 [main] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+13:01:00.337 [main] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+13:01:00.894 [main] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 2.0.3
+13:01:20.912 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with Environment variables, system properties and defaults. Resolved dockerHost=tcp://localhost:2375
+13:01:20.915 [main] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+13:01:21.023 [main] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 29.2.0
+  API Version: 1.53
+  Operating System: Docker Desktop
+  Total Memory: 15707 MB
+  Labels: 
+    com.docker.desktop.address=npipe://\\.\pipe\docker_cli
+13:01:21.895 [main] INFO tc.testcontainers/ryuk:0.13.0 -- Creating container for image: testcontainers/ryuk:0.13.0
+13:01:23.671 [main] INFO tc.testcontainers/ryuk:0.13.0 -- Container testcontainers/ryuk:0.13.0 is starting: 0439e24ffe1e214ade9e809e91bc36d2d85b3cd284067f5821ff099a69214090
+13:01:26.332 [main] INFO tc.testcontainers/ryuk:0.13.0 -- Container testcontainers/ryuk:0.13.0 started in PT4.4373391S
+13:01:26.383 [main] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+13:01:26.384 [main] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+13:01:26.392 [main] INFO org.testcontainers.DockerClientFactory -- ?? Docker server version should be at least 1.6.0
+13:01:26.421 [main] INFO tc.ghcr.io/chroma-core/chroma:1.0.0 -- Creating container for image: ghcr.io/chroma-core/chroma:1.0.0
+13:01:26.948 [main] INFO org.testcontainers.utility.RegistryAuthLocator -- Credential helper/store (docker-credential-desktop) does not have credentials for ghcr.io
+13:01:27.225 [main] INFO tc.ghcr.io/chroma-core/chroma:1.0.0 -- Container ghcr.io/chroma-core/chroma:1.0.0 is starting: 3019522f0449256ac341fe943b4e85f019095fa08881ef89c754d50035830e79
+13:01:28.675 [main] INFO org.testcontainers.containers.wait.strategy.HttpWaitStrategy -- /upbeat_heisenberg: Waiting for 120 seconds for URL: http://localhost:52106/api/v2/heartbeat (where port 52106 maps to container port 8000)
+13:01:28.853 [main] INFO tc.ghcr.io/chroma-core/chroma:1.0.0 -- Container ghcr.io/chroma-core/chroma:1.0.0 started in PT2.4314147S
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T13:01:35.845+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.ChromaVectorStoreWiringIT   : Starting ChromaVectorStoreWiringIT using Java 21.0.6 with PID 4644 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T13:01:35.851+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.ChromaVectorStoreWiringIT   : The following 1 profile is active: "test"
+2026-09-03T13:01:44.323+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-03T13:01:44.406+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-03T13:01:44.409+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-09-03T13:01:44.789+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 8801 ms
+2026-09-03T13:01:53.500+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.3, topK=5
+2026-09-03T13:01:53.509+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T13:01:53.526+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T13:01:53.581+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T13:01:53.622+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T13:01:53.733+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T13:01:56.354+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-09-03T13:01:57.217+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 58522 (http) with context path '/'
+2026-09-03T13:01:57.289+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.ChromaVectorStoreWiringIT   : Started ChromaVectorStoreWiringIT in 24.772 seconds (process running for 64.332)
+2026-09-03T13:01:57.934+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+2026-09-03T13:02:01.584+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=ingestion-sample.txt, chunks=1
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 64.11 s -- in com.epam.docqachatbot.config.ChromaVectorStoreWiringIT
+[INFO] Running com.epam.docqachatbot.config.RetrievalPipelineIT
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T13:02:03.679+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.RetrievalPipelineIT         : Starting RetrievalPipelineIT using Java 21.0.6 with PID 4644 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T13:02:03.679+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.RetrievalPipelineIT         : The following 1 profile is active: "test"
+2026-09-03T13:02:06.279+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.8, topK=2
+2026-09-03T13:02:06.283+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T13:02:06.286+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T13:02:06.293+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T13:02:06.294+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T13:02:06.347+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T13:02:07.645+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-09-03T13:02:07.685+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.RetrievalPipelineIT         : Started RetrievalPipelineIT in 4.232 seconds (process running for 74.728)
+2026-09-03T13:02:07.696+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+2026-09-03T13:02:07.754+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = secure-1
+2026-09-03T13:02:07.755+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = secure-2
+2026-09-03T13:02:07.758+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = secure-3
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.539 s -- in com.epam.docqachatbot.config.RetrievalPipelineIT
+[INFO] Running com.epam.docqachatbot.ingestion.DocumentIngestionIT
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T13:02:08.040+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.ingestion.DocumentIngestionIT      : Starting DocumentIngestionIT using Java 21.0.6 with PID 4644 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T13:02:08.042+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.ingestion.DocumentIngestionIT      : The following 1 profile is active: "test"
+2026-09-03T13:02:08.784+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.3, topK=5
+2026-09-03T13:02:08.786+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T13:02:08.789+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T13:02:08.793+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T13:02:08.794+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T13:02:08.817+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T13:02:09.449+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.ingestion.DocumentIngestionIT      : Started DocumentIngestionIT in 1.572 seconds (process running for 76.492)
+2026-09-03T13:02:09.451+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+2026-09-03T13:02:09.623+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c326ae5fcf869a11bd66cb9a5316d0b69798eefb406147cf5ef569633b75bc20
+2026-09-03T13:02:09.623+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=ingestion-sample.txt, chunks=1
+2026-09-03T13:02:10.164+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 1
+2026-09-03T13:02:11.382+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 2
+2026-09-03T13:02:11.512+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 3
+2026-09-03T13:02:11.805+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 4
+2026-09-03T13:02:11.974+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 5
+2026-09-03T13:02:12.197+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 6
+2026-09-03T13:02:12.286+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 7
+2026-09-03T13:02:12.351+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 8
+2026-09-03T13:02:12.551+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 9
+2026-09-03T13:02:12.686+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 10
+2026-09-03T13:02:12.740+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 11
+2026-09-03T13:02:12.784+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 12
+2026-09-03T13:02:12.821+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 13
+2026-09-03T13:02:12.852+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 14
+2026-09-03T13:02:12.882+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 15
+2026-09-03T13:02:12.951+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 16
+2026-09-03T13:02:12.983+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processing PDF page: 17
+2026-09-03T13:02:12.996+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.reader.pdf.PagePdfDocumentReader  : Processed total 17 pages
+2026-09-03T13:02:13.400+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:13.797+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:13.980+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:14.134+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:14.298+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:14.458+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:14.645+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:14.869+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 3 chunks.
+2026-09-03T13:02:15.171+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:15.280+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:15.439+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:15.558+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:15.712+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:15.871+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:16.001+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:16.130+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 58b3d68808e20518f5eb3ffd8e3ad1c19ebb2ef8464387048af5e99f331d046a
+2026-09-03T13:02:16.134+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = fafeb86f959344e5eaf01a48c5c9313be05d7a13fee9d6f067b6d55fb070398e
+2026-09-03T13:02:16.143+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 84e31505ed5866ba4a17c08053f45813a2186eda50c6de3a06b6260b227b59ee
+2026-09-03T13:02:16.148+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c16ed457a30cb43b08a2fe0297da3a9fb11d31a6626a3840608502a7c1b08ef2
+2026-09-03T13:02:16.149+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 5f2a7f56fa3e1906a7cee5e2f162a160fa69e6288873e13bd22aae77d27b5d38
+2026-09-03T13:02:16.152+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 709c63ebe8f0784a4e69eeda147672bf0da65bc2a987f0079e3d7305159e9f88
+2026-09-03T13:02:16.154+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 01b97a0b92df521bbd87e27eb4dfcfc0f1afda1aa002583ff61522d4354acdf9
+2026-09-03T13:02:16.157+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 543859ef656b14c0fe667f43323de95c3f2d2f323b669a81e89b2a356fb84979
+2026-09-03T13:02:16.157+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 497551228bafbe5f8db43b58b27c0c7c7c3ca4313e49de02855b58bd89456493
+2026-09-03T13:02:16.162+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3bea885770e1505c9d5fe9e44eba1b9b504f02aa0932f337177ffb9885bdd731
+2026-09-03T13:02:16.163+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b51e2ba35723e404518a93ca7e9b194c204f5c988eb5e569d1faec766d13a010
+2026-09-03T13:02:16.167+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = ea9fb6e589dd07e3f839403cf7b42523eea5a84ea4862f9ce156cd8eae8e6aa8
+2026-09-03T13:02:16.168+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 4564606e4996a4c4eea9570e5d5ecdf44b6315b396530b2c006e47a373971d6b
+2026-09-03T13:02:16.170+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e5351de3aaf4213de4954c07acf4cec4843da3561cce3f6df4ed7f56a27bf9bb
+2026-09-03T13:02:16.171+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 9d86652d491e1546efd913573faeb18bff18ba428d7bd953279bee69be630e2c
+2026-09-03T13:02:16.172+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 130311e4c77840ad47d49a1089d3d4864f6aa0de1c2ce7d0eefe07b366c19cc4
+2026-09-03T13:02:16.173+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3fea1314d6d60a81712e0ee07356f09a1f55ff2b47a6a32e84aaf8a579b9759f
+2026-09-03T13:02:16.174+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c12a7e321005c3fedd0a25ee94597dd20f0e30c1544ade36d6436d4616722a80
+2026-09-03T13:02:16.175+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = cf12e6846e47162b9cb3ee15aaae05a231e3aa6aa2bbb3676f01affff426eb8e
+2026-09-03T13:02:16.176+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 0c3f5932a2f5938a0609fd6f9156938666dc2aed1ad79d9fe768eec1e53adbcd
+2026-09-03T13:02:16.177+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 2a3b3f2c51db953bc2f959487a623665ec099dff6981fb356fa26dbb24ad8c91
+2026-09-03T13:02:16.178+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8f3540cf352fb164e67f92a9683914beb39e0b661088366040feae33257f49db
+2026-09-03T13:02:16.178+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c55ab1c0a9fc4e420df391665385a543a80adf9c620494685714783903d29576
+2026-09-03T13:02:16.179+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 9c650f7554b09017ff85f741126fad4746e677cfbc2c48b3845fa40c90a745b1
+2026-09-03T13:02:16.180+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3a30726bf30bd68702ffc25facf4763f274bd917a81a671b363f6951c822524c
+2026-09-03T13:02:16.182+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1149bc73f58f5bdbfe8fd10569b64f049bb3997eb5b2866a6b788cf5d3c2aa6b
+2026-09-03T13:02:16.182+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 623e19ee518124b8763764148ed706bb12215bd6e8fb4918f57fe8e61fb3e29a
+2026-09-03T13:02:16.183+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1f76cd9905f09ff38dc14b5ad9e26dfeeb4cd04c326a0d4c44d5507b1f220df4
+2026-09-03T13:02:16.184+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 29bf5f42666372279fa3b76946b4d56f28750447f5f550f3b5bf713556f047d3
+2026-09-03T13:02:16.185+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b1b60a37a5430d37d9736ff9d734146598ce226e93d61aaa1940358efe9c1fcd
+2026-09-03T13:02:16.186+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 557c50250ab7c0face75edf9772c79503e3801b8ad3fea5de691f40505d6cbd0
+2026-09-03T13:02:16.187+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e5a30851cb89f62230a975adbe80bae55718b8438e94a1752f8ab36702882b7d
+2026-09-03T13:02:16.187+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 73cf0fd864871773735ecd6e9f6bf905707ef4b6d5dd6e61c089399198b81118
+2026-09-03T13:02:16.188+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=llm_context_document.pdf, chunks=33
+2026-09-03T13:02:20.787+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b1c8fbd3acf5ffdd36f1d8bd4c9aa64bbd133d0c9f03316d09486670cc732722
+2026-09-03T13:02:20.788+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7fafe0880732d75bc1972761cf04a2c817b3955b334ad3961c67e3b43d5b91ec
+2026-09-03T13:02:20.788+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 6385cd016008302f49df6677813037d4b0474eb35cbf2e9876b27bddd8a67a32
+2026-09-03T13:02:20.788+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = ae336f4e36211b777e43b211b31df62091a3236a72d638e09b8a01e5d426d814
+2026-09-03T13:02:20.789+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e5542712be50f2429e400cf1f4894cd1cd89470224fe106dc7df52d55912167a
+2026-09-03T13:02:20.789+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 69d2c88860078ee8578f7e4bccf2d5acab45e2175ae25be3fb45f97ffccfe614
+2026-09-03T13:02:20.789+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 64cafd171cb0f8e41d95accb3c3433c5cc22b092321fd85468406940a1b958e2
+2026-09-03T13:02:20.789+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 980630c4020bd133f5d1ef7bd81567af56335d8239819601694662f2becfd780
+2026-09-03T13:02:20.789+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 08ae6f4478592f278cb1b9f13b59df647745f142519643300010aed45f6d7d2f
+2026-09-03T13:02:20.790+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 869a5b66745e04e63e74ece99bb57e306a0785352c9ce709055765c7bb74f46f
+2026-09-03T13:02:20.790+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 84acd0f3aaf5be3051d3884a85952bec4a4c143da06f35c89f148d69fdc2f942
+2026-09-03T13:02:20.790+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 55748d40450df7753d0089e9d80161460aba2e19fed701f11593c2cdcd3f6713
+2026-09-03T13:02:20.790+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3373849d0b79a7ec1b3f5196f00a43f716d000daf7b35fdf8d37da1d076f89ef
+2026-09-03T13:02:20.790+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f5ab323078bce66188964c2ab66a79738017f910bc1d667b697d47e544ac8d51
+2026-09-03T13:02:20.790+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 4bec3a3c3f04774b0db4d6828bc44a250cd1e9971eca3ac6e871ff840dba161e
+2026-09-03T13:02:20.791+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = acaf3577630cd651f411b3f826ea37f74c7cdfcc96a6ff6d38b23604f9f70780
+2026-09-03T13:02:20.791+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 9ba9d461a6b1ecfc5f35a1cfec7d64ca9065978214712d7800a6f0da93bea9fb
+2026-09-03T13:02:20.791+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 96941eeccde43d14947435c1455b74ba5853d93975783e8147d44895c267dc0e
+2026-09-03T13:02:20.791+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1e05cfe306fef2a63c0bcd52c416d07296dfba64eb5791860f50b97697a3f532
+2026-09-03T13:02:20.791+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 785bdf3476863d500eaa64e0f968607b1a957dcd33a27fcfdeeaa7ad587ef10c
+2026-09-03T13:02:20.792+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 606ccd01777cab7555fa473e6e2274ce106565567b9828c5a1c544279c910461
+2026-09-03T13:02:20.792+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = afe8d47e0c10e8bfaee4c008b3741bf328dffc097137636664ea68a55a5a5b9a
+2026-09-03T13:02:20.792+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3455e8bbb256f551cc64fd1893f35dad07430a39703cbdcd9e10ca119b41a625
+2026-09-03T13:02:20.792+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 92f7e6cb8aeac0c38e546e89da37cec2d0a078b9a8bee9c76329bced18796fbd
+2026-09-03T13:02:20.792+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 5edfc2f0ec3e84890da515c2cccbc6a3868fee880f8ff0d511672f57eff07c0e
+2026-09-03T13:02:20.793+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 767414d5c353b3c19ebd7055023bcc3d399d6e689f64b34ef135698180b900b3
+2026-09-03T13:02:20.793+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 02cff530b4cc1a7aee25f5848b75045771030048236b626ff3d0841e2172dd8e
+2026-09-03T13:02:20.793+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8004f1636f75adddeecf9fb89a08bef186bab4cd61c6c2a477c74382a690f5da
+2026-09-03T13:02:20.793+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 339cd65676109d8080f1d12919ba4414554b6cdcb1c3fe9dbcc634bb4d253141
+2026-09-03T13:02:20.793+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8f14641d75cb909f05b795585df81da97ca736eb2823336e05ff60ccd36240a6
+2026-09-03T13:02:20.794+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e8a2ecc3a1162d401d088a8798c81b2d2863145ec78ddbfe4d95a59658f02df3
+2026-09-03T13:02:20.794+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d37ab0d1abc5fc390fd0d90b511c0ed99542bc5ea5f9e9894581c032adaaeef3
+2026-09-03T13:02:20.794+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d8cead405b6a5c1fa830fb4a4949af238efb222e4db1b17b40876208ed3496b8
+2026-09-03T13:02:20.794+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f284314398b9f4d0106b329065325e4bf7def2db8ac705055af97471f0da79f3
+2026-09-03T13:02:20.794+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1fa6174bf4fbf7945cedf03b817c35ce6b16a5b5d3c6df8e73fbd8d48a7f3d10
+2026-09-03T13:02:20.794+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8bf62a181c96305a2fb74ae42edd56ab90d92079ac7d03fa2a68fed123ef8ade
+2026-09-03T13:02:20.795+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e4b70ac05d9c48cf8cd8f3888c98fa31af83c437247962e4a0b7c5b2ffc2328a
+2026-09-03T13:02:20.795+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 54c41ec72bb6d49fb1640e5579f3b0d3ddf090579fbc95ac3519c59b826d20db
+2026-09-03T13:02:20.795+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 0f93e33d5d5a567647b291f83b8c0d95a311cfa72c65370bfa4e0b41f3154712
+2026-09-03T13:02:20.796+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 508ae93375b694f642f041ed1556a9864fc297dc1044fa308cfa8c246f3d8208
+2026-09-03T13:02:20.796+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d96ffc708f6b8c20fdac284911897c66d05c9f47d6eaf3c8158d354a869078cf
+2026-09-03T13:02:20.796+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=EPAM_JavaSecureCodingGD.md, chunks=41
+2026-09-03T13:02:25.697+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b1c8fbd3acf5ffdd36f1d8bd4c9aa64bbd133d0c9f03316d09486670cc732722
+2026-09-03T13:02:25.698+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7fafe0880732d75bc1972761cf04a2c817b3955b334ad3961c67e3b43d5b91ec
+2026-09-03T13:02:25.698+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 6385cd016008302f49df6677813037d4b0474eb35cbf2e9876b27bddd8a67a32
+2026-09-03T13:02:25.698+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = ae336f4e36211b777e43b211b31df62091a3236a72d638e09b8a01e5d426d814
+2026-09-03T13:02:25.698+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e5542712be50f2429e400cf1f4894cd1cd89470224fe106dc7df52d55912167a
+2026-09-03T13:02:25.699+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 69d2c88860078ee8578f7e4bccf2d5acab45e2175ae25be3fb45f97ffccfe614
+2026-09-03T13:02:25.699+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 64cafd171cb0f8e41d95accb3c3433c5cc22b092321fd85468406940a1b958e2
+2026-09-03T13:02:25.699+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 980630c4020bd133f5d1ef7bd81567af56335d8239819601694662f2becfd780
+2026-09-03T13:02:25.700+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 08ae6f4478592f278cb1b9f13b59df647745f142519643300010aed45f6d7d2f
+2026-09-03T13:02:25.700+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 869a5b66745e04e63e74ece99bb57e306a0785352c9ce709055765c7bb74f46f
+2026-09-03T13:02:25.700+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 84acd0f3aaf5be3051d3884a85952bec4a4c143da06f35c89f148d69fdc2f942
+2026-09-03T13:02:25.700+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 55748d40450df7753d0089e9d80161460aba2e19fed701f11593c2cdcd3f6713
+2026-09-03T13:02:25.701+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3373849d0b79a7ec1b3f5196f00a43f716d000daf7b35fdf8d37da1d076f89ef
+2026-09-03T13:02:25.701+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f5ab323078bce66188964c2ab66a79738017f910bc1d667b697d47e544ac8d51
+2026-09-03T13:02:25.701+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 4bec3a3c3f04774b0db4d6828bc44a250cd1e9971eca3ac6e871ff840dba161e
+2026-09-03T13:02:25.701+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = acaf3577630cd651f411b3f826ea37f74c7cdfcc96a6ff6d38b23604f9f70780
+2026-09-03T13:02:25.701+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 9ba9d461a6b1ecfc5f35a1cfec7d64ca9065978214712d7800a6f0da93bea9fb
+2026-09-03T13:02:25.701+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 96941eeccde43d14947435c1455b74ba5853d93975783e8147d44895c267dc0e
+2026-09-03T13:02:25.701+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1e05cfe306fef2a63c0bcd52c416d07296dfba64eb5791860f50b97697a3f532
+2026-09-03T13:02:25.702+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 785bdf3476863d500eaa64e0f968607b1a957dcd33a27fcfdeeaa7ad587ef10c
+2026-09-03T13:02:25.702+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 606ccd01777cab7555fa473e6e2274ce106565567b9828c5a1c544279c910461
+2026-09-03T13:02:25.702+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = afe8d47e0c10e8bfaee4c008b3741bf328dffc097137636664ea68a55a5a5b9a
+2026-09-03T13:02:25.702+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3455e8bbb256f551cc64fd1893f35dad07430a39703cbdcd9e10ca119b41a625
+2026-09-03T13:02:25.702+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 92f7e6cb8aeac0c38e546e89da37cec2d0a078b9a8bee9c76329bced18796fbd
+2026-09-03T13:02:25.702+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 5edfc2f0ec3e84890da515c2cccbc6a3868fee880f8ff0d511672f57eff07c0e
+2026-09-03T13:02:25.703+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 767414d5c353b3c19ebd7055023bcc3d399d6e689f64b34ef135698180b900b3
+2026-09-03T13:02:25.703+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 02cff530b4cc1a7aee25f5848b75045771030048236b626ff3d0841e2172dd8e
+2026-09-03T13:02:25.703+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8004f1636f75adddeecf9fb89a08bef186bab4cd61c6c2a477c74382a690f5da
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 339cd65676109d8080f1d12919ba4414554b6cdcb1c3fe9dbcc634bb4d253141
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8f14641d75cb909f05b795585df81da97ca736eb2823336e05ff60ccd36240a6
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e8a2ecc3a1162d401d088a8798c81b2d2863145ec78ddbfe4d95a59658f02df3
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d37ab0d1abc5fc390fd0d90b511c0ed99542bc5ea5f9e9894581c032adaaeef3
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d8cead405b6a5c1fa830fb4a4949af238efb222e4db1b17b40876208ed3496b8
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f284314398b9f4d0106b329065325e4bf7def2db8ac705055af97471f0da79f3
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1fa6174bf4fbf7945cedf03b817c35ce6b16a5b5d3c6df8e73fbd8d48a7f3d10
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8bf62a181c96305a2fb74ae42edd56ab90d92079ac7d03fa2a68fed123ef8ade
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e4b70ac05d9c48cf8cd8f3888c98fa31af83c437247962e4a0b7c5b2ffc2328a
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 54c41ec72bb6d49fb1640e5579f3b0d3ddf090579fbc95ac3519c59b826d20db
+2026-09-03T13:02:25.704+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 0f93e33d5d5a567647b291f83b8c0d95a311cfa72c65370bfa4e0b41f3154712
+2026-09-03T13:02:25.706+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 508ae93375b694f642f041ed1556a9864fc297dc1044fa308cfa8c246f3d8208
+2026-09-03T13:02:25.706+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d96ffc708f6b8c20fdac284911897c66d05c9f47d6eaf3c8158d354a869078cf
+2026-09-03T13:02:25.706+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=EPAM_JavaSecureCodingGD.md, chunks=41
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.90 s -- in com.epam.docqachatbot.ingestion.DocumentIngestionIT
+[INFO] Running com.epam.docqachatbot.service.MmrRerankingIT
+[INFO] Running com.epam.docqachatbot.service.MmrRerankingIT$WhenMmrIsDisabled
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T13:02:25.798+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.MmrRerankingIT$WhenMmrIsDisabled : Starting MmrRerankingIT.WhenMmrIsDisabled using Java 21.0.6 with PID 4644 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T13:02:25.798+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.MmrRerankingIT$WhenMmrIsDisabled : The following 1 profile is active: "test"
+2026-09-03T13:02:26.215+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-03T13:02:26.218+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-03T13:02:26.220+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-09-03T13:02:26.453+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 651 ms
+2026-09-03T13:02:26.843+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.0, topK=3
+2026-09-03T13:02:26.847+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T13:02:26.849+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T13:02:26.855+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T13:02:26.856+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T13:02:26.865+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T13:02:27.564+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-09-03T13:02:27.592+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 58274 (http) with context path '/'
+2026-09-03T13:02:27.597+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.MmrRerankingIT$WhenMmrIsDisabled : Started MmrRerankingIT.WhenMmrIsDisabled in 1.853 seconds (process running for 94.641)
+2026-09-03T13:02:27.600+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+2026-09-03T13:02:27.720+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 4 chunks.
+2026-09-03T13:02:27.827+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:27.828+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 4476211c6bda328149c2c36de91d4c179285c4d62e60ec0406f28524c5a00893
+2026-09-03T13:02:27.829+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 72fbfaf28620984ecb2b06320883aaf565fb3051c1303d39dccde5ce5d8ad032
+2026-09-03T13:02:27.829+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e15fe345090a8a345386a97ceb28275c76f1cc87abaa122dedb890590003bba6
+2026-09-03T13:02:27.829+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 02c7eee5ad4968419c045e0d2fd08defb934f94155026aadbce13a561bf86bfd
+2026-09-03T13:02:27.830+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 46805eadf1ef7c84bf30fe662adb5fb211d34c942e05ff1e2cc3c1bdd1dd564f
+2026-09-03T13:02:27.830+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 9fb00d60f742a92fdeb18442698a1a7cfb9785d50bec8d56baea7f53b1b8ea3c
+2026-09-03T13:02:27.830+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=mmr-fixture.md, chunks=6
+2026-09-03T13:02:28.003+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-2-exec-1] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-03T13:02:28.003+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-03T13:02:28.006+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-09-03T13:02:28.357+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-2-exec-1] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=94e5a317, sources=3
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.681 s -- in com.epam.docqachatbot.service.MmrRerankingIT$WhenMmrIsDisabled
+[INFO] Running com.epam.docqachatbot.service.MmrRerankingIT$WhenMmrIsEnabled
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T13:02:28.483+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.MmrRerankingIT$WhenMmrIsEnabled  : Starting MmrRerankingIT.WhenMmrIsEnabled using Java 21.0.6 with PID 4644 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T13:02:28.483+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.MmrRerankingIT$WhenMmrIsEnabled  : The following 1 profile is active: "test"
+2026-09-03T13:02:28.982+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-03T13:02:28.983+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-03T13:02:28.984+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-09-03T13:02:29.100+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 613 ms
+2026-09-03T13:02:29.414+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.0, topK=6
+2026-09-03T13:02:29.416+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T13:02:29.418+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T13:02:29.426+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Enabling MaximalMarginalRelevanceDocumentPostProcessor with finalTopK=3, lambda=0.5
+2026-09-03T13:02:29.429+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T13:02:29.430+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T13:02:29.436+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T13:02:29.810+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-09-03T13:02:29.838+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 61259 (http) with context path '/'
+2026-09-03T13:02:29.843+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.MmrRerankingIT$WhenMmrIsEnabled  : Started MmrRerankingIT.WhenMmrIsEnabled in 1.41 seconds (process running for 96.886)
+2026-09-03T13:02:29.848+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+2026-09-03T13:02:29.972+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 4 chunks.
+2026-09-03T13:02:30.087+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.a.transformer.splitter.TextSplitter  : Splitting up document into 2 chunks.
+2026-09-03T13:02:30.088+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 4476211c6bda328149c2c36de91d4c179285c4d62e60ec0406f28524c5a00893
+2026-09-03T13:02:30.089+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 72fbfaf28620984ecb2b06320883aaf565fb3051c1303d39dccde5ce5d8ad032
+2026-09-03T13:02:30.089+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e15fe345090a8a345386a97ceb28275c76f1cc87abaa122dedb890590003bba6
+2026-09-03T13:02:30.089+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 02c7eee5ad4968419c045e0d2fd08defb934f94155026aadbce13a561bf86bfd
+2026-09-03T13:02:30.089+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 46805eadf1ef7c84bf30fe662adb5fb211d34c942e05ff1e2cc3c1bdd1dd564f
+2026-09-03T13:02:30.089+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 9fb00d60f742a92fdeb18442698a1a7cfb9785d50bec8d56baea7f53b1b8ea3c
+2026-09-03T13:02:30.089+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=mmr-fixture.md, chunks=6
+2026-09-03T13:02:30.106+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-3-exec-1] o.a.c.c.C.[Tomcat-2].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-03T13:02:30.106+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-03T13:02:30.109+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-09-03T13:02:30.135+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-3-exec-1] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=51c32346, sources=3
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.740 s -- in com.epam.docqachatbot.service.MmrRerankingIT$WhenMmrIsEnabled
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.438 s -- in com.epam.docqachatbot.service.MmrRerankingIT
+[INFO] Running com.epam.docqachatbot.service.RagChatIT
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T13:02:30.224+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.epam.docqachatbot.service.RagChatIT    : Starting RagChatIT using Java 21.0.6 with PID 4644 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T13:02:30.224+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.epam.docqachatbot.service.RagChatIT    : The following 1 profile is active: "test"
+2026-09-03T13:02:30.582+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-03T13:02:30.585+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-03T13:02:30.586+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-09-03T13:02:30.677+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 450 ms
+2026-09-03T13:02:30.901+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.8, topK=2
+2026-09-03T13:02:30.903+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T13:02:30.904+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T13:02:30.907+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T13:02:30.908+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T13:02:30.911+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T13:02:31.209+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-09-03T13:02:31.235+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 61261 (http) with context path '/'
+2026-09-03T13:02:31.239+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.epam.docqachatbot.service.RagChatIT    : Started RagChatIT in 1.066 seconds (process running for 98.282)
+2026-09-03T13:02:31.241+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+2026-09-03T13:02:35.911+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 29f7868b72aa16859a8067f8ddb98f1a00acbeb32bb63e0b8da4ef11aa3342bb
+2026-09-03T13:02:35.912+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 864061109cbace067a64733944c1af19526ebf64a5f32dbd2c66818ffb427a22
+2026-09-03T13:02:35.913+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a6aebc2c7ca5e9f1fb1d30ebea690c68469c8c62e082dd4351ee49714c97616d
+2026-09-03T13:02:35.913+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b35f52b7e933dc4a7fb8c8a32affb68fd3ec2fe5820e6b4f6e09822adedee547
+2026-09-03T13:02:35.913+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d081df0f49cfed6de21a30f79039e78d9e1b53a524120726b4a8ff1606143ec5
+2026-09-03T13:02:35.913+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 916c6c71e9c413c76fac4bb9564e8a62609158633d68471863fd87baa82c3a3c
+2026-09-03T13:02:35.914+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 5b5f67e62d3a34709a4a329753bcd5066ba79e3fb56ade07aba529d5d4e12b40
+2026-09-03T13:02:35.914+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 73ec58dfde4b2f9d8954d9b0fcd851631611241b5f5ba3048cd99a00ada619f1
+2026-09-03T13:02:35.914+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 66137ddea5a135dc2dc26437212c969e8894851ce03b3074cf4f1ea1606737ca
+2026-09-03T13:02:35.914+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 17d20693fd5e08d065d9422843226457a18dd222776a923a583df9804318975c
+2026-09-03T13:02:35.914+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c16a762dca371766ef255dfd5f08586fd1833a25fe3f33b2d4564b000e33a0ba
+2026-09-03T13:02:35.914+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = d0065af02a75b1c5fa5d0ba0bb30984d69537855a8e40f84decd7a0289f9810e
+2026-09-03T13:02:35.915+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 3c3bd984bbb25d70829b1470bbd3187032818393f61e0704691782c2f76de373
+2026-09-03T13:02:35.915+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b4068e7ff3b2feb7e559bc7665f27bb3c032b20a0e6836b2aef1dd72955b48b8
+2026-09-03T13:02:35.915+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a7a019ed5c3f75dbfdd5111460e866aa70c79262b76eadc13a4c524ea81be7c6
+2026-09-03T13:02:35.916+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 575ea78fa8085a03df7946f60b2a2ff94685efdb0b2ef3ae2cc5d3b33fa6096d
+2026-09-03T13:02:35.916+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e0c46ceccbe19dbe5396944800247060e2b3194728b56831b71e0263ced5d0b7
+2026-09-03T13:02:35.916+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f3f6e12487d77ec91fff52a24c9ef1165d05ed801a75768407007e7d49a4e01e
+2026-09-03T13:02:35.916+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 6ed07069380e7705593c0b71056440cf8aebe2060a2cb220eaca9862c0d499f4
+2026-09-03T13:02:35.916+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 2dea3fd0bd7fb191f380d814b9c0d154c74caecf972cf27dd7a9699be20c15e0
+2026-09-03T13:02:35.917+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e9e4810b2162bf6fd281131c29002c452e4c6de0ec78fc73ec0b25122f198a17
+2026-09-03T13:02:35.918+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = e7359e348b70ad9b2d208b1b72e961fa30d8b73022a983e9e196df1af7e2474a
+2026-09-03T13:02:35.918+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 1310729981204a52102df53ae57aa0acda0d763707fc9488e8471d0f5fc7e173
+2026-09-03T13:02:35.919+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7569ccf64b5d07844ac331d3302580ac15ccba0cfe396dc04b828147e3450e7d
+2026-09-03T13:02:35.919+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 7653efc6e868ad44fa2d72635d839b3519b02296b0efe7e07c2e67ca4fa4d744
+2026-09-03T13:02:35.919+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b3e3c367d206154a3f35a50b6ab5d8d57d218881132cfb1e3e639054b3d29aaa
+2026-09-03T13:02:35.919+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a7ae41101f45a33638ca4ff664adf15e6fd09da695849b7f0efb783ddd896a4d
+2026-09-03T13:02:35.919+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 2268c2fd380202da56c020a3a74c7c8706ec8d09014074c3505c46ce58c4f9a6
+2026-09-03T13:02:35.919+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 8b148758a70ccbf03d9f1cad48aa4c63cda0ff88166cf7f645bef2229920c93c
+2026-09-03T13:02:35.920+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = ecd824a69822c8dee723dc68b71345bf19f4cc1f71841ba94637514819734266
+2026-09-03T13:02:35.920+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 22404a09016bd15bd6f5852c2edefb5960af7e770e28990c27826ea5dcba84c5
+2026-09-03T13:02:35.920+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 734b3596f09f76baa6f03cb52f33d75f9d064f47ab0f052519825890c7a6993b
+2026-09-03T13:02:35.920+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c3f1aa8ae9662ff1efafbe50ce76ccff017d678f9e02256bb5015c95bceb7f30
+2026-09-03T13:02:35.920+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = b618a14df4c1e07507c53f3c210f6889ee3e2ddd2729f3714ff5ec8205213cb2
+2026-09-03T13:02:35.920+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = a30a1223ff2bc8e786b02e80fcd171dd8ac5a4a03ceb04212ecae73ae96d4fc9
+2026-09-03T13:02:35.920+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 27073f39ed380dcb9fd7ec86d4ce130a83bded71524cbc7fa117a1467cbc4977
+2026-09-03T13:02:35.921+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 35b048802ee4c1681934d0864ee1335a7774efde4de4818f7691e6c3e2210ca7
+2026-09-03T13:02:35.921+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 78307f21dac6814b75404278a86bd0cbd167b5da6126439ce336d8968f1ff257
+2026-09-03T13:02:35.921+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = f1d99d34f2a134e5e7354e9ba2b69c368f9054c77822c9562b5d637640359c38
+2026-09-03T13:02:35.921+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = 44d2b6874f66f107d8de18bbbc572e5977f8fa22633603843075b2e04496c1a6
+2026-09-03T13:02:35.921+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.ai.vectorstore.SimpleVectorStore     : Calling EmbeddingModel for document id = c7aeffd9ebcf739c9864b7fc1a2b2f2a612844aa55bc125084be8ec3e69e22e3
+2026-09-03T13:02:35.921+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.service.DocumentIngestionService   : Document ingestion completed: documentName=EPAM_JavaSecureCodingGD.md, chunks=41
+2026-09-03T13:02:35.945+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-1] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-03T13:02:35.945+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-03T13:02:35.947+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-09-03T13:02:35.969+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-1] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=b3b1dd1b, sources=0
+2026-09-03T13:02:36.004+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-2] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=c87ab68a, sources=1
+2026-09-03T13:02:36.043+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-3] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd97, sources=0
+2026-09-03T13:02:36.066+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-4] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd97, sources=0
+2026-09-03T13:02:36.082+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-5] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd98, sources=0
+2026-09-03T13:02:36.099+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-6] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd97, sources=0
+2026-09-03T13:02:36.113+03:00  INFO 4644 --- [doc-qa-chatbot] [o-auto-4-exec-7] c.e.docqachatbot.service.RagChatService  : RAG chat completed: conversationKey=9c18cd97, sources=0
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.959 s -- in com.epam.docqachatbot.service.RagChatIT
+[INFO] Running com.epam.docqachatbot.support.HermeticApplicationContextIT
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-09-03T13:02:36.190+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.HermeticApplicationContextIT     : Starting HermeticApplicationContextIT using Java 21.0.6 with PID 4644 (started by FedirRudiachenko in C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag)
+2026-09-03T13:02:36.190+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.HermeticApplicationContextIT     : The following 1 profile is active: "test"
+2026-09-03T13:02:36.936+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-03T13:02:36.938+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-03T13:02:36.938+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-09-03T13:02:37.090+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 894 ms
+2026-09-03T13:02:37.286+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring VectorStoreDocumentRetriever with similarityThreshold=0.3, topK=5
+2026-09-03T13:02:37.287+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ConcatenationDocumentJoiner for multi-query result combination
+2026-09-03T13:02:37.289+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring ContextualQueryAugmenter with allowEmptyContext=false
+2026-09-03T13:02:37.292+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Configuring Modular RAG with document retrieval, joining, and query augmentation
+2026-09-03T13:02:37.295+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.config.AdvancedRagConfig           : Modular RAG pipeline configured successfully
+2026-09-03T13:02:37.299+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.docqachatbot.service.RagChatService  : RAG chat service initialized with bounded conversation memory
+2026-09-03T13:02:37.784+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-09-03T13:02:37.818+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 59767 (http) with context path '/'
+2026-09-03T13:02:37.830+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.s.HermeticApplicationContextIT     : Started HermeticApplicationContextIT in 1.692 seconds (process running for 104.873)
+2026-09-03T13:02:37.832+03:00  INFO 4644 --- [doc-qa-chatbot] [           main] c.e.d.c.GeneratorDeploymentReporter      : Resolved generator deployment=<not an Azure OpenAI context>, embedding deployment=<not an Azure OpenAI context>
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.725 s -- in com.epam.docqachatbot.support.HermeticApplicationContextIT
+[INFO] Running com.epam.docqachatbot.support.PackagingSmokeIT
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.epam.docqachatbot.support.PackagingSmokeIT
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- failsafe:3.5.3:verify (verify-integration-test-results) @ 02-rag ---
+[INFO] 
+[INFO] --- jacoco:0.8.13:report (report) @ 02-rag ---
+[INFO] Loading execution data file C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag\target\jacoco.exec
+[INFO] Analyzed bundle 'doc-qa-chatbot' with 32 classes
+[INFO] 
+[INFO] --- jacoco:0.8.13:check (check) @ 02-rag ---
+[INFO] Loading execution data file C:\Users\Fedir_Rudiachenko\IdeaProjects\myProjects\spring-ai-skeleton\02-rag\target\jacoco.exec
+[INFO] Analyzed bundle '02-rag' with 32 classes
+[INFO] All coverage checks have been met.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:38 min
+[INFO] Finished at: 2026-09-03T13:02:41+03:00
+[INFO] ------------------------------------------------------------------------

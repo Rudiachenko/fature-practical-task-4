@@ -1,0 +1,65 @@
+{
+  "artifactType": "live-smoke-review",
+  "scopeNote": "A different live run: its own Chroma collection (the policy plus llm_context_document.pdf) and its own lifecycle document. It records one combined finalStatus per case rather than separate answer/provenance/coverage axes, and it captured no chunk ids, so its source verdicts cannot be resolved against an ingestion manifest. Quote its per-case answerStatus and its lifecycle assertions only, and do not aggregate it with evaluation/runs/20260901T201249Z-objective-review.json.",
+  "comparableWithObjectiveReview": false,
+  "schemaVersion": 1,
+  "status": "COMPLETED",
+  "reviewedAtUtc": "2026-09-01T20:28:59Z",
+  "collection": "task2-live-smokes-20260901T202200Z",
+  "configuration": {
+    "deployment": "gpt-4o",
+    "embeddingDeployment": "text-embedding-3-small-1",
+    "topK": 5,
+    "similarityThreshold": 0.3
+  },
+  "noisyCorpus": {
+    "ingestStatus": "PASS",
+    "rationale": "POST /doc-qa/documents returned 202 after ingesting EPAM_JavaSecureCodingGD.md and llm_context_document.pdf.",
+    "verdicts": [
+      {
+        "case": "Simple",
+        "answerStatus": "PASS",
+        "sourceAttributionStatus": "FAIL",
+        "finalStatus": "FAIL",
+        "rationale": "The answer is correct and uses the policy document, but four returned policy chunks are unrelated to storing secrets."
+      },
+      {
+        "case": "Synthesis",
+        "answerStatus": "PASS",
+        "sourceAttributionStatus": "FAIL",
+        "finalStatus": "FAIL",
+        "rationale": "The response covers validation, normalization before validation, and log sanitization, but it also returns an output-validation chunk not used by the answer."
+      },
+      {
+        "case": "FiveBulletSummary",
+        "answerStatus": "FAIL",
+        "sourceAttributionStatus": "PASS",
+        "finalStatus": "FAIL",
+        "rationale": "The fifth bullet is guideline governance rather than a fifth security theme."
+      },
+      {
+        "case": "DistractorTopicProbe",
+        "answerStatus": "PASS",
+        "sourceAttributionStatus": "FAIL",
+        "finalStatus": "FAIL",
+        "rationale": "The answer correctly describes long-context LLM input and output limits from the PDF, but its five returned PDF chunks include unrelated long-form-generation and bibliography material."
+      },
+      {
+        "case": "Unsupported",
+        "answerStatus": "PASS",
+        "sourceAttributionStatus": "PASS",
+        "finalStatus": "PASS",
+        "rationale": "The Kubernetes question returned the exact refusal with no sources despite the noisy corpus."
+      }
+    ]
+  },
+  "lifecycle": {
+    "createV1Status": "PASS",
+    "replaceV2Status": "PASS",
+    "replacementAnswerStatus": "PASS",
+    "deleteByDocumentNameStatus": "PASS",
+    "postDeleteRefusalStatus": "PASS",
+    "manifestAbsenceStatus": "PASS",
+    "rationale": "POST v1 returned 202; PUT v2 returned 200; the response stated Version 2 and managed secret vault storage; DELETE secure-notes.md returned 204; the follow-up returned the exact refusal with no sources; Chroma then reported 81 chunks from only EPAM_JavaSecureCodingGD.md and llm_context_document.pdf."
+  }
+}

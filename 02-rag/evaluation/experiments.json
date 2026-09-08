@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "experiments": [
+    {
+      "id": "TopK",
+      "description": "Compare retrieval precision, completeness, source count, and latency while varying only topK.",
+      "questionCase": "Detail",
+      "variants": [
+        {
+          "topK": 1,
+          "similarityThreshold": 0.3
+        },
+        {
+          "topK": 4,
+          "similarityThreshold": 0.3
+        },
+        {
+          "topK": 20,
+          "similarityThreshold": 0.3
+        }
+      ]
+    },
+    {
+      "id": "SimilarityThreshold",
+      "description": "Compare noise and false refusal while varying only the similarity threshold.",
+      "questionCase": "Synthesis",
+      "variants": [
+        {
+          "topK": 5,
+          "similarityThreshold": 0.1
+        },
+        {
+          "topK": 5,
+          "similarityThreshold": 0.5
+        },
+        {
+          "topK": 5,
+          "similarityThreshold": 0.8
+        }
+      ]
+    },
+    {
+      "id": "GroundingRefusalSources",
+      "description": "Record supported sources for agent manifest/content relevance review and mechanically verify exact refusal with empty sources for an unsupported question.",
+      "variants": [
+        {
+          "case": "Supported",
+          "question": "Why does the policy say secrets must not be stored in code or data?",
+          "expectedDocumentName": "EPAM_JavaSecureCodingGD.md",
+          "expectedOutcome": "The final review must map every nonblank chunkId to the indexed manifest, verify content relevance, and resolve the case as PASS or FAIL"
+        },
+        {
+          "case": "Unsupported",
+          "question": "Which Kubernetes admission controller does this Java secure coding policy require?",
+          "expectedResponse": "I don't have enough information to answer this question.",
+          "expectedSources": []
+        }
+      ]
+    },
+    {
+      "id": "NoisyCorpus",
+      "description": "Ingest the relevant corpus (EPAM_JavaSecureCodingGD.md) alongside a genuinely off-topic distractor document (llm_context_document.pdf, an unrelated LLM-context-window document already used as a Module-1 test fixture) on a fresh collection, at the baseline retrieval configuration (topK=5, similarityThreshold=0.3), then run a representative subset of the comparison questions plus the out-of-corpus refusal question. Observe: do off-topic chunks appear in sources, does the grounded answer degrade or stay correct, does the refusal still fire or does noise clear the similarity threshold and produce a non-refusal, and do the returned sources stay within the expected document for each case.",
+      "corpusDocuments": [
+        "EPAM_JavaSecureCodingGD.md",
+        "02-rag/src/test/resources/documents/llm_context_document.pdf"
+      ],
+      "variants": [
+        {
+          "case": "Simple",
+          "questionCase": "Simple",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "expectedDocumentName": "EPAM_JavaSecureCodingGD.md"
+        },
+        {
+          "case": "Synthesis",
+          "questionCase": "Synthesis",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "expectedDocumentName": "EPAM_JavaSecureCodingGD.md"
+        },
+        {
+          "case": "FiveBulletSummary",
+          "questionCase": "FiveBulletSummary",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "expectedDocumentName": "EPAM_JavaSecureCodingGD.md"
+        },
+        {
+          "case": "DistractorTopicProbe",
+          "question": "What does this document say about LLM context windows?",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "expectedDocumentName": "llm_context_document.pdf"
+        },
+        {
+          "case": "Unsupported",
+          "question": "Which Kubernetes admission controller does this Java secure coding policy require?",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "expectedResponse": "I don't have enough information to answer this question.",
+          "expectedSources": []
+        }
+      ]
+    },
+    {
+      "id": "QueryTransformationExpansion",
+      "description": "Toggle app.rag.query-transformation.*/app.rag.query-expansion.* and compare retrieval breadth, answer coverage, added latency/cost, and duplicate-chunk collapsing by ConcatenationDocumentJoiner. topK and similarityThreshold are pinned across every variant so the toggle is the only moving part.",
+      "questionCase": "FiveBulletSummary",
+      "variants": [
+        {
+          "case": "baseline",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "compressionEnabled": false,
+          "rewriteEnabled": false,
+          "queryExpansionEnabled": false
+        },
+        {
+          "case": "expansionOnly",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "compressionEnabled": false,
+          "rewriteEnabled": false,
+          "queryExpansionEnabled": true,
+          "numberOfQueries": 3,
+          "includeOriginal": true
+        },
+        {
+          "case": "rewriteOnly",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "compressionEnabled": false,
+          "rewriteEnabled": true,
+          "queryExpansionEnabled": false
+        },
+        {
+          "case": "expansionAndRewrite",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "compressionEnabled": false,
+          "rewriteEnabled": true,
+          "queryExpansionEnabled": true,
+          "numberOfQueries": 3,
+          "includeOriginal": true
+        }
+      ]
+    },
+    {
+      "id": "QueryCompression",
+      "description": "Toggle app.rag.query-transformation.compression-enabled across a genuine two-turn conversation on one shared conversationId, where turn 2 is a purely elliptical follow-up repeating no domain noun from turn 1: observe whether compression resolves turn 2 into a standalone query that retrieves the correct policy section, versus turn 2 being embedded near-verbatim with no referent when compression is off. topK and similarityThreshold are pinned across both variants so compression is the only moving part.",
+      "variants": [
+        {
+          "case": "compressionOff",
+          "compressionEnabled": false,
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "turn1Question": "What does the policy say about storing secrets such as cryptographic keys and passwords directly in application code, and why is code obfuscation not considered sufficient protection?",
+          "turn2Question": "Is that protection method actually effective against a determined attacker, and why?",
+          "expectedDocumentName": "EPAM_JavaSecureCodingGD.md"
+        },
+        {
+          "case": "compressionOn",
+          "compressionEnabled": true,
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "turn1Question": "What does the policy say about storing secrets such as cryptographic keys and passwords directly in application code, and why is code obfuscation not considered sufficient protection?",
+          "turn2Question": "Is that protection method actually effective against a determined attacker, and why?",
+          "expectedDocumentName": "EPAM_JavaSecureCodingGD.md"
+        }
+      ]
+    },
+    {
+      "id": "Reranking",
+      "description": "Compare baseline retrieval, broad retrieval followed by heading-aware MMR narrowing, and un-narrowed broad retrieval for FiveBulletSummary. The ordinary-question variant applies the same MMR configuration to Simple. Compare source diversity, answer coverage, latency, and whether MMR changes ordinary retrieval quality.",
+      "questionCase": "FiveBulletSummary",
+      "variants": [
+        {
+          "case": "baseline",
+          "topK": 5,
+          "similarityThreshold": 0.3,
+          "mmrEnabled": false
+        },
+        {
+          "case": "mmrEnabled",
+          "topK": 20,
+          "similarityThreshold": 0.3,
+          "mmrEnabled": true,
+          "mmrFinalTopK": 5,
+          "mmrLambda": 0.5
+        },
+        {
+          "case": "topK20Unnarrowed",
+          "topK": 20,
+          "similarityThreshold": 0.3,
+          "mmrEnabled": false
+        },
+        {
+          "case": "ordinaryQuestionMmrEnabled",
+          "questionCase": "Simple",
+          "topK": 20,
+          "similarityThreshold": 0.3,
+          "mmrEnabled": true,
+          "mmrFinalTopK": 5,
+          "mmrLambda": 0.5
+        }
+      ]
+    }
+  ]
+}

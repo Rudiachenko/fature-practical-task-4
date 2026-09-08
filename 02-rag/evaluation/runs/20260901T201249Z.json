@@ -1,0 +1,1754 @@
+{
+  "schemaVersion": 1,
+  "status": "COMPLETED",
+  "generatedAtUtc": "2026-09-01T20:20:40.9659699+00:00",
+  "fixedIndex": {
+    "collection": "task2-evaluation-20260901T201249Z",
+    "embeddingDeployment": "text-embedding-3-small-1",
+    "corpus": "EPAM_JavaSecureCodingGD.md",
+    "ingestionCount": 1
+  },
+  "results": [
+    {
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Simple",
+      "question": "According to the EPAM Java Secure Coding Guidelines, which examples of secrets must not be stored in code or data, and why is code obfuscation insufficient?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 4461,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "According to the EPAM Java Secure Coding Guidelines, secrets such as cryptographic keys, passwords, or algorithms must not be stored in code or data because hostile JVMs can quickly view this data. Code obfuscation is insufficient as it does not effectively hide the code from serious attackers.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f1904776fffcda2dfb289717b1954b83a20253ff7e3404eeaad5862cc79bbab7"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5f9010d272e162d97e3a5f27f96943194caaf3b0e26e0a489c4c6d97ecf8f55b"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Every concrete example and reason must be supported by section 2.1.6; any unsupported or altered fact fails.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Detail",
+      "question": "What protections does the policy require around a native method wrapper, including the defensive copy and the overflow-safe offset and length validation?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 2366,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy**: The input data should be copied (e.g., using `data.clone()`) to prevent unintended modifications to the original data.\n\n2. **Overflow-Safe Offset and Length Validation**: Before invoking the native method, the wrapper method must validate the input. Specifically:\n   - Ensure that `offset` and `len` are non-negative.\n   - Check that `offset` does not exceed `data.length - len`, as `offset + len` could result in an integer overflow (e.g., if `offset = 1` and `len = Integer.MAX_VALUE`, then `offset + len` would wrap around to `Integer.MIN_VALUE`).\n\nThese measures ensure that the native method is invoked safely, preventing issues such as buffer overflows and unintended behavior due to invalid inputs.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "23d3b806d46211619402e7fe4a46833f6f904d3be10479e030c00416b3a5f180"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "33ece22fd34a1a74cf9dcfb60e18c499c65c403cd72faed9dc7570ce657baeb6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must identify the private native method, public Java wrapper, cloned input, and subtraction-based bounds check without inventing requirements.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Synthesis",
+      "question": "Synthesize the policy's guidance for handling untrusted text from receipt through logging, using the sections on validating inputs, Unicode normalization, and unsensitized log input.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 2772,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy provides the following guidance for handling untrusted text:\n\n1. **Validate Inputs (Section 2.3.1):**  \n   Any input from untrusted sources must be validated before use to prevent issues such as integer overflows or directory traversal attacks. This validation should occur after any defensive copying of the input.\n\n2. **Normalize Strings Before Validating Them (Section 2.3.4):**  \n   Inputs should be normalized before validation because Unicode allows the same string to have multiple representations. Normalization ensures consistent processing of input data and enhances the effectiveness of validation mechanisms, such as blacklisting specific patterns (e.g., `<script>` tags to prevent XSS attacks).\n\n3. **Do Not Log Unsensitized User Input (Section 2.3.5):**  \n   When logging user input, it must be sanitized and validated to prevent log injection vulnerabilities. Failure to sanitize input can result in malicious users inserting fake log data or leaking sensitive information, such as administrative cookies, through injected scripts.\n\nIn summary, untrusted text should be validated and normalized before use, and any user input logged should first be sanitized to prevent security vulnerabilities.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "06275559c6a4323d240cde2803a7485ac2f8e21e48af195ec247238295497a42"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "b074d9d3d9d5965e468f804619b85fc2a3f1c7ae783d75c095826b9669d0f47f"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "616c1dbf6667f2e7d73f00f29b47cbeb5fb37053acf4a2dd21ae89f3df1bb9d8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f6a7b0b33c6d7599cd83a93da04cea1a10a2f2be3aa59d35168ee0159aa427d1"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must combine all three named sections, preserve normalize-before-validate ordering, and avoid unsupported guarantees.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "Analysis",
+      "question": "Based only on the policy, analyze how making classes and methods final and applying least privilege reduce different attack opportunities, and identify the extensibility trade-off the policy explicitly acknowledges.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 3056,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "Making classes and methods final reduces attack opportunities by preventing attackers from extending or subclassing them in potentially dangerous and unforeseen ways. For example, it ensures that malicious subclasses cannot add finalizers, override methods, or introduce unintended behavior. This approach enhances security by limiting the ways code can be manipulated or exploited.\n\nApplying the principle of least privilege further reduces attack opportunities by ensuring that code operates with the minimum permissions necessary to perform its tasks. This minimizes the potential impact of coding flaws or vulnerabilities, as the exploitation of such flaws is less likely when privileges are restricted. This can be achieved through static methods like policy files or dynamic methods like the `java.security.AccessController.doPrivileged` mechanism.\n\nThe policy explicitly acknowledges an extensibility trade-off when making classes and methods final: this approach sacrifices extensibility in exchange for security. By making classes and methods final, developers limit their ability to extend or modify functionality, which might be desirable in some cases where flexibility and future adaptability are prioritized.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "1eae39aca66514357914a73cae38ac56be9375bf5fe3f37a4a859b4dab6e5ba6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "a9683497aec5e4a5cf5d7e178a1a4b3f9f2e5cb624e62816117c83c43154d9e0"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "a2f24f0d86494d29d2379a175ae8aff27f9ac68b34e19c7cee6f4d9204d2f2dc"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Judge depth and structure; flag speculation stated as policy fact and require the explicit extensibility trade-off.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Comparison",
+      "case": "FiveBulletSummary",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 2568,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Java developers should adhere to recommended secure coding guidelines to minimize security vulnerabilities caused by programmer error, combining Oracle's official guidelines with secure coding community recommendations.  \n- API documentation must include security-related information, such as required permissions, security exceptions, caller sensitivity, and relevant preconditions or postconditions, ensuring it remains up to date through tools like JavaDoc.  \n- Code should be designed to have \"obviously no flaws\" rather than \"no obvious flaws,\" avoiding reliance on clever logic to prove safety and strictly following the provided guidelines unless strongly justified otherwise.  \n- APIs should be designed with security in mind from the outset to avoid issues with retrofitting; for instance, making classes final can prevent malicious subclasses from adding vulnerabilities like finalizers and cloning.  \n- The EPAM Java Competency Center is responsible for reviewing the secure coding guidelines, with the Head Delivery Management Office as the owner and the Senior Director, Delivery Management Office as the approver.  ",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Simple",
+      "question": "According to the EPAM Java Secure Coding Guidelines, which examples of secrets must not be stored in code or data, and why is code obfuscation insufficient?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 3593,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "I don't have enough information to answer this question.",
+      "sources": [],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Every concrete example and reason must be supported by section 2.1.6; any unsupported or altered fact fails.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Detail",
+      "question": "What protections does the policy require around a native method wrapper, including the defensive copy and the overflow-safe offset and length validation?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 2861,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy requires that the wrapper perform a defensive copy of mutable input data (by cloning the data array) and validate the offset and length to prevent integer overflow and out-of-bounds access. Specifically, the wrapper should check that offset and length are non-negative and that offset does not exceed data.length - len, ensuring safe invocation of the native method.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "23d3b806d46211619402e7fe4a46833f6f904d3be10479e030c00416b3a5f180"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "33ece22fd34a1a74cf9dcfb60e18c499c65c403cd72faed9dc7570ce657baeb6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must identify the private native method, public Java wrapper, cloned input, and subtraction-based bounds check without inventing requirements.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Synthesis",
+      "question": "Synthesize the policy's guidance for handling untrusted text from receipt through logging, using the sections on validating inputs, Unicode normalization, and unsensitized log input.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 3053,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "Applications that accept untrusted input should normalize the input before validating it, as Unicode strings can have many different representations. Validation of inputs must occur after any defensive copying. When handling untrusted text from receipt to logging, it is important to validate the input, normalize the strings, and sanitize or validate any data before logging to prevent log injection and leakage of sensitive information.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "06275559c6a4323d240cde2803a7485ac2f8e21e48af195ec247238295497a42"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "b074d9d3d9d5965e468f804619b85fc2a3f1c7ae783d75c095826b9669d0f47f"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "616c1dbf6667f2e7d73f00f29b47cbeb5fb37053acf4a2dd21ae89f3df1bb9d8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f6a7b0b33c6d7599cd83a93da04cea1a10a2f2be3aa59d35168ee0159aa427d1"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must combine all three named sections, preserve normalize-before-validate ordering, and avoid unsupported guarantees.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "Analysis",
+      "question": "Based only on the policy, analyze how making classes and methods final and applying least privilege reduce different attack opportunities, and identify the extensibility trade-off the policy explicitly acknowledges.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 2576,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "I don't have enough information to answer this question.",
+      "sources": [],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Judge depth and structure; flag speculation stated as policy fact and require the explicit extensibility trade-off.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "suite": "Comparison",
+      "case": "FiveBulletSummary",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 2381,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- API documentation should include security-related information such as required permissions, security exceptions, caller sensitivity, and relevant preconditions or postconditions, documented in comments or tools like JavaDoc.  \r\n- Developers should aim to create code that is obviously free of flaws rather than relying on the absence of obvious flaws, ensuring robust security through straightforward design.  \r\n- Designing APIs with security considerations in mind is preferable; retrofitting security into existing APIs is more error-prone and challenging.  \r\n- Making classes final can prevent malicious subclasses from adding finalizers, cloning, or overriding methods, thereby enhancing security.  \r\n- The guideline owner is the Head Delivery Management Office, with review responsibilities assigned to the EPAM Java Competency Center.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Simple",
+      "question": "According to the EPAM Java Secure Coding Guidelines, which examples of secrets must not be stored in code or data, and why is code obfuscation insufficient?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 6991,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The guideline says not to store secrets such as cryptographic keys, passwords, or algorithm in code or data. Hostile JVMs can quickly view this data, and code obfuscation doesn't really hide the code from serious attackers.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f1904776fffcda2dfb289717b1954b83a20253ff7e3404eeaad5862cc79bbab7"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5f9010d272e162d97e3a5f27f96943194caaf3b0e26e0a489c4c6d97ecf8f55b"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Every concrete example and reason must be supported by section 2.1.6; any unsupported or altered fact fails.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Detail",
+      "question": "What protections does the policy require around a native method wrapper, including the defensive copy and the overflow-safe offset and length validation?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 8207,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy requires that native methods be declared private and exposed through a public Java wrapper that performs input validation before calling the native code. The wrapper must make a defensive copy of mutable input (example: data = data.clone()) and validate offset and length in an overflow-safe way — e.g. check for offset < 0, len < 0, and offset > data.length - len and throw an IllegalArgumentException if those checks fail — rather than computing offset+len (which can overflow) before validation.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "23d3b806d46211619402e7fe4a46833f6f904d3be10479e030c00416b3a5f180"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "33ece22fd34a1a74cf9dcfb60e18c499c65c403cd72faed9dc7570ce657baeb6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must identify the private native method, public Java wrapper, cloned input, and subtraction-based bounds check without inventing requirements.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Synthesis",
+      "question": "Synthesize the policy's guidance for handling untrusted text from receipt through logging, using the sections on validating inputs, Unicode normalization, and unsensitized log input.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 10365,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Receipt and defensive copy\n  - When untrusted text is received, perform defensive copying before validation (input validation must occur after any defensive copying).\n\n- Normalize before validating\n  - Normalize the string prior to validating it because Unicode can represent the same string in many different ways.\n\n- Validate inputs\n  - Validate all inputs from untrusted sources before use. Examples of checks called out in the policy include guarding against integer overflows and directory traversal sequences such as \"../\".\n  - Note: in general validate method arguments; if the text is a return value from an upcall (a method of higher-level code), validate that returned value as input as well.\n\n- Sanitize and validate before logging\n  - Do not log unsanitized user input. Sanitize and validate any untrusted input sent to logs to prevent log injection (for example, an attacker inserting a CRLF to split log entries) and to avoid leaking sensitive data (for example, by injecting a script into a log file that could expose an administrator’s cookie).\n  - Blacklisting (for example forbidding \"<script>\" tags) can be part of a strategy but is insufficient on its own; sanitize and validate inputs sent to logs.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "06275559c6a4323d240cde2803a7485ac2f8e21e48af195ec247238295497a42"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "b074d9d3d9d5965e468f804619b85fc2a3f1c7ae783d75c095826b9669d0f47f"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "616c1dbf6667f2e7d73f00f29b47cbeb5fb37053acf4a2dd21ae89f3df1bb9d8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f6a7b0b33c6d7599cd83a93da04cea1a10a2f2be3aa59d35168ee0159aa427d1"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must combine all three named sections, preserve normalize-before-validate ordering, and avoid unsupported guarantees.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "Analysis",
+      "question": "Based only on the policy, analyze how making classes and methods final and applying least privilege reduce different attack opportunities, and identify the extensibility trade-off the policy explicitly acknowledges.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 9842,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "Making classes and methods final\n- How it reduces attack opportunities:\n  - Prevents an attacker from creating malicious subclasses that extend a class \"in a dangerous and unforeseen way.\"\n  - Specifically blocks a malicious subclass from adding finalizers, enabling cloning, or overriding methods in unexpected ways (as noted in the guidance on API design).\n- Source lines: \"Make everything final, unless there's a good reason not to.\" and \"If a class or method is non-final, an attacker could try to extend it...\"; \"making a class final prevents a malicious subclass from adding finalizers, cloning, and overriding random methods.\"\n\nApplying least privilege\n- How it reduces attack opportunities:\n  - Running code with reduced permissions makes exploitation of coding flaws less likely to succeed: \"if the code is operating with reduced privileges, then exploitation of any flaws is likely to be thwarted.\"\n  - The policy shows how to implement this in Java: statically via policy files and dynamically with java.security.AccessController.doPrivileged.\n  - For RIAs, requested permissions (applet parameter or JNLP), signed-jar manifest attributes, and sandboxing cause the JRE to throw a security exception if sandboxed code attempts security-sensitive operations; thus RIAs should be configured to run with the least necessary permissions and avoid running with all permissions.\n- Source lines: guidance in \"Restrict Privileges\" and related RIA notes.\n\nExplicitly acknowledged extensibility trade-off\n- The policy explicitly acknowledges a loss of extensibility as the trade-off for making things final: \"Note that this causes a loss of extensibility, in exchange for security.\"",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "1eae39aca66514357914a73cae38ac56be9375bf5fe3f37a4a859b4dab6e5ba6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "a9683497aec5e4a5cf5d7e178a1a4b3f9f2e5cb624e62816117c83c43154d9e0"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "a2f24f0d86494d29d2379a175ae8aff27f9ac68b34e19c7cee6f4d9204d2f2dc"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Judge depth and structure; flag speculation stated as policy fact and require the explicit extensibility trade-off.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "suite": "Comparison",
+      "case": "FiveBulletSummary",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 10720,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Prefer to have obviously no flaws rather than no obvious flaws: design and write code that does not require clever logic to see that it is safe, and follow the guidelines in this document unless there is a very strong reason not to.  \n- Design APIs to avoid security concerns: design APIs with security in mind because retrofitting security is more difficult and error prone; for example, making a class final can prevent a malicious subclass from adding finalizers, cloning, or overriding methods, and any use of the SecurityManager highlights an area that should be scrutinized.  \n- Document security-related information in API documentation: cover required permissions, security-related exceptions, caller sensitivity, and relevant preconditions or postconditions, and use comments (such as JavaDoc) to help keep this information up to date.  \n- Use combined guidance sources: the EPAM guidelines combine the official guidelines provided by Oracle and rules and recommendations that reflect the current thinking of the secure coding community.  \n- Maintain governance and review responsibility: the owner of this guideline is the Head Delivery Management Office, the approver is the Senior Director, Delivery Management Office on behalf of the Head Delivery Management Office, and the EPAM Java Competency Center is responsible for review of this guideline.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "TopK",
+      "case": "topK-1",
+      "question": "What protections does the policy require around a native method wrapper, including the defensive copy and the overflow-safe offset and length validation?",
+      "config": {
+        "topK": 1,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 4735,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy**: A mutable input (such as a byte array) should be cloned to ensure the original input cannot be modified externally during the execution of the wrapper method.\n\n2. **Overflow-Safe Offset and Length Validation**: The offset and length parameters must be validated to ensure they are within valid bounds. Specifically:\n   - Both `offset` and `len` should be non-negative.\n   - The `offset + len` calculation must not produce an overflow that could result in invalid values. For example, if `offset = 1` and `len = Integer.MAX_VALUE`, the sum `offset + len` would equal `Integer.MIN_VALUE`, which is invalid.\n   - The validation ensures that `offset + len` does not exceed the array length (`data.length`).\n\nThese measures help prevent vulnerabilities such as buffer overflows and ensure safe execution of the native method.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "23d3b806d46211619402e7fe4a46833f6f904d3be10479e030c00416b3a5f180"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must identify the private native method, public Java wrapper, cloned input, and subtraction-based bounds check without inventing requirements.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "TopK",
+      "case": "topK-4",
+      "question": "What protections does the policy require around a native method wrapper, including the defensive copy and the overflow-safe offset and length validation?",
+      "config": {
+        "topK": 4,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 5360,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method as private**: Native methods should not be declared public. Instead, they should be private and their functionality should be exposed through a public Java-based wrapper method.\n\n2. **Perform input validation in the wrapper**: The public wrapper method must perform necessary input validation prior to invoking the native method. This includes validating the offset and length arguments to ensure they are safe and won't result in issues like integer overflow.\n\n3. **Defensive copying of mutable input**: The wrapper should create a defensive copy of mutable input data (e.g., cloning a byte array) to prevent unintended modifications to the original input.\n\n4. **Overflow-safe offset and length validation**: The wrapper must validate that:\n   - `offset` is non-negative.\n   - `len` is non-negative.\n   - The sum of `offset` and `len` does not exceed the length of the data array (avoiding potential integer overflow). For example, checks must ensure that values like `offset = 1` and `len = Integer.MAX_VALUE` do not result in `offset + len == Integer.MIN_VALUE`.\n\nThese measures ensure robust protection against issues such as buffer overflows and unintended data manipulation when invoking native code.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "23d3b806d46211619402e7fe4a46833f6f904d3be10479e030c00416b3a5f180"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "33ece22fd34a1a74cf9dcfb60e18c499c65c403cd72faed9dc7570ce657baeb6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must identify the private native method, public Java wrapper, cloned input, and subtraction-based bounds check without inventing requirements.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "TopK",
+      "case": "topK-20",
+      "question": "What protections does the policy require around a native method wrapper, including the defensive copy and the overflow-safe offset and length validation?",
+      "config": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 7000,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy:** Mutable input data should be copied (cloned) before further processing. This ensures that the original input cannot be modified while the wrapper is working with its copy.\n\n2. **Validation of Offset and Length:** Input validation must be performed to ensure that the offset and length parameters do not cause issues such as integer overflow. Specifically:\n   - Check if `offset` or `length` are negative.\n   - Validate that `offset + length` does not exceed the bounds of the data array. This includes guarding against integer overflow scenarios (e.g., if `offset = 1` and `len = Integer.MAX_VALUE`, then `offset + len` would wrap around to `Integer.MIN_VALUE`, which is less than `data.length`).\n\nThese checks are meant to prevent buffer overflows and crashes when invoking the native method. \n\nAdditionally, the policy recommends the native method itself to be declared as private and accessed through a public wrapper method, which handles the input validation before invoking the native method.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "23d3b806d46211619402e7fe4a46833f6f904d3be10479e030c00416b3a5f180"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "33ece22fd34a1a74cf9dcfb60e18c499c65c403cd72faed9dc7570ce657baeb6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "291fa7f924c644c881420ebaf1dd43f3cfa84e5b4df1c4df68e2dc8f54b79d82"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "9330d7ab65cc3a1eec36e19c09953165b56d5a7b8adae12f7a281da9407b6507"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "69463b0486155921cd3b3854f1ca583ecbaa55d036077d70b8292b1b6c45b645"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "616c1dbf6667f2e7d73f00f29b47cbeb5fb37053acf4a2dd21ae89f3df1bb9d8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "06a1766a29540eb3176fbd87083a6c9bcde8f4ae4c394c78dd2dde4dc1a1a606"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "3363ec568773c81df85747a6c78fab4865f8ae2d8d57b30ae4bc1e806124d573"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "a9683497aec5e4a5cf5d7e178a1a4b3f9f2e5cb624e62816117c83c43154d9e0"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "abeb1ec48a95f11c471af78d961b7450ddf04184f1ade1b4172d40046b5567a3"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "249804d841f3e3575f4b94fb14189143ba4da51a76381ab1302886c5108568dc"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "758c5da1fbf126d77a4662b1939afdbe69c95bd9f8c995f080c10e17e49ea761"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "bb6e155784fd660d1e081619ded2903eae9d2d2544671d527bfab6140c155f30"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "9e70751d1d5849856feddf07bbbf5574610ad6f8287d911a993d92340e911447"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must identify the private native method, public Java wrapper, cloned input, and subtraction-based bounds check without inventing requirements.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "SimilarityThreshold",
+      "case": "threshold-0.1",
+      "question": "Synthesize the policy's guidance for handling untrusted text from receipt through logging, using the sections on validating inputs, Unicode normalization, and unsensitized log input.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.1,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 5658,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy outlines several key steps for securely handling untrusted text:\n\n1. **Validate Inputs (Section 2.3.1)**: Input from untrusted sources must be validated before use to prevent issues such as integer overflow, directory traversal attacks, or other maliciously crafted inputs. Validation should occur after any defensive copying of the input.\n\n2. **Normalize Strings before Validating (Section 2.3.4)**: Applications should normalize untrusted input strings before validating them. This is critical because Unicode allows multiple representations of the same string, which could bypass input filtering mechanisms. Normalizing ensures consistent handling of the input, particularly when employing blacklisting strategies to prevent vulnerabilities like cross-site scripting (XSS).\n\n3. **Do Not Log Unsensitized User Input (Section 2.3.5)**: Before logging any user input, it should be sanitized and validated. Unsensitized input in logs can lead to log injection vulnerabilities, allowing attackers to manipulate log entries, mislead administrators, or leak sensitive data across trust boundaries. For example, malicious scripts injected into log files could expose sensitive information when viewed in a web browser.\n\nTogether, these guidelines emphasize careful validation and normalization of untrusted text throughout its lifecycle, ensuring that input is safe for processing and remains secure when stored or logged.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "06275559c6a4323d240cde2803a7485ac2f8e21e48af195ec247238295497a42"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "b074d9d3d9d5965e468f804619b85fc2a3f1c7ae783d75c095826b9669d0f47f"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "616c1dbf6667f2e7d73f00f29b47cbeb5fb37053acf4a2dd21ae89f3df1bb9d8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f6a7b0b33c6d7599cd83a93da04cea1a10a2f2be3aa59d35168ee0159aa427d1"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "966c977653e6ebc6ee1827183bf5d5a802d49f16861dcf421f3b888d627210fb"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must combine all three named sections, preserve normalize-before-validate ordering, and avoid unsupported guarantees.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "SimilarityThreshold",
+      "case": "threshold-0.5",
+      "question": "Synthesize the policy's guidance for handling untrusted text from receipt through logging, using the sections on validating inputs, Unicode normalization, and unsensitized log input.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.5,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 5450,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy's guidance for handling untrusted text from receipt through logging involves a series of steps to ensure security and prevent vulnerabilities:\n\n1. **Validate Inputs**: All input from untrusted sources must be validated before use to mitigate risks such as integer overflows, directory traversal attacks, and other maliciously crafted inputs. Input validation should occur after any defensive copying of the input.\n\n2. **Normalize Strings Before Validating**: Since Unicode allows the same string to have multiple representations, applications should normalize input strings before validating them. This step ensures consistency in string representation, which is crucial for effective input filtering and validation mechanisms.\n\n3. **Do Not Log Unsensitized User Input**: Before logging user input, it must be sanitized and validated to prevent log injection vulnerabilities. Unsanitized input in logs can allow attackers to deceive system administrators or leak sensitive data across trust boundaries, potentially leading to further security breaches.\n\nBy following these steps sequentially—validating input, normalizing strings for consistent representation, and sanitizing data before logging—the policy ensures robust handling of untrusted text to minimize security risks.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "06275559c6a4323d240cde2803a7485ac2f8e21e48af195ec247238295497a42"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "b074d9d3d9d5965e468f804619b85fc2a3f1c7ae783d75c095826b9669d0f47f"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "616c1dbf6667f2e7d73f00f29b47cbeb5fb37053acf4a2dd21ae89f3df1bb9d8"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must combine all three named sections, preserve normalize-before-validate ordering, and avoid unsupported guarantees.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "SimilarityThreshold",
+      "case": "threshold-0.8",
+      "question": "Synthesize the policy's guidance for handling untrusted text from receipt through logging, using the sections on validating inputs, Unicode normalization, and unsensitized log input.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.8,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 3601,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "I don't have enough information to answer this question.",
+      "sources": [],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "The response must combine all three named sections, preserve normalize-before-validate ordering, and avoid unsupported guarantees.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "GroundingRefusalSources",
+      "case": "Supported",
+      "question": "Why does the policy say secrets must not be stored in code or data?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 3468,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy states that secrets must not be stored in code or data because hostile JVMs can quickly view this data, and code obfuscation does not effectively hide the code from serious attackers.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f1904776fffcda2dfb289717b1954b83a20253ff7e3404eeaad5862cc79bbab7"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "abeb1ec48a95f11c471af78d961b7450ddf04184f1ade1b4172d40046b5567a3"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "06a1766a29540eb3176fbd87083a6c9bcde8f4ae4c394c78dd2dde4dc1a1a606"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "NOT_PROVEN: agent review must verify every chunkId against the indexed manifest and answer relevance.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": true,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": true,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "GroundingRefusalSources",
+      "case": "Unsupported",
+      "question": "Which Kubernetes admission controller does this Java secure coding policy require?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 1207,
+      "httpStatus": 200,
+      "status": "PASS",
+      "response": "I don't have enough information to answer this question.",
+      "sources": [],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": true,
+        "notes": null,
+        "sourceFaithful": null,
+        "refusalCorrect": true,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryTransformationExpansion",
+      "case": "baseline",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 5444,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Java developers should adhere to secure coding guidelines to minimize security vulnerabilities, combining Oracle's official guidelines with secure coding community recommendations.  \n- API documentation must include security-related information such as permissions, security exceptions, caller sensitivity, and relevant preconditions or postconditions to ensure up-to-date and clear communication.  \n- Emphasize creating code with \"obviously no flaws\" rather than \"no obvious flaws,\" avoiding reliance on clever logic for safety and strictly following the provided guidelines unless strongly justified.  \n- Design APIs with built-in security to prevent vulnerabilities, such as using final classes to block malicious subclassing and scrutinizing areas involving the SecurityManager.  \n- The Head Delivery Management Office owns the guidelines, with the Senior Director, Delivery Management Office as the approver, and the EPAM Java Competency Center responsible for their review.  ",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryTransformationExpansion",
+      "case": "expansionOnly",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 6628,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Java developers should follow secure coding guidelines to minimize security vulnerabilities, adhering to EPAM's recommendations that combine Oracle's official guidelines with community best practices.  \n- Design APIs with security in mind, avoiding retrofitting security, and consider making classes final to prevent malicious subclassing and method overriding.  \n- Write code that is clearly secure without requiring clever logic to verify its safety, following the guidelines unless there is a strong reason not to.  \n- Minimize the number of SecurityManager checks by performing security checks at defined points and returning an object that eliminates the need for further checks.  \n- Document security-related information in API documentation, including required permissions, exceptions, and preconditions, using tools like JavaDoc to keep the details up to date.  ",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryTransformationExpansion",
+      "case": "rewriteOnly",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 6627,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Java developers should design APIs with security in mind, as retrofitting security into existing APIs is difficult and error-prone; for instance, making a class final can prevent malicious subclasses from overriding or adding certain methods.  \n- Secure code should aim to have \"obviously no flaws\" rather than \"no obvious flaws,\" avoiding complex logic that obscures safety and adhering strictly to the provided guidelines unless strongly justified otherwise.  \n- API documentation must include security-related details like required permissions, exceptions, caller sensitivity, and security-relevant preconditions or postconditions, ideally maintained through tools like JavaDoc.  \n- Adhering to the EPAM secure coding guidelines, which integrate Oracle's official recommendations and current secure coding community standards, helps minimize security vulnerabilities caused by programmer errors.  \n- The guidelines are owned by the Head Delivery Management Office, approved by the Senior Director of Delivery Management Office, and reviewed by the EPAM Java Competency Center to ensure alignment with secure coding practices.  ",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryTransformationExpansion",
+      "case": "expansionAndRewrite",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 7842,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Java developers should adhere to secure coding guidelines to minimize security vulnerabilities caused by programmer error, incorporating official Oracle guidelines and secure coding community recommendations.  \n- API documentation must include security-related information such as required permissions, exceptions, caller sensitivity, and relevant preconditions or postconditions, ensuring it stays updated via tools like JavaDoc.  \n- Code should be designed to have \"obviously no flaws\" rather than \"no obvious flaws,\" avoiding reliance on clever logic and strictly following the guidelines unless strongly justified otherwise.  \n- APIs should be designed with security in mind from the outset, as retrofitting security into existing APIs is complex and error-prone; for instance, making a class final can prevent malicious subclassing.  \n- The Head Delivery Management Office owns the guidelines, and the Senior Director of the Delivery Management Office approves them, with the EPAM Java Competency Center responsible for their review.  ",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryCompression",
+      "case": "compressionOff-Turn1",
+      "question": "What does the policy say about storing secrets such as cryptographic keys and passwords directly in application code, and why is code obfuscation not considered sufficient protection?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 3950,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy states: \"Don't store secrets (cryptographic keys, passwords, or algorithm) in the code or data.\" This is because hostile JVMs can quickly access this data. Additionally, code obfuscation is not considered sufficient protection as it doesn't effectively hide the code from serious attackers.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f1904776fffcda2dfb289717b1954b83a20253ff7e3404eeaad5862cc79bbab7"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "24077f1cc402dbc2fbc4bc9b67c8411198f2b0ed8b7a86df35f0e007aa143f5b"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Context-setting turn: establishes conversation history for Turn2 and is not independently scored.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryCompression",
+      "case": "compressionOff-Turn2",
+      "question": "Is that protection method actually effective against a determined attacker, and why?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 1393,
+      "httpStatus": 200,
+      "status": "FAIL",
+      "response": "I don't have enough information to answer this question.",
+      "sources": [],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "NOT_PROVEN: agent review must verify every chunkId against the indexed manifest and relevance to the resolved standalone query.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": false,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryCompression",
+      "case": "compressionOn-Turn1",
+      "question": "What does the policy say about storing secrets such as cryptographic keys and passwords directly in application code, and why is code obfuscation not considered sufficient protection?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 4802,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "The policy states that secrets such as cryptographic keys, passwords, or algorithms should not be stored directly in application code or data. This is because hostile JVMs can quickly access this data. Additionally, code obfuscation is not considered sufficient protection as it does not effectively hide the code from serious attackers.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f1904776fffcda2dfb289717b1954b83a20253ff7e3404eeaad5862cc79bbab7"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "24077f1cc402dbc2fbc4bc9b67c8411198f2b0ed8b7a86df35f0e007aa143f5b"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Context-setting turn: establishes conversation history for Turn2 and is not independently scored.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "QueryCompression",
+      "case": "compressionOn-Turn2",
+      "question": "Is that protection method actually effective against a determined attacker, and why?",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 2585,
+      "httpStatus": 200,
+      "status": "FAIL",
+      "response": "I don't have enough information to answer this question.",
+      "sources": [],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "NOT_PROVEN: agent review must verify every chunkId against the indexed manifest and relevance to the resolved standalone query.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": false,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Reranking",
+      "case": "baseline",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 5,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 4720,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Java developers should adhere to EPAM's secure coding guidelines, combining Oracle's official recommendations with insights from the secure coding community to minimize security vulnerabilities caused by programmer error.  \n- API documentation must include security-related details such as required permissions, security-related exceptions, caller sensitivity, and relevant preconditions or postconditions, and utilize tools like JavaDoc for upkeep.  \n- Developers should prioritize creating code with \"obviously no flaws\" rather than \"no obvious flaws,\" ensuring the design and logic clearly demonstrate safety without requiring complex reasoning.  \n- APIs should be designed with security considerations from the outset, as retrofitting security measures is more difficult and prone to errors; for instance, making a class final can prevent malicious subclassing and method overrides.  \n- The EPAM Java Competency Center is tasked with reviewing the secure coding guideline, which is owned by the Head Delivery Management Office and approved by the Senior Director of the Delivery Management Office.  ",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Reranking",
+      "case": "mmrEnabled",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 6015,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Java developers should follow secure coding guidelines to minimize security vulnerabilities caused by programmer error, combining Oracle's official guidelines with additional recommendations from the secure coding community.  \n- API documentation should include security-related details such as required permissions, exceptions, caller sensitivity, and relevant preconditions or postconditions, documented in tools like JavaDoc to ensure accuracy.  \n- Limit accessibility of classes, interfaces, methods, and fields by declaring them private or package-private unless they are part of a published API, and consider sealing packages in the jar file manifest for added security.  \n- Classes or methods should be made final unless there is a compelling reason not to, as non-final entities can be extended in potentially harmful ways, trading extensibility for security.  \n- Classes in the same package loaded by the same class loader must share the same code signing certificate or lack one entirely, as class loaders define package accessibility in the Java virtual machine.  ",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "9e70751d1d5849856feddf07bbbf5574610ad6f8287d911a993d92340e911447"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "1eae39aca66514357914a73cae38ac56be9375bf5fe3f37a4a859b4dab6e5ba6"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Reranking",
+      "case": "topK20Unnarrowed",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "config": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 6171,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "- Design APIs with security in mind, as retrofitting security into existing APIs is error-prone. Make classes final to prevent malicious subclassing and scrutinize areas involving the SecurityManager. (2.1.2 Design APIs to Avoid Security Concerns)\n\n- Restrict privileges by adhering to the principle of least privilege both statically, through policy files, and dynamically, using java.security.AccessController.doPrivileged. Rich Internet Applications should be configured to operate with the least necessary permissions. (2.1.3 Restrict Privileges)\n\n- Limit the accessibility of classes, interfaces, methods, and fields by declaring them private or package-private unless they are part of a published API. Additionally, mark packages as sealed in the jar file manifest. (2.4.1 Limit the Accessibility of Classes, Interfaces, Methods, and Fields)\n\n- Do not store secrets like cryptographic keys or passwords in code or data, as hostile JVMs can easily access them. Code obfuscation does not effectively protect against serious attackers. (2.1.6 Don't Store Secrets)\n\n- Guard sensitive data during serialization by avoiding serialization of sensitive fields or implementing measures such as declaring fields transient, using serialPersistentFields, or implementing custom serialization methods like writeReplace. (2.5.2 Guard Sensitive Data During Serialization)",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "2c27314c51239d55a37e1794d2d462c18ed87c01c882f48a568912b254d50968"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5b6621516f55e5ae7745afe7e180c5d938cfe79254f08054c0339ed6316b4fc4"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "63c5a5c1171f146b7ed12b81c83b648b63991437f6ce86211384bc747c1fa473"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "c56f35a2df581edd475c05f2f684d884de2386da2cd3860a518955ec1a28c6ae"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "249804d841f3e3575f4b94fb14189143ba4da51a76381ab1302886c5108568dc"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "31d4e9f82934bf8257505ec4654345fbdc8f81ee6a49af3a57de4598469d8306"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "24077f1cc402dbc2fbc4bc9b67c8411198f2b0ed8b7a86df35f0e007aa143f5b"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f1904776fffcda2dfb289717b1954b83a20253ff7e3404eeaad5862cc79bbab7"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "a9683497aec5e4a5cf5d7e178a1a4b3f9f2e5cb624e62816117c83c43154d9e0"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "9e70751d1d5849856feddf07bbbf5574610ad6f8287d911a993d92340e911447"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "a2f24f0d86494d29d2379a175ae8aff27f9ac68b34e19c7cee6f4d9204d2f2dc"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "1eae39aca66514357914a73cae38ac56be9375bf5fe3f37a4a859b4dab6e5ba6"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "3363ec568773c81df85747a6c78fab4865f8ae2d8d57b30ae4bc1e806124d573"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5bf6d3f87970660a6c89864a4161a95c8e74eb40d257e52c5923b3769a3ab185"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "af1954291b5a840f2b07550bc62c8be5331594fd35d794a9f9cfb7515635432e"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "69463b0486155921cd3b3854f1ca583ecbaa55d036077d70b8292b1b6c45b645"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "8a6e76b3f8afbe9242aa0426cf137cc6a03a6d6b2792efa253ada4024e0a10a9"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f84e674f31bdfac3d3814f4ea593ca48acf5a1409c10ed4425036e4aae7815fe"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    },
+    {
+      "deployment": "gpt-4o",
+      "suite": "Reranking",
+      "case": "ordinaryQuestionMmrEnabled",
+      "question": "According to the EPAM Java Secure Coding Guidelines, which examples of secrets must not be stored in code or data, and why is code obfuscation insufficient?",
+      "config": {
+        "topK": 20,
+        "similarityThreshold": 0.3,
+        "embeddingDeployment": "text-embedding-3-small-1",
+        "collection": "task2-evaluation-20260901T201249Z"
+      },
+      "latencyMs": 4283,
+      "httpStatus": 200,
+      "status": "NOT_PROVEN",
+      "response": "Cryptographic keys, passwords, or algorithms must not be stored in code or data according to the EPAM Java Secure Coding Guidelines. Code obfuscation is insufficient because it doesn't effectively hide the code from serious attackers, and hostile JVMs can quickly view this data.",
+      "sources": [
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "f1904776fffcda2dfb289717b1954b83a20253ff7e3404eeaad5862cc79bbab7"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "5f9010d272e162d97e3a5f27f96943194caaf3b0e26e0a489c4c6d97ecf8f55b"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "74b8fbb2b6fa184a7003870c4393214cd3c0e6df218eb1aa7eff9c06800df01c"
+        },
+        {
+          "documentName": "EPAM_JavaSecureCodingGD.md",
+          "chunkId": "3363ec568773c81df85747a6c78fab4865f8ae2d8d57b30ae4bc1e806124d573"
+        }
+      ],
+      "retrievalScoresAvailable": false,
+      "rubric": {
+        "pass": null,
+        "notes": "Every concrete example and reason must be supported by section 2.1.6; any unsupported or altered fact fails.",
+        "sourceFaithful": null,
+        "refusalCorrect": null,
+        "sourceShapeValid": null,
+        "manifestMatchVerified": null,
+        "contentRelevanceVerified": null,
+        "agentReviewRequired": false,
+        "sourceAttributionCorrect": null
+      }
+    }
+  ],
+  "modelScores": [
+    {
+      "deployment": "gpt-4o",
+      "score": null,
+      "status": "NOT_PROVEN",
+      "notes": "Agent review must assess all five current comparison responses against evaluation/questions.json before assigning 1-5."
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "score": null,
+      "status": "NOT_PROVEN",
+      "notes": "Agent review must assess all five current comparison responses against evaluation/questions.json before assigning 1-5."
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "score": null,
+      "status": "NOT_PROVEN",
+      "notes": "Agent review must assess all five current comparison responses against evaluation/questions.json before assigning 1-5."
+    }
+  ],
+  "failure": null
+}

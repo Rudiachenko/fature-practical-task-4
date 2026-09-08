@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "app.vectorstore.provider",
+      "type": "java.lang.String",
+      "defaultValue": "chroma",
+      "description": "Selects the vector-store implementation. Use chroma in production and in-memory for hermetic tests."
+    }
+  ]
+}

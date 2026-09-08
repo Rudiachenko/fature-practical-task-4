@@ -1,0 +1,1665 @@
+{
+  "measurement": "default-generator-selection",
+  "purpose": "The head-to-head study behind the default-generator choice. Retained because RESULTS.md, RUNBOOK.md and application.yml cite its counts; a claim whose evidence is not in the repository cannot be checked.",
+  "capturedAtUtc": "2026-09-03T05:42:39.4018720Z",
+  "systemPromptState": "current - the rule keeping the enumeration internal is in force; 0 of 105 answers contain a working preamble",
+  "fixedIndex": {
+    "corpus": "EPAM_JavaSecureCodingGD.md",
+    "embeddingDeployment": "text-embedding-3-small-1"
+  },
+  "retrievalConfiguration": {
+    "topK": 5,
+    "similarityThreshold": 0.3,
+    "mmrEnabled": false
+  },
+  "collection": "task2-model-selection-20260903T170000Z",
+  "repetitions": {
+    "core": 3,
+    "detail": 20,
+    "refusal": 3
+  },
+  "detailRubric": [
+    "native method declared private",
+    "exposed through a public Java wrapper",
+    "mutable input defensively copied",
+    "bound stated as offset > data.length - len",
+    "the unsafe addition form is not given as the check"
+  ],
+  "deployments": [
+    {
+      "deployment": "gpt-4o",
+      "detailRubricComplete": 9,
+      "detailRepetitions": 20,
+      "detailWilson95CiPercent": [
+        26,
+        66
+      ],
+      "detailIncompleteObservations": [
+        {
+          "iteration": 1,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 3,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 5,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 8,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 10,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 11,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 12,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 15,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 17,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 19,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 20,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        }
+      ],
+      "exactRefusalWithNoSources": "3/3",
+      "coreLatencyMsMinMedianMax": [
+        1099,
+        2420,
+        3400
+      ],
+      "observations": {
+        "core": {
+          "Simple": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 1736,
+              "response": "According to the EPAM Java Secure Coding Guidelines, secrets such as cryptographic keys, passwords, or algorithms must not be stored in code or data. Code obfuscation is insufficient because hostile JVMs can quickly view this data, and obfuscation does not effectively hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1099,
+              "response": "Cryptographic keys, passwords, and algorithms must not be stored in code or data because hostile JVMs can quickly view this data. Code obfuscation is insufficient because it does not effectively hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1322,
+              "response": "According to the EPAM Java Secure Coding Guidelines, examples of secrets that must not be stored in code or data include cryptographic keys, passwords, and algorithms. Code obfuscation is insufficient because hostile JVMs can quickly view this data, and obfuscation does not effectively hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            }
+          ],
+          "Detail": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 2137,
+              "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy**: Mutable input, such as arrays, must be copied before being used. This is to ensure that the original input cannot be modified externally after it is passed to the method.\n\n2. **Offset and Length Validation**: The wrapper must validate the input parameters for offset and length to ensure they are within safe bounds. Specifically:\n   - `offset` must be non-negative.\n   - `length` must be non-negative.\n   - `offset + length` must not exceed the bounds of the array (`data.length`), taking care to avoid integer overflow (e.g., when `offset = 1` and `length = Integer.MAX_VALUE`, resulting in `offset + length = Integer.MIN_VALUE`).\n\nThese protections are implemented in the public Java-based wrapper method before invoking the private native method.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 3036,
+              "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method as private**: This ensures that the native method is not directly accessible and is only invoked through a controlled wrapper.\n\n2. **Use a public Java-based wrapper method**: The wrapper method exposes the functionality of the native method while adding necessary protections.\n\n3. **Perform input validation in the wrapper method**: The wrapper method must validate inputs to ensure they are safe before invoking the native method. Specifically:\n   - Check for invalid values of `offset` and `len`.\n   - Ensure that `offset + len` does not exceed `data.length`, accounting for potential integer overflow.\n\n4. **Create a defensive copy of mutable inputs**: The wrapper method must clone mutable input data (e.g., arrays) to prevent unintended side effects or tampering with the data during execution.\n\nThese measures collectively mitigate risks such as buffer overflows and improper use of native methods.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2420,
+              "response": "The policy requires the following protections around a native method wrapper:\n\n1. The native method must be declared private, and its functionality should be exposed through a public Java-based wrapper method. This ensures that input can be validated before the native method is invoked.\n\n2. The wrapper method must perform input validation to safeguard against issues such as integer overflow in offset and length calculations. For example, the wrapper must check that:\n   - `offset` is not negative.\n   - `len` is not negative.\n   - `offset` is not greater than `data.length - len`. This avoids scenarios where `offset + len` could overflow and result in an invalid range.\n\n3. The wrapper method must create a defensive copy of mutable input, such as arrays, to prevent unintended modifications during execution. This is achieved by cloning the input array before performing any operations.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            }
+          ],
+          "Synthesis": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 3400,
+              "response": "The policy advises the following for handling untrusted text:\n\n1. **Validate Inputs**: Input from untrusted sources must be validated before use to prevent attacks such as integer overflows or directory traversal. Validation should occur after any defensive copying of the input.\n\n2. **Normalize Strings before Validation**: Inputs should be normalized to ensure consistent representation, as the same Unicode string can have multiple representations. This step is critical for reliable validation, such as filtering out `<script>` tags to avoid XSS vulnerabilities.\n\n3. **Do not Log Unsensitized User Input**: Any untrusted input logged must first be sanitized and validated to prevent log injection vulnerabilities, such as malicious carriage return and line feed sequences. Unsanitized logging can also lead to sensitive data leakage across trust boundaries, such as an attacker injecting scripts into log files.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2783,
+              "response": "To handle untrusted text securely from receipt through logging:\n\n1. **Validate Inputs**: Input from untrusted sources must be validated before use to prevent issues such as integer overflow or directory traversal attacks. Validation must occur after any defensive copying of the input.\n\n2. **Normalize Strings Before Validating**: Since Unicode allows multiple representations for the same string, normalize untrusted input to ensure consistent representation before applying validation mechanisms, such as blacklisting `<script>` tags to avoid cross-site scripting (XSS) vulnerabilities.\n\n3. **Do Not Log Unsensitized User Input**: Sanitize and validate untrusted input before logging to prevent log injection attacks, which can mislead system administrators or leak sensitive data across trust boundaries. Unsensitized input might allow attackers to insert fake log entries, split legitimate entries with CRLF sequences, or inject scripts that compromise security when logs are viewed in a browser.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1969,
+              "response": "The policy provides the following guidance for handling untrusted text from receipt through logging:\n\n1. **Validate Inputs**: All untrusted text must be validated before use to prevent maliciously crafted inputs from causing issues such as integer overflows or directory traversal attacks. Input validation should occur after any defensive copying of the input.\n\n2. **Normalize Strings before Validating**: Before performing validation, applications should normalize untrusted text. This ensures consistent representation of the string, as Unicode allows for multiple representations of the same text.\n\n3. **Do not Log Unsensitized User Input**: Untrusted text must be sanitized and validated before being logged to prevent log injection attacks and potential exposure of sensitive data across trust boundaries. This includes preventing malicious users from inserting fake log entries or scripts that could compromise the system when viewed using a web browser.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            }
+          ],
+          "Analysis": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 1877,
+              "response": "Making classes and methods final reduces attack opportunities by preventing attackers from extending them in dangerous and unforeseen ways. This includes blocking malicious subclasses from adding finalizers, cloning, or overriding random methods, which could otherwise compromise the security of the code. Applying least privilege reduces attack opportunities by ensuring that code operates with minimal permissions, thereby thwarting exploitation of coding flaws. This principle can be implemented statically through policy files or dynamically using mechanisms like `java.security.AccessController.doPrivileged`. The policy explicitly acknowledges the trade-off for making classes and methods final: it causes a loss of extensibility in exchange for enhanced security.",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2702,
+              "response": "Making classes and methods final reduces attack opportunities by preventing attackers from extending them in dangerous and unforeseen ways, such as adding finalizers, cloning, or overriding random methods. The policy explicitly acknowledges that this approach sacrifices extensibility for security.\n\nApplying least privilege reduces attack opportunities by ensuring code operates with limited permissions, thus minimizing the impact of any coding flaws and thwarting exploitation. This principle can be implemented statically through policy files or dynamically using mechanisms like `java.security.AccessController.doPrivileged`. Rich Internet Applications should be configured to run with the least necessary permissions to avoid risks.",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1705,
+              "response": "Making classes and methods final reduces attack opportunities by preventing attackers from extending them in dangerous and unforeseen ways, such as adding malicious subclasses, finalizers, cloning, or overriding methods. Applying least privilege reduces attack opportunities by ensuring code operates with only the minimum necessary permissions, so exploitation of flaws is less likely to succeed. The policy explicitly acknowledges an extensibility trade-off: making classes and methods final causes a loss of extensibility in exchange for enhanced security.",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            }
+          ],
+          "FiveBulletSummary": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 2743,
+              "response": "- API documentation should include security-related details such as required permissions, security-related exceptions, caller sensitivity, and relevant preconditions or postconditions, and should be kept updated using tools like JavaDoc.  \n- Write code that is obviously secure, avoiding designs that rely on clever logic to appear safe, and adhere to the guidelines unless there is a strong reason not to.  \n- Design APIs with security in mind from the start, as retrofitting security is challenging and error-prone; for example, making a class final can prevent malicious subclasses from introducing vulnerabilities.  \n- Minimize the number of permission checks by performing them at defined points, and provide a returned object (capability) to avoid repeated checks.  \n- Java developers should follow these secure coding guidelines, which combine Oracle's official recommendations with best practices from the secure coding community.  ",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2523,
+              "response": "- API documentation must include detailed security-related information such as required permissions, security-related exceptions, caller sensitivity, and relevant preconditions or postconditions, and it should be kept up to date using tools like JavaDoc.  \n- Secure code should be designed and written to have no obvious flaws, avoiding reliance on clever logic to demonstrate safety, and following the provided guidelines unless there is a compelling reason not to.  \n- APIs should be designed with security as a priority from the beginning to prevent challenges associated with retrofitting security; for instance, making classes final can prevent malicious subclassing.  \n- Minimize the number of SecurityManager checks by performing security checks at defined points and returning capability objects to avoid repeated permission checks.  \n- Java developers are encouraged to follow EPAM's secure coding guidelines, which integrate Oracle's official recommendations and current secure coding community practices to reduce vulnerabilities caused by programmer error.  ",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2569,
+              "response": "- Java developers should adhere to secure coding guidelines to minimize security vulnerabilities caused by programmer error, combining Oracle's official guidelines with current secure coding practices.  \n- API documentation must include security-related information such as required permissions, exceptions, caller sensitivity, and security-relevant preconditions or postconditions, ideally maintained using tools like JavaDoc.  \n- Code should be designed to have no obvious flaws rather than relying on clever logic to demonstrate safety, following the secure coding guidelines unless strong reasons dictate otherwise.  \n- APIs should be designed with security in mind, avoiding retrofitting security later, such as by making classes final to prevent malicious subclass behavior.  \n- Minimize the number of SecurityManager checks by performing them at a few defined points and returning a capability object to reduce further permission checks.  ",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            }
+          ]
+        },
+        "detail": [
+          {
+            "httpStatus": 200,
+            "latencyMs": 2453,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method private**: The native method must be declared private to prevent direct public access, reducing the risk of misuse. Its functionality should be exposed through a public Java-based wrapper method.\n\n2. **Input validation in the wrapper method**: The wrapper method must perform input validation before invoking the native method. This includes checking that:\n   - `offset` and `len` are non-negative.\n   - `offset` is within bounds, ensuring that `offset + len` does not exceed the length of the `data` array. This validation must also account for potential integer overflow scenarios (e.g., when `offset + len` wraps around to a negative value).\n\n3. **Defensive copy of mutable input**: A defensive copy of the input data (e.g., cloning the `byte[] data` array) must be made to prevent unintended modifications to the input during or after the method execution.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2375,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method as private**: Native methods should not be declared public but instead private to prevent direct access. Their functionality should be exposed through a public Java-based wrapper method.\n\n2. **Input validation in the wrapper method**: The wrapper method must perform necessary input validation before invoking the native method. Specifically, it should check that:\n   - Offset and length are non-negative.\n   - Offset does not exceed the allowable range (`offset > data.length - len`) to prevent integer overflow and out-of-bounds errors.\n\n3. **Defensive copy of mutable input**: The wrapper method must create a defensive copy of mutable input, such as the byte array, to ensure that subsequent modifications to the original input do not affect the operation.\n\nThese measures protect against vulnerabilities such as buffer overflows and ensure safe invocation of the native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2452,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method private**: Native methods must not be declared public; instead, they should be private. This ensures that their functionality is only accessible through a controlled public Java-based wrapper method.\n\n2. **Defensive copy of mutable input**: The wrapper method must create a defensive copy of any mutable input (e.g., arrays) to prevent unintended modifications from outside the method.\n\n3. **Overflow-safe offset and length validation**: The wrapper method must validate the input parameters, such as offset and length, to prevent integer overflow vulnerabilities. For example, it should check that `offset` and `length` are non-negative and that `offset + length` does not result in an overflow or exceed the bounds of the input data array.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2204,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the Native Method Private**: The native method should not be declared public. Instead, it should be private and its functionality should be exposed through a public Java-based wrapper method.\n\n2. **Defensive Copy of Mutable Input**: The wrapper method must create a defensive copy of mutable input data (e.g., `data.clone()` for a byte array) to prevent unintended modifications from outside the method.\n\n3. **Overflow-Safe Offset and Length Validation**: The wrapper method must validate the input parameters (`offset` and `len`) to ensure they are within safe bounds. This includes protecting against scenarios like integer overflow, where `offset + len` could wrap around to a negative or invalid value. Specifically:\n   - `offset` must be non-negative.\n   - `len` must be non-negative.\n   - `offset` must not exceed `data.length - len`.\n\nThese validations ensure the native method is invoked with safe and predictable parameters.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 3075,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method as private**: The native method must not be declared public but should instead be private to minimize direct access and enhance security.\n\n2. **Expose functionality via a public Java-based wrapper method**: This wrapper method is responsible for safely invoking the native method.\n\n3. **Perform input validation in the wrapper method**: The wrapper method must validate inputs, including checking that:\n   - `offset` is non-negative.\n   - `len` is non-negative.\n   - `offset + len` does not exceed the length of the data array, taking care to prevent integer overflow during this calculation.\n\n4. **Create a defensive copy of mutable inputs**: The wrapper method should create a defensive copy of mutable inputs like arrays to prevent unintended modifications by external code.\n\nThese protections ensure that the native method is invoked safely, with validated and sanitized inputs, reducing the risk of vulnerabilities such as buffer overflows or data corruption.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 3164,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy**: A mutable input, such as an array, should be cloned before being processed. This ensures the original input cannot be modified unexpectedly during the operation.\n\n2. **Overflow-Safe Offset and Length Validation**: Inputs like offset and length must be validated to prevent issues such as integer overflow. For example, the check ensures that `offset + len` does not wrap around to a negative value and is within the bounds of the array. Specific conditions include verifying that `offset` and `len` are non-negative and that `offset` does not exceed `data.length - len`.\n\n3. **Private Native Method**: The native method itself must be declared private to prevent direct access and exposure. Instead, it should be accessed through a public Java-based wrapper method, which performs the necessary input validation.\n\nThese measures help safeguard against problems like buffer overflows and improper handling of inputs when invoking native methods.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2567,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Private Native Method**: The native method must be declared as private to prevent direct access, and its functionality should only be exposed through a public Java-based wrapper method.\n\n2. **Defensive Copy**: The wrapper method must create a copy of mutable input data (e.g., arrays) to avoid unintended modifications during processing.\n\n3. **Overflow-Safe Offset and Length Validation**: The wrapper method must validate the input parameters (e.g., offset and length) to prevent unsafe conditions, such as integer overflow. For example:\n   - Ensure `offset` and `length` are non-negative.\n   - Ensure `offset` is within bounds and does not exceed `data.length - length`.\n   - Protect against scenarios where calculations like `offset + length` could result in integer overflow. \n\nThese measures ensure safe invocation of the native method by protecting against common vulnerabilities like buffer overflows and improper input handling.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2240,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy:** Mutable input, such as an array passed to the wrapper, must be copied (e.g., using `data.clone()`) to ensure that the original input cannot be modified during processing.\n\n2. **Overflow-Safe Offset and Length Validation:** Input validation must check that the `offset` and `len` parameters do not result in integer overflow or exceed the bounds of the array. Specifically:\n   - `offset` and `len` must not be negative.\n   - `offset` must not be greater than `data.length - len`, as this could cause array bounds violations.\n\nThese protections ensure safe and secure invocation of the native method through the wrapper.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2181,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. The native method must be declared private, and its functionality should be exposed through a public Java-based wrapper method.\n\n2. The wrapper method must perform a defensive copy of mutable input data to prevent unintended modifications to the original data.\n\n3. The wrapper method must validate the offset and length parameters to ensure they are within safe bounds. Specifically:\n   - `offset` and `len` must not be negative.\n   - `offset` must not exceed `data.length - len` to prevent integer overflow or out-of-bounds access.\n   - The validation must account for potential integer overflow scenarios, such as when `offset + len` wraps around to a negative value.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1900,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy of Mutable Input:** The wrapper must create a defensive copy of mutable input data, such as cloning an input array, to prevent modifications to the data outside the wrapper.\n\n2. **Overflow-Safe Offset and Length Validation:** The wrapper must validate the input parameters, including offset and length, to prevent issues like integer overflow. For example, the validation must ensure that the offset is non-negative, the length is non-negative, and the sum of offset and length does not exceed the data array's length. This prevents scenarios where an overflow could cause the offset and length checks to pass erroneously.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2156,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Private Declaration of Native Methods**: Native methods must be declared private to prevent direct access. Instead, they should be exposed through a public Java-based wrapper method.\n\n2. **Defensive Copy**: The wrapper method must create a defensive copy of mutable input, such as arrays, to prevent unintended modification of the original data.\n\n3. **Overflow-Safe Offset and Length Validation**: The wrapper method must validate inputs like offset and length to prevent integer overflow. For example, it must ensure that `offset + len` does not wrap around to a negative value and is within the bounds of the data array. If the validation fails, an `IllegalArgumentException` should be thrown.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2850,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Private Declaration of Native Methods**: Native methods must be declared private to prevent direct access. Public exposure should happen only through a Java-based wrapper method.\n\n2. **Defensive Copy**: The wrapper method must create a defensive copy of mutable input (e.g., `data.clone()` in the example) to prevent unintended modifications to the original data during processing.\n\n3. **Overflow-Safe Offset and Length Validation**: The wrapper method must validate inputs, specifically ensuring that `offset` and `len` do not cause integer overflow or exceed array bounds. For instance:\n   - Check that `offset` and `len` are non-negative.\n   - Ensure that `offset + len` does not exceed `data.length`, accounting for potential integer overflow scenarios such as when `offset = 1` and `len = Integer.MAX_VALUE`.\n\nThese measures are implemented to ensure safe invocation of native methods, protecting against vulnerabilities such as buffer overflows.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2365,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Wrapper Method for Input Validation**: The native method should be declared private, with its functionality exposed through a public Java-based wrapper method. The wrapper method must perform necessary input validation before invoking the native method.\n\n2. **Defensive Copy of Mutable Input**: The wrapper method must create a defensive copy of mutable input data (e.g., `data.clone()` for a byte array) to ensure the integrity of the data being processed.\n\n3. **Overflow-Safe Offset and Length Validation**: The wrapper method must validate the inputs (e.g., `offset` and `len`) to prevent issues such as integer overflow. Specifically:\n   - It must ensure that `offset` and `len` are non-negative.\n   - It must validate that the sum of `offset` and `len` does not exceed the length of the data (e.g., `offset > data.length - len`).\n\nThese measures collectively protect against vulnerabilities such as buffer overflows and improper input handling when invoking native code.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2252,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy**: Input data should be cloned to create a defensive copy. This ensures that the original input data cannot be modified externally after being passed to the method.\n\n2. **Overflow-Safe Offset and Length Validation**: The wrapper must validate the input parameters (`offset` and `len`) to ensure they are within safe bounds. Specifically:\n   - `offset` and `len` must be non-negative.\n   - `offset` must not exceed `data.length - len`, taking care to avoid integer overflow. For example, if `offset + len` results in an overflow, it could incorrectly appear as a valid index within bounds, leading to potential crashes or unexpected behavior.\n\nThese protections are implemented in the public wrapper method, which validates inputs and then invokes the private native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2862,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method private**: Native methods must not be declared public. Instead, they should be private and exposed through a public Java-based wrapper method.\n\n2. **Defensive copying of mutable input**: The wrapper method should create a defensive copy of mutable input (e.g., `data.clone()` for a byte array) to prevent unintended modification of the original input by the native method.\n\n3. **Overflow-safe offset and length validation**: The wrapper method must validate the input parameters (e.g., `offset` and `len`) in a way that is safe from integer overflow. For example, it should ensure that:\n   - `offset` is not negative.\n   - `len` is not negative.\n   - `offset + len` does not exceed the array's length (`data.length`), accounting for potential integer overflow scenarios (e.g., when `offset + len` wraps around to a negative value). \n\nThese protections ensure the safe invocation of the native method by addressing potential vulnerabilities like buffer overflows and invalid input handling.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2763,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Private Declaration of Native Methods**: Native methods should be declared private to prevent direct access and expose their functionality through a public Java-based wrapper method.\n\n2. **Defensive Copy**: Mutable inputs should be copied (e.g., using `clone()`) before any further processing to prevent unintended side effects or tampering.\n\n3. **Overflow-Safe Offset and Length Validation**: Inputs such as offset and length must be validated to ensure they are within acceptable bounds and to prevent integer overflow. For example, checks must confirm that:\n   - Offset and length are non-negative.\n   - Offset does not exceed `data.length - len` to avoid out-of-bounds access.\n\n4. **Input Validation Before Invocation**: The wrapper method should perform all necessary input validation before invoking the native method to ensure safe and correct operation.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2718,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Defensive Copy**: The wrapper method must create a copy of mutable input (e.g., `data = data.clone();`) to ensure that the original input cannot be modified during processing.\n\n2. **Offset and Length Validation**: The wrapper must validate the input to prevent unsafe conditions like integer overflow. Specifically:\n   - Ensure `offset` and `len` are non-negative.\n   - Ensure `offset` does not exceed `data.length - len`, accounting for potential integer overflow (e.g., cases where `offset + len` wraps around to a negative value).\n\nThese measures aim to safeguard the invocation of the native method by preventing invalid or unsafe inputs.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2663,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method as private**: Native methods should not be declared public. Instead, they must be declared private, and their functionality should be exposed through a public Java-based wrapper method.\n\n2. **Perform input validation in the wrapper method**: The wrapper method should safely validate inputs before invoking the native method. This includes checking for conditions such as:\n   - Negative values for `offset` or `length`.\n   - Invalid combinations of `offset` and `length` that could lead to accessing data outside the bounds of the array. For example, ensuring `offset > data.length - len` is not true to prevent issues like integer overflow.\n\n3. **Create a defensive copy of mutable inputs**: Mutable data, such as an input array, should be cloned within the wrapper method to prevent unintended modifications to the original data during the operation.\n\nThese protections ensure safer interaction with native code, which lacks runtime checks inherent to Java.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2433,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Declare the native method as private**: The native method must not be declared public. Instead, it should be private to prevent direct access and expose its functionality through a public Java-based wrapper method.\n\n2. **Perform input validation in the wrapper method**: The public wrapper method must validate the input before invoking the native method. This includes checking that:\n   - The `offset` and `len` values are non-negative.\n   - The sum of `offset` and `len` does not exceed the length of the `data` array, accounting for potential integer overflow (e.g., when `offset` + `len` wraps around to a negative number).\n\n3. **Create a defensive copy of the input**: The wrapper method should create a defensive copy of the input data (e.g., using `data.clone()`) to ensure that the mutable input cannot be modified by external code while the native method processes it.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2551,
+            "response": "The policy requires the following protections around a native method wrapper:\n\n1. **Native Method Accessibility**: The native method must be declared private, and its functionality should be exposed through a public Java-based wrapper method. This prevents direct access to the native method and allows for controlled invocation.\n\n2. **Defensive Copy**: The wrapper method must create a defensive copy of mutable inputs, such as arrays, to prevent unintended side effects or modifications to the original input data.\n\n3. **Input Validation**: The wrapper method must perform input validation to ensure the safety of the native method invocation. Specifically:\n   - It must check that `offset` and `len` are non-negative.\n   - It must ensure that `offset` and `len` do not exceed the bounds of the input data. For example, `offset + len` must not result in an integer overflow or exceed the length of the data array.\n\nThese protections are designed to prevent vulnerabilities such as buffer overflows and ensure that native methods are invoked securely.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          }
+        ],
+        "refusal": [
+          {
+            "httpStatus": 200,
+            "latencyMs": 1454,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1383,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 989,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          }
+        ]
+      }
+    },
+    {
+      "deployment": "gpt-4.1-nano-2025-04-14",
+      "detailRubricComplete": 0,
+      "detailRepetitions": 20,
+      "detailWilson95CiPercent": [
+        0,
+        16
+      ],
+      "detailIncompleteObservations": [
+        {
+          "iteration": 1,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 2,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 3,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 4,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 5,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 6,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 7,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 8,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 9,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 10,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 11,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 12,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 13,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 14,
+          "privateNativeMethod": true,
+          "publicWrapper": true,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 15,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 16,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 17,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 18,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 19,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": true,
+          "defensiveCopy": true
+        },
+        {
+          "iteration": 20,
+          "privateNativeMethod": false,
+          "publicWrapper": false,
+          "subtractionFormBound": false,
+          "defensiveCopy": true
+        }
+      ],
+      "exactRefusalWithNoSources": "3/3",
+      "coreLatencyMsMinMedianMax": [
+        1633,
+        2044,
+        3742
+      ],
+      "observations": {
+        "core": {
+          "Simple": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 3742,
+              "response": "Don't store secrets such as cryptographic keys, passwords, or algorithms in the code or data. Code obfuscation is insufficient because it doesn't really hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1947,
+              "response": "Cryptographic keys, passwords, or algorithms must not be stored in code or data because hostile JVMs can quickly view this data. Code obfuscation is insufficient because it doesn't truly hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1747,
+              "response": "Cryptographic keys, passwords, or algorithms must not be stored in the code or data because hostile JVMs can quickly view this data. Code obfuscation is insufficient because it doesn't really hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            }
+          ],
+          "Detail": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 2839,
+              "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow, ensuring that offset + length does not exceed data length.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2834,
+              "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate input parameters, including offset and length, to prevent issues such as integer overflow and invalid memory access. The validation checks that offset and length are non-negative and that offset does not exceed data.length - len, ensuring safe invocation of the native method.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1932,
+              "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data to prevent unintended modifications. It also requires validation of the offset and length parameters to prevent integer overflow, such as checking that offset and length are non-negative and that offset plus length does not exceed data length.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            }
+          ],
+          "Synthesis": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 2380,
+              "response": "Applications that accept untrusted input should normalize the input before validating it to account for different Unicode representations. Input validation should be performed after any defensive copying of the input. When logging user input, it must be sanitized and validated to prevent log injection and avoid leaking sensitive data, such as administrator cookies, through malicious scripts or fake log entries.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2095,
+              "response": "Applications should normalize input strings to Unicode standard before validation, as Unicode representations can vary for the same string. Input from untrusted sources must be validated before use, and normalization helps ensure consistent validation. When logging, any user input that is unsanitized should be avoided, as it can lead to log injection attacks or leakage of sensitive data. Sanitizing and validating untrusted input sent to logs is essential to prevent deception and security breaches.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2373,
+              "response": "Applications should normalize untrusted input strings before validating them, as Unicode representations can vary for the same string. Input validation must be performed after any defensive copying of the input. When logging untrusted user input, it must be sanitized and validated to prevent log injection attacks and avoid leaking sensitive data.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            }
+          ],
+          "Analysis": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 2044,
+              "response": "Making classes and methods final prevents an attacker from extending them in a dangerous and unforeseen way, reducing the opportunity for malicious subclasses to add finalizers, cloning, or override random methods. Applying least privilege reduces the risk of exploitation by operating with restricted permissions, thwarting potential flaws even if they exist. The policy explicitly acknowledges that making classes and methods final causes a loss of extensibility in exchange for increased security.",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1854,
+              "response": "Making classes and methods final prevents an attacker from extending them in a dangerous and unforeseen way, reducing attack opportunities related to subclassing and method overriding. Applying least privilege minimizes the impact of security flaws by operating with reduced permissions, thwarting exploitation of potential vulnerabilities. The policy explicitly acknowledges that making classes or methods final causes a loss of extensibility in exchange for increased security.",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 2134,
+              "response": "Making classes and methods final prevents attackers from extending or overriding them in dangerous ways, reducing attack opportunities such as malicious subclassing or method overriding. Applying least privilege limits the potential impact of security flaws by restricting the permissions and privileges available to code, thereby thwarting exploitation even if flaws exist. The policy explicitly acknowledges that making classes and methods final causes a loss of extensibility in exchange for increased security.",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            }
+          ],
+          "FiveBulletSummary": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 1940,
+              "response": "- Java developers should follow secure coding guidelines to reduce vulnerabilities caused by programmer error, incorporating both official Oracle guidelines and community rules.  \n- API documentation must include security-related information such as permissions, exceptions, caller sensitivity, and relevant preconditions or postconditions, documented in comments like JavaDoc.  \n- Code should be designed to be obviously secure, avoiding complex logic that might hide vulnerabilities, and following guidelines unless there is a strong reason not to.  \n- APIs should be designed with security considerations in mind from the start, such as making classes final to prevent malicious subclassing and scrutinizing areas involving SecurityManager.  \n- Security checks using SecurityManager should be minimized, performed only at essential points, and preferably replaced with objects (capabilities) that client code can retain to avoid repeated permission checks.",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1633,
+              "response": "- Adhere to secure coding guidelines to minimize vulnerabilities caused by programmer error, following both official Oracle guidelines and current community rules.  \n- Include security-related information such as permissions, exceptions, caller sensitivity, and preconditions or postconditions in API documentation, using comments like JavaDoc to keep this information up to date.  \n- Design code to be obviously secure without requiring clever logic, avoiding flaws that are not immediately apparent.  \n- Develop APIs with security considerations in mind from the start, such as making classes final to prevent malicious subclassing and scrutinizing areas involving SecurityManager.  \n- Minimize the number of permission checks by performing security checks at strategic points and returning capabilities to avoid multiple permission verifications.",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 1634,
+              "response": "- Java developers should follow secure coding guidelines to reduce security vulnerabilities caused by programmer error, incorporating both official Oracle guidelines and community recommendations.  \n- API documentation should include security-related information such as permissions, exceptions, caller sensitivity, and relevant preconditions or postconditions, ideally documented in comments like JavaDoc.  \n- Secure code should be designed to be obviously safe without requiring complex logic, prioritizing clarity and simplicity to prevent flaws.  \n- APIs should be designed with security considerations in mind from the outset, such as making classes final to prevent malicious subclassing and scrutinizing areas using SecurityManager.  \n- Security checks via SecurityManager should be minimized, performed only at key points, with security capabilities returned to client code to avoid repeated permission checks.",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            }
+          ]
+        },
+        "detail": [
+          {
+            "httpStatus": 200,
+            "latencyMs": 2831,
+            "response": "The policy requires that a native method wrapper perform a defensive copy of mutable input data and validate the input parameters, including the offset and length, to prevent integer overflow and ensure they are within valid bounds before invoking the native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1983,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow, ensuring that offset + length does not exceed data length.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2220,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow, ensuring that offset+len does not exceed data.length.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2191,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the input, including checking for integer overflow in the offset and length. Specifically, the wrapper should clone the data to prevent modifications during native invocation and verify that offset and length are non-negative and that offset does not exceed data.length - len, to avoid integer overflow and ensure safe bounds.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2160,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the input parameters, including offset and length, to prevent integer overflow and buffer overflows. The wrapper should check that offset and length are non-negative and that offset does not exceed data.length - len, ensuring safe invocation of the native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2529,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow. The validation must ensure that offset and length are non-negative and that offset is not greater than data.length - len, which prevents overflow and out-of-bounds errors.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2825,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow and buffer overflows. The validation should ensure that offset and length are not negative and that offset does not exceed data.length - len, preventing issues such as integer overflow when summing offset and len.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2579,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow and ensure they are within valid bounds.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2618,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the input parameters, specifically the offset and length, to prevent integer overflow and out-of-bounds access.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2203,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow and buffer overflows. Specifically, the wrapper should copy the input data to ensure it is not modified externally, check that offset and length are non-negative, and verify that offset does not exceed data.length - len to prevent overflow-related errors.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1940,
+            "response": "The policy requires that the wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow, ensuring that offset + len does not cause an overflow or access data outside its bounds.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1967,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate input by checking that offset and length are non-negative and do not cause integer overflow, such as ensuring offset+len does not exceed data.length.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1967,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data, such as cloning the data array before validation. It also mandates validation of the offset and length parameters to prevent integer overflow, ensuring that offset + len does not exceed data.length.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2234,
+            "response": "The policy requires that the native method be declared private and exposed through a public Java-based wrapper method that performs input validation. The wrapper should make a defensive copy of mutable input data, such as cloning the data array before use. It must also validate input parameters, including offset and length, to prevent integer overflow and ensure they are within valid bounds, such as checking that offset and length are non-negative and that offset+len does not exceed data.length.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1899,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the input parameters, including the offset and length, to prevent integer overflow and ensure they are within valid bounds.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1985,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow. The validation should check that offset and length are non-negative and that offset does not exceed data.length - len, ensuring safe invocation of the native method and preventing buffer overflow or related vulnerabilities.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2569,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the input parameters, including ensuring that the offset and length do not cause integer overflow. The wrapper should check that offset and length are non-negative and that offset does not exceed data.length - len, to prevent overflow issues and improper access.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 3111,
+            "response": "The policy requires that the wrapper perform a defensive copy of the input data to prevent modifications during native invocation. It also mandates validation of the offset and length parameters to be overflow-safe, such as checking that offset and length are non-negative and that offset + length does not cause integer overflow or exceed data length.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2017,
+            "response": "The policy requires that the native method wrapper perform a defensive copy of mutable input data and validate the offset and length to prevent integer overflow. The validation should ensure that offset and length are non-negative and that offset does not exceed data.length - len, thereby avoiding overflow and potential buffer overflows.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2478,
+            "response": "The policy requires that the wrapper perform a defensive copy of the input data to prevent unintended modifications, and it must validate the offset and length to ensure they do not cause integer overflow or access out-of-bounds data.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          }
+        ],
+        "refusal": [
+          {
+            "httpStatus": 200,
+            "latencyMs": 1591,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1215,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 1209,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          }
+        ]
+      }
+    },
+    {
+      "deployment": "gpt-5-mini-2025-08-07",
+      "detailRubricComplete": 20,
+      "detailRepetitions": 20,
+      "detailWilson95CiPercent": [
+        84,
+        100
+      ],
+      "detailIncompleteObservations": [],
+      "exactRefusalWithNoSources": "3/3",
+      "coreLatencyMsMinMedianMax": [
+        4843,
+        9121,
+        13790
+      ],
+      "observations": {
+        "core": {
+          "Simple": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 7550,
+              "response": "Don't store secrets — for example cryptographic keys, passwords, or algorithm — in the code or data. Hostile JVMs can quickly view this data, and code obfuscation doesn't really hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 4843,
+              "response": "Don't store secrets in code or data — specifically cryptographic keys, passwords, or algorithm. Hostile JVMs can quickly view this data, and code obfuscation doesn't really hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 6432,
+              "response": "The guideline says not to store secrets in code or data — specifically cryptographic keys, passwords, or algorithm. Hostile JVMs can quickly view such data, and code obfuscation doesn't really hide the code from serious attackers.",
+              "sources": [
+                "d48c448520876fba7200fc5e7ec85201589cd82ddcff8d7f73d0f4d69a43739d",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "707e1a74e590c11c6fa6bfea6529c226267a95cb563cf739e88985a2f3d29945",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b"
+              ]
+            }
+          ],
+          "Detail": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 8148,
+              "response": "- Do not declare the native method public; declare it private and expose the functionality through a public Java-based wrapper so validation can be done in Java before the native call.\n- Make a defensive copy of mutable input in the wrapper (example: data = data.clone()).\n- Perform overflow-safe validation of offset and length before calling the native method. For example:\n  - check offset < 0 or len < 0, and\n  - check offset > data.length - len,\n  - and throw an IllegalArgumentException if the checks fail.\n- Avoid computing offset+len directly (it can overflow); use the offset > data.length - len form to prevent integer-overflow errors that could let loops like for (int i=offset; i<offset+len; ++i) bypass bounds checks.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 8323,
+              "response": "The policy requires that the native method not be declared public but be declared private and exposed through a public Java wrapper that performs all necessary input validation before calling the native method. The wrapper must make a defensive copy of mutable input (example: data = data.clone()) and perform overflow-safe validation of offset and length rather than computing offset+len. Concretely, it must check that offset and len are non‑negative and that offset <= data.length - len (e.g., if (offset < 0 || len < 0 || offset > data.length - len) throw new IllegalArgumentException()), because offset+len can overflow (e.g., offset = 1 and len = Integer.MAX_VALUE) and lead to incorrect loop bounds or native crashes.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 9121,
+              "response": "- Do not declare the native method public; make it private and expose its functionality through a public Java wrapper.\n- Have the wrapper perform a defensive copy of mutable input (example: data = data.clone()) before passing data to native code.\n- Have the wrapper validate offset and length in an overflow-safe way: ensure offset >= 0, len >= 0, and offset <= data.length - len (and reject inputs otherwise, e.g. throw IllegalArgumentException). This avoids integer-overflow problems with offset+len and unsafe loops.\n- Only after the copy and validation, invoke the private native method with the checked arguments.",
+              "sources": [
+                "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+                "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+                "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            }
+          ],
+          "Synthesis": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 13736,
+              "response": "Treat untrusted text as follows.\n\n- On receipt, make any defensive copy of the input first; input validation must occur after that defensive copying.\n- Normalize the copied string before you validate it, because Unicode allows the same logical text to have multiple representations.\n- Validate the normalized input before using it. Validation must occur for inputs from untrusted sources and address threats the policy calls out (for example, integer overflow and directory-traversal sequences such as \"../\"). Also validate return values from upcalls (treat output from untrusted objects as input when appropriate).\n- Before writing any untrusted content to logs, sanitize and validate it. Unsanitized log input can enable log-injection attacks (for example, inserting a CRLF sequence to split or fake log entries) and can leak sensitive data (for example, injecting a script into a log file that a browser could execute to steal an administrator’s cookie). Sanitization and validation of any untrusted data sent to logs prevents these problems.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 12564,
+              "response": "- On receipt, treat all text as untrusted and, if you make a defensive copy, perform validation after that defensive copying. Validate inputs whether they arrive as method arguments or external streams; validation should check for problems such as integer overflows and directory traversal sequences (\"../\"). Blacklisting (for example forbidding \"<script>\" tags) can help but is not sufficient by itself.\n\n- Before you validate string data, normalize it. Because Unicode allows the same string to have multiple representations, normalizing input strings prior to validation ensures the validation operates on a canonical form.\n\n- Before writing user-supplied text to logs, sanitize and validate it; do not log unsanitized user input. Unsanitized log input can enable log injection (for example an attacker inserting a CRLF to split a log entry) and can leak sensitive data across trust boundaries (for example an attacker injecting a script into a log file that a browser-viewer could use to obtain an administrator's cookie).",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 12909,
+              "response": "Treat all received text as untrusted, make a defensive copy, then normalize that copy before validating it. Normalize because Unicode allows the same string to have many different representations. After normalization, validate the input (examples of checks called out: guards against integer overflow and directory-traversal sequences such as \"../\"; validate method arguments and external-stream data). Do not rely solely on blacklisting (for example, forbidding \"<script>\" is useful but insufficient). Before writing any untrusted text to logs, sanitize and validate it to prevent log injection (for example, CRLF sequences that can split log entries) and to avoid leaking sensitive data or embedding scripts in log files that could expose administrator cookies when viewed in a browser.",
+              "sources": [
+                "fe45dae3578224556fd40f70031223f8bff546ddbb5a2a0745ef5eb67e374c1e",
+                "43ac9e279cd5fac49e4393b56b3c4409acf266bde64825a41f2dd776cf4a4836",
+                "5a79ba187435a612bf6473a5e5b38cd9689712b2f36880f764d99ee9d25f6c08",
+                "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e"
+              ]
+            }
+          ],
+          "Analysis": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 10139,
+              "response": "Making classes and methods final reduces subclassing-based attacks: the policy says non‑final classes or methods allow an attacker to extend them “in a dangerous and unforeseen way,” and explicitly notes that making a class final prevents a malicious subclass from adding finalizers, cloning, or overriding methods.\n\nApplying least privilege reduces the impact of coding flaws by limiting what exploited code can do: the policy states that running code with reduced permissions makes exploitation “likely to be thwarted,” recommends the principle of least privilege (implemented via policy files or java.security.AccessController.doPrivileged), and says RIAs should be configured to run with the least necessary permissions (sandboxed code attempting security‑sensitive actions will cause the JRE to throw a security exception).\n\nThe policy’s explicitly acknowledged extensibility trade‑off is a “loss of extensibility, in exchange for security” when making everything final.",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 12049,
+              "response": "- Making classes and methods final reduces attack opportunities by preventing attackers from subclassing and thereby altering behavior: if a class or method is non-final, \"an attacker could try to extend it in a dangerous and unforeseen way.\" Making a class final also \"prevents a malicious subclass from adding finalizers, cloning, and overriding random methods.\"\n\n- Applying least privilege reduces attack opportunities by limiting what code can do even if it contains flaws: running with reduced privileges makes \"exploitation of any flaws is likely to be thwarted.\" This can be implemented statically \"by restricting permissions through policy files\" and dynamically \"with the use of the java.security.AccessController.doPrivileged mechanism.\" For Rich Internet Applications, requested permissions can be specified via applet parameters or JNLP, or via a signed jar manifest; a sandboxed applet that attempts security-sensitive code will cause the JRE to throw a security exception. The guidance also urges minimizing SecurityManager permission checks by performing checks at a few defined points and returning a capability object so no further checks are required.\n\n- Extensibility trade-off the policy explicitly acknowledges: making everything final \"causes a loss of extensibility, in exchange for security.\"",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 11442,
+              "response": "- Making classes and methods final reduces attacks that rely on subclassing: a non‑final class or method lets an attacker extend it in \"a dangerous and unforeseen way,\" and a malicious subclass can add finalizers, cloning, or override methods. Declaring classes/methods final prevents those subclassing-based manipulations.\n\n- Applying least privilege reduces what an attacker can accomplish if code is flawed: running code with reduced permissions (the principle of least privilege), enforced via policy files and java.security.AccessController.doPrivileged at runtime, makes exploitation of coding flaws \"likely to be thwarted.\" For RIAs this means requesting only necessary permissions (or running sandboxed so the JRE throws a security exception on security‑sensitive actions) and avoiding running with all permissions.\n\n- The policy explicitly acknowledges the extensibility trade‑off: making everything final \"causes a loss of extensibility, in exchange for security.\"",
+              "sources": [
+                "0e5f747d29b594d491d7b302b027c970031cfe5c2ddb42256b9620177b9debb8",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788",
+                "07aba473d3fb6cca02a15bff09bd76721236bc9b45f8454499cffdcd1a87e91e",
+                "a9951192e36c143a581c8f33635fae62ec4d8debdb6f86f6c3d66467921d945a"
+              ]
+            }
+          ],
+          "FiveBulletSummary": [
+            {
+              "httpStatus": 200,
+              "latencyMs": 6813,
+              "response": "- Adhere to recommended secure coding guidelines to minimize the likelihood of security vulnerabilities caused by programmer error.  \n- Prefer designs and code that are obviously free of flaws rather than relying on clever logic; follow the guidelines in this document unless there is a very strong reason not to.  \n- Design APIs with security in mind (rather than retrofitting security); for example, making a class final prevents a malicious subclass from adding finalizers, cloning, or overriding methods, and any use of the SecurityManager highlights an area that should be scrutinized.  \n- Minimize the number of permission checks: treat SecurityManager checks as a last resort, perform checks at a few defined points, and return an object (a capability) so client code needs no further permission checks.  \n- Document security-related information in API documentation (e.g., JavaDoc), including required permissions, security-related exceptions, caller sensitivity, and relevant preconditions or postconditions.",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 13790,
+              "response": "- Follow the EPAM Java secure coding guidelines—which combine Oracle guidance and secure coding community recommendations—to minimize security vulnerabilities caused by programmer error.  \n- Design and write code that is obviously safe rather than relying on clever logic; follow the guidelines in this document unless there is a very strong reason not to.  \n- Design APIs with security in mind (rather than retrofitting security); for example, making a class final prevents a malicious subclass from adding finalizers, cloning, or overriding methods, and any use of the SecurityManager highlights an area that should be scrutinized.  \n- Minimize the number of permission checks: treat Java as an object-capability language, perform security checks at a few defined points, return an object (a capability) that client code retains so no further permission checks are required, and consider SecurityManager checks a last resort.  \n- Document security-related information in API documentation (e.g., JavaDoc), including required permissions, security-related exceptions, caller sensitivity, and any security-relevant preconditions or postconditions.",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            },
+            {
+              "httpStatus": 200,
+              "latencyMs": 8861,
+              "response": "- Adhere to the recommended secure coding guidelines: EPAM’s Java guidance combines Oracle’s official recommendations with current secure-coding community rules to reduce vulnerabilities caused by programmer error.  \n- Document security-related information in API documentation (e.g., JavaDoc), including required permissions, security-related exceptions, caller sensitivity, and any security-relevant preconditions or postconditions.  \n- Prefer code that is obviously safe rather than relying on clever logic; follow the guidelines unless there is a very strong reason not to.  \n- Design APIs to avoid security concerns (for example, make classes final to prevent malicious subclassing, cloning, or adding finalizers) and scrutinize any use of the SecurityManager.  \n- Minimize the number of permission checks: treat SecurityManager checks as a last resort, perform checks at a few defined points, and return an object (a capability) that client code retains so no further permission checks are required.",
+              "sources": [
+                "e359ecb9e0b37281ec77b99fe6a55f18203abcac09ed1aeebefc27e5f64582f8",
+                "69bd30e04b58afd982b46449d16efbd56f1b67a31a3f8d04f2898833a8e5a78e",
+                "6cc410d74e9839fcf3b6002f6f07aae6735420e071af9129f537363b6fccc5c7",
+                "f201b4ae93b87ee89456852c2e3cc838a7137b33f1b94d61d9750845f4e1bce4",
+                "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+              ]
+            }
+          ]
+        },
+        "detail": [
+          {
+            "httpStatus": 200,
+            "latencyMs": 7792,
+            "response": "The policy requires that a native method not be declared public but be declared private and exposed through a public Java wrapper that performs input validation before invoking the native method. The wrapper must make a defensive copy of mutable inputs (for example: data = data.clone()) and perform overflow-safe validation of offset and length — specifically, check that offset and len are non‑negative and that offset <= data.length - len (and throw an IllegalArgumentException if not) — before calling the private nativeOperation. The guidance notes that offset+len can overflow (e.g. offset = 1 and len = Integer.MAX_VALUE), so the subtraction form is used to avoid that.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 10545,
+            "response": "- The native method must not be public; declare it private and expose its functionality through a public Java wrapper method that performs checks before calling the native method.  \n- The wrapper must make a defensive copy of mutable input (example: data = data.clone()).  \n- The wrapper must validate offset and length and do so in an overflow-safe way (example check: if (offset < 0 || len < 0 || offset > data.length - len) throw new IllegalArgumentException();), avoiding computing offset+len directly because that can overflow.  \n- Because the wrapper is non‑private, it must protect itself (validate inputs) since it may receive tainted data.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7726,
+            "response": "- Do not declare the native method public: make the native method private and expose functionality through a public Java wrapper that performs checks before calling the native method.\n- Make a defensive copy of mutable input in the wrapper (example: data = data.clone()) before further processing or passing it to native code.\n- Validate offset and length without computing offset+len (to avoid integer overflow). The example check is:\n  if (offset < 0 || len < 0 || offset > data.length - len) { throw new IllegalArgumentException(); }\n- If validation fails, the wrapper should throw an exception (the example throws IllegalArgumentException); only after the defensive copy and validation should the wrapper invoke the private native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 8140,
+            "response": "- Declare the native method private and expose its functionality through a public Java wrapper so the wrapper can perform checks before the native call.\n- In the wrapper, make a defensive copy of mutable input (e.g., data = data.clone()) before passing it to native code.\n- Validate offset and length in an overflow-safe way: ensure offset >= 0, len >= 0, and offset <= data.length - len (rather than testing offset+len) to prevent integer overflow errors.\n- Avoid checks or loops that use offset+len (e.g., for (int i = offset; i < offset+len; ++i)) because offset+len can overflow and lead to incorrect bounds or native crashes.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 10289,
+            "response": "- Declare the native method non-public (private) and expose its functionality through a public Java wrapper that performs checks before calling the native method.\n- Make a defensive copy of mutable input in the wrapper (example: data = data.clone()).\n- Validate offset and length in an overflow-safe way before invoking native code: require offset >= 0, len >= 0, and offset <= data.length - len; if not, throw an IllegalArgumentException. This avoids integer overflow in expressions like offset+len and prevents loops or native calls from operating outside the buffer.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 8444,
+            "response": "The policy requires that the native method itself be non-public (declare it private) and that you expose its functionality through a public Java wrapper that performs validation before calling the native method. The wrapper must make a defensive copy of mutable input (for example, data = data.clone()) and must validate offset and len in an overflow-safe way (for example: check offset >= 0, len >= 0, and offset <= data.length - len). The overflow-safe check is used because computing offset+len can overflow (e.g. wrap to Integer.MIN_VALUE) and otherwise permit out-of-bounds access or loops such as for (int i = offset; i < offset+len; ++i) to behave incorrectly or cause native code to crash.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 9000,
+            "response": "The policy requires that the native method be declared private and exposed through a public Java-based wrapper that performs input validation before calling the native method. The wrapper must make a defensive copy of mutable input (for example, data = data.clone()) and perform overflow-safe offset/length checks (for example, reject if offset < 0 || len < 0 || offset > data.length - len) so that offset+len cannot wrap and cause out-of-bounds access before invoking the native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 10649,
+            "response": "- The native method must not be public: declare the native method private and expose its functionality through a public Java wrapper so the wrapper can perform checks before invocation.\n- The wrapper must make a defensive copy of mutable input (example: data = data.clone()).\n- The wrapper must validate offset and length before calling the native method: ensure offset and len are non‑negative and that offset is within bounds using an overflow‑safe check (example shown: if (offset < 0 || len < 0 || offset > data.length - len) throw new IllegalArgumentException();). \n- Only after making the defensive copy and passing these validations should the wrapper invoke the private native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 9178,
+            "response": "- Declare the native method private and expose its functionality through a public Java wrapper so the wrapper can perform checks before invoking native code.\n\n- Make a defensive copy of mutable input (example: data = data.clone()) in the wrapper before passing it to the native method.\n\n- Validate offset and len in an overflow-safe way (example check used in the wrapper):\n  if (offset < 0 || len < 0 || offset > data.length - len) { throw new IllegalArgumentException(); }\n  (Avoid computing offset+len directly because that sum can overflow, so use the data.length - len comparison instead.)\n\n- Only after the defensive copy and the overflow-safe validation does the wrapper call the private native method (e.g., nativeOperation(data, offset, len)).",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 9469,
+            "response": "- Declare the native method non-public (private) and expose its functionality through a public Java wrapper so the wrapper can perform checks before invoking native code.  \n- Make a defensive copy of mutable input in the wrapper (example: data = data.clone()).  \n- Validate offset and length in the wrapper: check for negative values (offset < 0 || len < 0) and check that offset is not greater than data.length - len (offset > data.length - len) so the test is safe against integer overflow.  \n- On invalid input throw an exception (example: IllegalArgumentException) and only call the private native method after the defensive copy and validation succeed.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7046,
+            "response": "- Do not declare the native method public; make it private and expose its functionality through a public Java wrapper.\n- Have the wrapper perform any necessary input validation before invoking the native method.\n- Make a defensive copy of mutable input (example: data = data.clone()) in the wrapper.\n- Validate offset and length to be non‑negative and to fit within the array using an overflow‑safe test (example check: if (offset < 0 || len < 0 || offset > data.length - len) throw new IllegalArgumentException()) so you do not rely on offset+len (which can overflow) before calling the native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7916,
+            "response": "- Declare the native method private and expose its functionality through a public Java wrapper that performs checks before invoking the native method.\n- In the wrapper, make a defensive copy of mutable input (example: data = data.clone()).\n- Validate offset and length in an overflow-safe way before calling the native method; for example:\n  if (offset < 0 || len < 0 || offset > data.length - len) { throw new IllegalArgumentException(); }\n  (This avoids integer-overflow issues with offset+len and prevents unsafe loops or native crashes.)\n- Perform all necessary input validation in the wrapper prior to invoking the native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 8940,
+            "response": "- Do not declare the native method public: make the native method private and expose its functionality via a public Java wrapper.\n- The wrapper must make a defensive copy of mutable input (example: data = data.clone()).\n- The wrapper must validate offset and length before calling the native method and use an overflow-safe check (example shown):\n  if (offset < 0 || len < 0 || offset > data.length - len) { throw new IllegalArgumentException(); }\n- Perform these checks prior to invoking the private native method so the native call sees only validated, safely-copied data.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7491,
+            "response": "- Keep the native method non-public: declare the native method private and expose functionality through a public Java wrapper that performs checks before calling the native method.\n- Make a defensive copy of mutable input in the wrapper (example: data = data.clone()).\n- Perform overflow-safe offset/length validation in the wrapper: ensure offset >= 0, len >= 0, and offset <= data.length - len (to avoid integer overflow of offset+len); if the check fails, throw an IllegalArgumentException.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7743,
+            "response": "- The native method must not be public; declare it private and expose its functionality through a public Java wrapper that performs checks before invoking the native method.  \n- The wrapper must make a defensive copy of mutable input (for example, data = data.clone()).  \n- The wrapper must validate offset and length in an overflow-safe way: ensure offset >= 0, len >= 0, and offset <= data.length - len; if not, throw an exception (the example uses IllegalArgumentException).  \n- Perform the defensive copy and validation before calling the private native method.  \n- The overflow-safe check prevents errors caused by integer overflow of offset+len (the example shows offset+len can wrap to a negative value), which otherwise could allow out-of-bounds access or native crashes.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7537,
+            "response": "Declare the native method private and expose its functionality through a public Java wrapper that performs checks before invoking the native method. The wrapper must:\n\n- Make a defensive copy of mutable input (example: data = data.clone()).\n- Validate offset and length in an overflow-safe way (example check: if (offset < 0 || len < 0 || offset > data.length - len) throw new IllegalArgumentException();). This avoids relying on offset+len (which can overflow) and prevents loops or native code from using a wrapped-around sum.  \n- Only after copying and validating, invoke the private native method (e.g., nativeOperation(data, offset, len)).",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7634,
+            "response": "The policy requires that the native method not be public but be declared private and exposed via a public Java wrapper that performs necessary checks before calling the native method. The wrapper must make a defensive copy of mutable input (example: data = data.clone()) and validate offset and length in an overflow-safe way (example check: if (offset < 0 || len < 0 || offset > data.length - len) { throw new IllegalArgumentException(); }). The overflow-safe check avoids using offset+len (which can overflow) and prevents out-of-bounds/unsafe loops before invoking the private native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 8406,
+            "response": "- Declare the native method private and expose its functionality through a public Java wrapper that performs all needed checks before invoking the native method (because native code is not subject to Java runtime checks and can be vulnerable to buffer overflows).  \n- Make a defensive copy of mutable input (example: data = data.clone()) inside the wrapper before passing it to native code.  \n- Perform overflow-safe validation of offset and length before calling the native method; e.g. check that offset >= 0, len >= 0, and offset <= data.length - len, and throw an IllegalArgumentException on failure (this prevents integer overflow of offset+len and the resulting incorrect bounds that could let native code misbehave).",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 7262,
+            "response": "The policy requires that the native method not be declared public but be declared private and exposed through a public Java wrapper that performs checks before calling the native method. The wrapper must make a defensive copy of mutable input (e.g., data = data.clone()) and validate offset and length in an overflow-safe way (do not rely on computing offset+len). The example validation shown is:\n\nif (offset < 0 || len < 0 || offset > data.length - len) {\n    throw new IllegalArgumentException();\n}\n\nOnly after these checks should the wrapper invoke the private native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 8149,
+            "response": "The policy requires that native methods be declared private and exposed via a public Java wrapper that performs checks before calling the native method. The wrapper must make a defensive copy of mutable input (example: data = data.clone()) and validate offset and length without computing offset+len (because offset+len can overflow). Concretely, the wrapper must ensure offset and len are non‑negative and that offset does not exceed data.length - len (the example throws IllegalArgumentException when offset < 0 || len < 0 || offset > data.length - len) before invoking the private native method.",
+            "sources": [
+              "0e60f799dc31b0645ae23a3dc3fe474a805a7b9737234b43f2640d877d63f971",
+              "71e83c70b2bd7e08cc21087d066b4a7b2b630729e371583edeada28a3f54ad6b",
+              "a49355dd27bf89426518474e26e740366665ce689f1bf40f3ef90d8e55d44a7a",
+              "c4004f4b511927636392c73e742b3d4593dab2a9541743be92a3ca0dac8eb724",
+              "3d65605762de7ec76fcc394ab2aac35bf157df2b01649f092c253ccc27f16788"
+            ]
+          }
+        ],
+        "refusal": [
+          {
+            "httpStatus": 200,
+            "latencyMs": 3480,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 2636,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          },
+          {
+            "httpStatus": 200,
+            "latencyMs": 3174,
+            "response": "I don't have enough information to answer this question.",
+            "sources": []
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -81,7 +81,7 @@ All services read their configuration from the `application.yml` files and pick 
 variables above. Module-specific notes:
 
 - `01-prompting-llm`: exposes `/chat` endpoint for prompt processing
-- `02-rag`: exposes `/doc-qa/chat`, `/doc-qa/documents` endpoints (see module README for payloads)
+- `02-rag`: exposes `/doc-qa/chat`, `/doc-qa/documents` endpoints (see `02-rag/RUNBOOK.md` for payloads; `02-rag/README.md` is the original assignment)
 - `03-code-review-agent`: exposes `/code-review` endpoint for Java code review
 - `04-mcp-code-review-agent`: exposes MCP-based code review endpoints
 

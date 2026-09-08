@@ -34,3 +34,10 @@ build/
 
 ### Local secrets ###
 .env.local.ps1
+
+### Local backlog ###
+BACKLOG.md
+
+### Local agent workspace ###
+/context/
+.claude/settings.local.json
