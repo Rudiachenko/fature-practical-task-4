@@ -4,15 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.ai.chroma.vectorstore.ChromaApi;
 import org.springframework.ai.chroma.vectorstore.ChromaVectorStore;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
-/*
-  TODO Get familiar with vector store configuration
- */
 @Configuration
+@ConditionalOnProperty(
+  prefix = "app.vectorstore",
+  name = "provider",
+  havingValue = "chroma",
+  matchIfMissing = true)
 public class ChromaConfig {
 
   @Bean

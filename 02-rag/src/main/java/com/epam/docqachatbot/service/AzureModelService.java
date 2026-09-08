@@ -24,11 +24,13 @@ public class AzureModelService {
     this.endpoint = StringUtils.hasText(endpoint) ? endpoint.strip() : null;
     this.apiKey = StringUtils.hasText(apiKey) ? apiKey.strip() : null;
 
-    this.restClient = RestClient.builder()
+    RestClient.Builder builder = RestClient.builder()
       .baseUrl(normalizeEndpoint(this.endpoint))
-      .defaultHeader("Api-Key", this.apiKey)
-      .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-      .build();
+      .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+    if (this.apiKey != null) {
+      builder.defaultHeader("Api-Key", this.apiKey);
+    }
+    this.restClient = builder.build();
   }
 
   public String listModels() {

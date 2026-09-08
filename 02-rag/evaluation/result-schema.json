@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Module 2 live evaluation artifact",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "status",
+    "generatedAtUtc",
+    "fixedIndex",
+    "results",
+    "modelScores"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "status": {
+      "enum": [
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "generatedAtUtc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fixedIndex": {
+      "type": "object",
+      "required": [
+        "collection",
+        "embeddingDeployment",
+        "corpus",
+        "ingestionCount"
+      ],
+      "properties": {
+        "collection": {
+          "type": "string"
+        },
+        "embeddingDeployment": {
+          "type": "string"
+        },
+        "corpus": {
+          "const": "EPAM_JavaSecureCodingGD.md"
+        },
+        "ingestionCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "One for a completed indexed run; zero only when a failure occurred before ingestion."
+        }
+      }
+    },
+    "generatorSelection": {
+      "type": "object",
+      "description": "Which generator the run actually exercised, and whether it was the configured default. Optional so that captures taken before the runner reported it stay valid; every capture the runner produces now includes it.",
+      "required": [
+        "usedConfiguredDefault",
+        "configuredDefaultDeployment",
+        "resolvedDeployment"
+      ],
+      "properties": {
+        "usedConfiguredDefault": {
+          "type": "boolean",
+          "description": "True only when the application was started with no generator override of any kind - no AZURE_OPEN_AI_DEPLOYMENT_NAME and no deployment-name argument - so the run is evidence for the configured default."
+        },
+        "configuredDefaultDeployment": {
+          "type": "string",
+          "description": "The default mirrored from application.yml's ${AZURE_OPEN_AI_DEPLOYMENT_NAME:...} fallback."
+        },
+        "resolvedDeployment": {
+          "type": "string",
+          "description": "Read back from the application's own startup log, never assumed from what the harness requested."
+        },
+        "deploymentEnvironmentVariable": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The value of AZURE_OPEN_AI_DEPLOYMENT_NAME at capture time; null in a configured-default run."
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "deployment",
+          "suite",
+          "case",
+          "question",
+          "config",
+          "latencyMs",
+          "httpStatus",
+          "status",
+          "response",
+          "sources",
+          "retrievalScoresAvailable",
+          "rubric"
+        ],
+        "properties": {
+          "deployment": {
+            "enum": [
+              "gpt-4o",
+              "gpt-4.1-nano-2025-04-14",
+              "gpt-5-mini-2025-08-07"
+            ]
+          },
+          "suite": {
+            "enum": [
+              "Comparison",
+              "TopK",
+              "SimilarityThreshold",
+              "GroundingRefusalSources",
+              "QueryTransformationExpansion",
+              "NoisyCorpus",
+              "QueryCompression",
+              "Reranking"
+            ]
+          },
+          "case": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "config": {
+            "type": "object",
+            "required": [
+              "topK",
+              "similarityThreshold",
+              "embeddingDeployment",
+              "collection"
+            ]
+          },
+          "latencyMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "httpStatus": {
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "NOT_PROVEN"
+            ]
+          },
+          "response": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sources": {
+            "type": "array"
+          },
+          "retrievalScoresAvailable": {
+            "const": false
+          },
+          "rubric": {
+            "type": "object",
+            "required": [
+              "pass",
+              "notes",
+              "sourceFaithful",
+              "refusalCorrect",
+              "sourceShapeValid",
+              "manifestMatchVerified",
+              "contentRelevanceVerified",
+              "agentReviewRequired",
+              "sourceAttributionCorrect"
+            ],
+            "properties": {
+              "sourceShapeValid": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "manifestMatchVerified": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "contentRelevanceVerified": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "agentReviewRequired": {
+                "type": "boolean"
+              },
+              "sourceAttributionCorrect": {
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "description": "May be true only after both manifest existence and content relevance have been verified."
+              }
+            }
+          }
+        }
+      }
+    },
+    "modelScores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "deployment",
+          "score",
+          "status",
+          "notes"
+        ],
+        "properties": {
+          "score": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 5
+          }
+        }
+      }
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  }
+}

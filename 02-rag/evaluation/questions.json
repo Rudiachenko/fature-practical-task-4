@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "corpus": "EPAM_JavaSecureCodingGD.md",
+  "cases": [
+    {
+      "id": "Simple",
+      "category": "simple lookup",
+      "question": "According to the EPAM Java Secure Coding Guidelines, which examples of secrets must not be stored in code or data, and why is code obfuscation insufficient?",
+      "evidence": [
+        "2.1.6 Don't Store Secrets",
+        "cryptographic keys, passwords, or algorithm",
+        "Hostile JVMs can quickly view this data",
+        "Code obfuscation doesn't really hide the code from serious attackers"
+      ],
+      "rubric": {
+        "factCheckRequired": true,
+        "passRule": "Every concrete example and reason must be supported by section 2.1.6; any unsupported or altered fact fails."
+      }
+    },
+    {
+      "id": "Detail",
+      "category": "detailed lookup",
+      "question": "What protections does the policy require around a native method wrapper, including the defensive copy and the overflow-safe offset and length validation?",
+      "evidence": [
+        "2.3.3 Define Wrappers Around Native Methods",
+        "do not declare a native method public",
+        "copy mutable input",
+        "offset < 0 || len < 0 || offset > data.length - len"
+      ],
+      "rubric": {
+        "factCheckRequired": true,
+        "passRule": "The response must identify the private native method, public Java wrapper, cloned input, and subtraction-based bounds check without inventing requirements."
+      }
+    },
+    {
+      "id": "Synthesis",
+      "category": "information synthesis",
+      "question": "Synthesize the policy's guidance for handling untrusted text from receipt through logging, using the sections on validating inputs, Unicode normalization, and unsensitized log input.",
+      "evidence": [
+        "2.3.1 Validate Inputs",
+        "2.3.4 Normalize Strings before Validating them",
+        "2.3.5 Do not Log Unsensitized User Input"
+      ],
+      "rubric": {
+        "factCheckRequired": true,
+        "passRule": "The response must combine all three named sections, preserve normalize-before-validate ordering, and avoid unsupported guarantees."
+      }
+    },
+    {
+      "id": "Analysis",
+      "category": "analysis and reasoning",
+      "question": "Based only on the policy, analyze how making classes and methods final and applying least privilege reduce different attack opportunities, and identify the extensibility trade-off the policy explicitly acknowledges.",
+      "evidence": [
+        "2.1.3 Restrict Privileges",
+        "principle of least privilege",
+        "2.2.4 Make Everything Final",
+        "loss of extensibility, in exchange for security"
+      ],
+      "rubric": {
+        "factCheckRequired": false,
+        "passRule": "Judge depth and structure; flag speculation stated as policy fact and require the explicit extensibility trade-off."
+      }
+    },
+    {
+      "id": "FiveBulletSummary",
+      "category": "exactly five bullet summary",
+      "question": "Summarize the EPAM Java Secure Coding Guidelines in exactly five distinct bullet points. Cover five different security themes from the document, ground every bullet in the policy, and do not add a preface or conclusion.",
+      "evidence": [
+        "core",
+        "objects",
+        "input and output",
+        "accessibility",
+        "serialization"
+      ],
+      "rubric": {
+        "factCheckRequired": true,
+        "exactBulletCount": 5,
+        "passRule": "There must be exactly five specific, distinct policy-grounded bullets and no unsupported claim."
+      }
+    }
+  ],
+  "modelScoring": {
+    "minimum": 1,
+    "maximum": 5,
+    "rule": "Assign one overall integer score per model after all five cases: 5 means all grounded cases pass with strong reasoning and formatting; 1 means pervasive unsupported claims or unusable answers."
+  }
+}

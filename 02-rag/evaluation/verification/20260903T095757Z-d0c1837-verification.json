@@ -1,0 +1,33 @@
+﻿{
+    "schemaVersion":  1,
+    "kind":  "automated-maven-verification",
+    "sourceCommit":  "d0c1837d291d301ba178472b9501794e21ed5e0d",
+    "finishedAtUtc":  "2026-09-03T10:02:54.0374608Z",
+    "command":  ".\\mvnw.cmd -pl 02-rag clean verify",
+    "toolchain":  "Amazon Corretto 21.0.6",
+    "environmentNote":  "Process-local TEMP and TMP set to the short-path workaround documented in RUNBOOK.md. No repository setting was changed.",
+    "result":  "BUILD SUCCESS",
+    "surefire":  {
+                     "tests":  209,
+                     "failures":  0,
+                     "errors":  0,
+                     "skipped":  1
+                 },
+    "failsafe":  {
+                     "tests":  12,
+                     "failures":  0,
+                     "errors":  0,
+                     "skipped":  0
+                 },
+    "jacoco":  {
+                   "coveredLines":  743,
+                   "missedLines":  41,
+                   "totalLines":  784,
+                   "lineCoverage":  0.947704,
+                   "minimumLineCoverage":  0.8,
+                   "gate":  "PASS"
+               },
+    "log":  "20260903T095757Z-d0c1837-clean-verify.txt",
+    "logSha256":  "6c76375d3e5626dd9988096558c79b91878281dcf784bf1997a9f91713bc9a9d",
+    "scopeNote":  "These tests use AI test doubles. They are not live DIAL verification; the live evidence is the run captures in evaluation/runs/."
+}

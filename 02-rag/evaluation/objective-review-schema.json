@@ -1,0 +1,785 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Module 2 live-evaluation review",
+  "description": "A derived review of an immutable technical run artifact, scoring independent axes independently. Answer correctness, source traceability and source coverage are decisive PASS/FAIL verdicts for every captured result. README requirement compliance is decisive too, but it is tallied per README obligation and never as one combined figure, and a deliberately non-default experimental configuration carries no requirement verdict at all. Source precision is a per-chunk measurement, never a verdict. There is no pending, unknown or inconclusive state.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "status",
+    "reviewType",
+    "sourceRunArtifact",
+    "chunkManifestArtifact",
+    "reviewedAtUtc",
+    "reviewMethod",
+    "evidenceBasis",
+    "axisDefinitions",
+    "results",
+    "summary",
+    "modelScores"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "status": {
+      "const": "COMPLETED"
+    },
+    "reviewType": {
+      "const": "agent-review",
+      "description": "Discloses that the verdicts were produced by an agent, so they are never presented as a human review."
+    },
+    "schema": {
+      "type": "string"
+    },
+    "sourceRunArtifact": {
+      "type": "string",
+      "description": "The immutable technical capture this review judges. The capture holds transport facts only - HTTP status, latency, response text, returned sources - and its own per-result status field is an unresolved runner placeholder that this review resolves."
+    },
+    "chunkManifestArtifact": {
+      "type": "string",
+      "description": "The committed reconstructed ingestion manifest that every source verdict resolves against, so the provenance claim can be re-checked without a live run."
+    },
+    "reviewedAtUtc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewMethod": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "response-vs-rubric",
+          "reconstructed-ingestion-manifest",
+          "chunk-content-inspection"
+        ]
+      }
+    },
+    "evidenceBasis": {
+      "type": "object",
+      "description": "How the chunk manifest used for traceability, coverage and precision was obtained, and exactly how to reproduce it, so every source verdict is independently repeatable without a live run.",
+      "required": [
+        "corpus",
+        "ingestionLocation",
+        "documentId",
+        "corpusFingerprint",
+        "manifestChunkCount",
+        "chunkIdFormula",
+        "reconstruction",
+        "reproduction",
+        "verification",
+        "notRun"
+      ],
+      "properties": {
+        "corpus": {
+          "type": "string"
+        },
+        "ingestionLocation": {
+          "type": "string"
+        },
+        "documentId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "corpusFingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "manifestChunkCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "chunkIdFormula": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reconstruction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reproduction": {
+          "type": "object",
+          "description": "Everything a third party needs to regenerate the manifest and diff it against the committed artifact. Only the committed source, the corpus bytes, the ingest location, the embedding-model name and a JDK 21 toolchain determine the output.",
+          "required": [
+            "repositoryCommit",
+            "toolchain",
+            "tool",
+            "commands",
+            "expectedOutcome"
+          ],
+          "properties": {
+            "repositoryCommit": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "workingTreeCleanFor": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "toolchain": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The JDK the commands must run under. A JDK on PATH may be older than required, so every documented command pins the interpreter explicitly rather than relying on a bare java or javac."
+            },
+            "tool": {
+              "type": "string",
+              "minLength": 1
+            },
+            "commands": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "expectedOutcome": {
+              "type": "string",
+              "minLength": 1
+            },
+            "jarProvenance": {
+              "type": "object",
+              "description": "Historical record of the packaged jar the classpath was taken from. It is deliberately NOT a reproducibility precondition: repackaging the same commit yields a different jar digest while producing an identical manifest, because the manifest depends only on the committed ingestion classes and the inputs named above.",
+              "required": [
+                "path",
+                "sha256Observed",
+                "note"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256Observed": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "verification": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notRun": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "axisDefinitions": {
+      "type": "object",
+      "description": "The decision rule applied to every result on every axis, stated once so the verdicts are auditable.",
+      "required": [
+        "answerStatus",
+        "sourceTraceabilityStatus",
+        "sourceCoverageStatus",
+        "sourcePrecision",
+        "readmeScope",
+        "requirementStatus",
+        "fiveBulletSummaryRule"
+      ],
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "resultNumber",
+          "deployment",
+          "suite",
+          "case",
+          "configuration",
+          "readmeScope",
+          "readmeScopeReason",
+          "answerStatus",
+          "sourceTraceabilityStatus",
+          "sourceCoverageStatus",
+          "sourcePrecision",
+          "rationale"
+        ],
+        "properties": {
+          "resultNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Position of the result in the technical capture. Every captured result appears exactly once."
+          },
+          "deployment": {
+            "type": "string",
+            "minLength": 1
+          },
+          "suite": {
+            "type": "string",
+            "minLength": 1
+          },
+          "case": {
+            "type": "string",
+            "minLength": 1
+          },
+          "configuration": {
+            "type": "object",
+            "description": "The retrieval configuration actually captured for this result, copied from the technical capture, so readmeScope can be re-derived mechanically.",
+            "required": [
+              "topK",
+              "similarityThreshold",
+              "nonDefaultFeature"
+            ],
+            "properties": {
+              "topK": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "similarityThreshold": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "nonDefaultFeature": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "readmeScope": {
+            "enum": [
+              "core-contract",
+              "model-comparison",
+              "experiment-default-config",
+              "experiment-variant"
+            ],
+            "description": "Which README obligation this result exercises. core-contract: the shipped default generator answering a rubric question at the shipped default retrieval configuration. model-comparison: the same question answered by another generator, which the README defines as a separate subtask. experiment-default-config: an Experiments & Edge Cases case whose variant is the default configuration. experiment-variant: a deliberately non-default configuration."
+          },
+          "readmeScopeReason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "answerStatus": {
+            "enum": [
+              "PASS",
+              "FAIL"
+            ],
+            "description": "Response text against the case rubric only, for every result. Extra returned sources never affect it."
+          },
+          "sourceTraceabilityStatus": {
+            "enum": [
+              "PASS",
+              "FAIL"
+            ],
+            "description": "Every nonblank chunkId exists in this run's manifest and its documentName matches the chunk metadata. FAIL when an id is unknown, metadata disagrees, or the mapping cannot be established from evidence."
+          },
+          "sourceCoverageStatus": {
+            "enum": [
+              "PASS",
+              "FAIL"
+            ],
+            "description": "At least one returned chunk directly supports every material claim the answer uses to satisfy the rubric. An exact refusal with no sources is PASS only for a genuinely unsupported question."
+          },
+          "sourcePrecision": {
+            "type": "object",
+            "description": "Measured retrieval-quality data. This object never carries a PASS/FAIL verdict.",
+            "required": [
+              "returnedSourceCount",
+              "directlySupportingSourceCount",
+              "contextuallyRelevantSourceCount",
+              "irrelevantSourceCount",
+              "precisionAtK",
+              "evidenceComment",
+              "classifiedSources"
+            ],
+            "properties": {
+              "returnedSourceCount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "directlySupportingSourceCount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "contextuallyRelevantSourceCount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "irrelevantSourceCount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "precisionAtK": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 1,
+                "description": "(directlySupportingSourceCount + contextuallyRelevantSourceCount) / returnedSourceCount. It is null only when returnedSourceCount is 0, where the ratio is mathematically undefined; null is not a verdict."
+              },
+              "evidenceComment": {
+                "type": "string",
+                "minLength": 1
+              },
+              "classifiedSources": {
+                "type": "array",
+                "description": "One entry per returned source, in the order the run returned them, so no count is asserted without a per-chunk justification.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "chunkId",
+                    "chunkIndex",
+                    "documentName",
+                    "headingPath",
+                    "manifestMatch",
+                    "role",
+                    "note"
+                  ],
+                  "properties": {
+                    "chunkId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "chunkIndex": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "documentName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "headingPath": {
+                      "type": "string"
+                    },
+                    "manifestMatch": {
+                      "const": true,
+                      "description": "The chunkId resolved in the committed manifest and its documentName matched. A source that cannot be resolved must not be recorded as classified."
+                    },
+                    "role": {
+                      "enum": [
+                        "direct",
+                        "contextual",
+                        "irrelevant"
+                      ],
+                      "description": "direct: substantiates a named material claim, quoted in note. contextual: a substantive policy section on topic for the question that supports no claim the answer makes. irrelevant: unrelated to question and answer, or a heading-only stub that carries no body text and can therefore substantiate nothing."
+                    },
+                    "note": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "For a direct source, the specific claim it supports. Otherwise, why it is contextual or irrelevant."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "requirementStatus": {
+            "enum": [
+              "PASS",
+              "FAIL"
+            ],
+            "description": "The README verdict. Present for every readmeScope except experiment-variant. FAIL for a wrong, incomplete or unsupported answer, a false refusal, missing evidence coverage, an invalid source, a malformed structured response or a broken lifecycle."
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "experimentObservation": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required for every result belonging to a configuration-sweep or edge-case experiment suite. States the concrete positive or negative measured outcome of that variant. It is an experiment finding, never a module status."
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "readmeScope": {
+                  "const": "experiment-variant"
+                }
+              },
+              "required": [
+                "readmeScope"
+              ]
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "requirementStatus"
+                ]
+              }
+            },
+            "else": {
+              "required": [
+                "requirementStatus"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "suite": {
+                  "enum": [
+                    "TopK",
+                    "SimilarityThreshold",
+                    "GroundingRefusalSources",
+                    "NoisyCorpus",
+                    "QueryTransformationExpansion",
+                    "QueryCompression",
+                    "Reranking"
+                  ]
+                }
+              },
+              "required": [
+                "suite"
+              ]
+            },
+            "then": {
+              "required": [
+                "experimentObservation"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "Per-axis totals. README compliance is reported per obligation, so no single combined pass rate exists to quote.",
+      "required": [
+        "resultCount",
+        "resultsByReadmeScope",
+        "answerCorrectness",
+        "sourceTraceability",
+        "sourceCoverage",
+        "readmeRequirementCompliance",
+        "sourcePrecisionMetrics"
+      ],
+      "properties": {
+        "resultCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "resultsByReadmeScope": {
+          "type": "object"
+        },
+        "answerCorrectness": {
+          "type": "object",
+          "required": [
+            "all",
+            "byReadmeScope"
+          ],
+          "properties": {
+            "all": {
+              "$ref": "#/$defs/passFailTally"
+            },
+            "byReadmeScope": {
+              "type": "object"
+            }
+          }
+        },
+        "sourceTraceability": {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "$ref": "#/$defs/passFailTally"
+            }
+          }
+        },
+        "sourceCoverage": {
+          "type": "object",
+          "required": [
+            "all",
+            "byReadmeScope"
+          ],
+          "properties": {
+            "all": {
+              "$ref": "#/$defs/passFailTally"
+            },
+            "byReadmeScope": {
+              "type": "object"
+            }
+          }
+        },
+        "readmeRequirementCompliance": {
+          "type": "object",
+          "description": "One tally per README obligation. There is deliberately no aggregate figure across groups, because that would let the generator-comparison subtask and the experiment cases move the score of the core RAG contract.",
+          "required": [
+            "note",
+            "groups"
+          ],
+          "properties": {
+            "note": {
+              "type": "string",
+              "minLength": 1
+            },
+            "groups": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "readmeScope",
+                  "requirement",
+                  "resultCount",
+                  "resultNumbers",
+                  "answerTally"
+                ],
+                "properties": {
+                  "readmeScope": {
+                    "enum": [
+                      "core-contract",
+                      "model-comparison",
+                      "experiment-default-config",
+                      "experiment-variant"
+                    ]
+                  },
+                  "requirement": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "resultCount": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "resultNumbers": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "answerTally": {
+                    "$ref": "#/$defs/passFailTally"
+                  },
+                  "requirementTally": {
+                    "$ref": "#/$defs/passFailTally"
+                  },
+                  "byDeployment": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "deployment",
+                        "requirementTally"
+                      ],
+                      "properties": {
+                        "deployment": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "requirementTally": {
+                          "$ref": "#/$defs/passFailTally"
+                        }
+                      }
+                    }
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "readmeScope": {
+                          "const": "experiment-variant"
+                        }
+                      },
+                      "required": [
+                        "readmeScope"
+                      ]
+                    },
+                    "then": {
+                      "not": {
+                        "required": [
+                          "requirementTally"
+                        ]
+                      }
+                    },
+                    "else": {
+                      "required": [
+                        "requirementTally"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "sourcePrecisionMetrics": {
+          "type": "object",
+          "required": [
+            "all",
+            "byReadmeScope",
+            "interpretation"
+          ],
+          "properties": {
+            "all": {
+              "$ref": "#/$defs/precisionTotals"
+            },
+            "byReadmeScope": {
+              "type": "object"
+            },
+            "interpretation": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "modelScores": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "deployment",
+          "comparisonCaseCount",
+          "answerPassCount",
+          "score",
+          "sharedRetrievalQuality"
+        ],
+        "properties": {
+          "deployment": {
+            "type": "string",
+            "minLength": 1
+          },
+          "comparisonCaseCount": {
+            "const": 5
+          },
+          "answerPassCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Deterministic scale over the five Comparison answerStatus verdicts only: 5/5 scores 5, 4/5 scores 4, 3/5 scores 3, 2/5 scores 2, 0-1/5 scores 1. Source coverage and precision never lower this score."
+          },
+          "passedCases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "failedCases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sharedRetrievalQuality": {
+            "type": "object",
+            "description": "Retrieval configuration and corpus are shared by every deployment, so retrieval quality is reported alongside the score and never folded into it. The note must state exactly what the capture proves, without claiming that the retrieval step itself was identical when the run records no retrieval-internal evidence.",
+            "required": [
+              "returnedSourceCount",
+              "directlySupportingSourceCount",
+              "note"
+            ],
+            "properties": {
+              "returnedSourceCount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "directlySupportingSourceCount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "passFailTally": {
+      "type": "object",
+      "required": [
+        "pass",
+        "fail"
+      ],
+      "properties": {
+        "pass": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fail": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "precisionTotals": {
+      "type": "object",
+      "required": [
+        "returnedSourceCount",
+        "directlySupportingSourceCount",
+        "contextuallyRelevantSourceCount",
+        "irrelevantSourceCount",
+        "meanPrecisionAtK"
+      ],
+      "properties": {
+        "resultsWithSources": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resultsWithoutSources": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "returnedSourceCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "directlySupportingSourceCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contextuallyRelevantSourceCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "irrelevantSourceCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "directlySupportingShare": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "irrelevantShare": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "meanPrecisionAtK": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}

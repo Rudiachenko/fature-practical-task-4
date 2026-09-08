@@ -10,6 +10,7 @@ import com.epam.prompting_llm.support.SafeLogFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.azure.openai.AzureOpenAiChatOptions;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.ResponseEntity;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
@@ -61,17 +62,16 @@ public class ChatProcessor {
   }
 
   private PromptResponse toPromptResponse(String conversationId,
-                                          ChatResponse modelResponse) {
-    String content = rawContent(modelResponse);
-    rawModelResponseCapture.capture(conversationId, content, modelResponse);
-    validateContent(content);
-    StructuredChatResponse structuredResponse = outputConverter.convert(content);
+                                          ResponseEntity<ChatResponse, StructuredChatResponse> modelResponse) {
+    ChatResponse chatResponse = modelResponse.response();
+    StructuredChatResponse structuredResponse = modelResponse.entity();
+    rawModelResponseCapture.capture(conversationId, rawContent(chatResponse), chatResponse);
     validateStructuredResponse(structuredResponse);
     return new PromptResponse(
       conversationId,
       structuredResponse.response(),
       structuredResponse.tone(),
-      mapUsage(modelResponse)
+      mapUsage(chatResponse)
     );
   }
 
@@ -155,7 +155,8 @@ public class ChatProcessor {
     try {
       chatMemory.begin(conversationId);
       transactionActive = true;
-      ChatResponse modelResponse = callModel(conversationId, message, requestOptions);
+      ResponseEntity<ChatResponse, StructuredChatResponse> modelResponse =
+        callModel(conversationId, message, requestOptions);
       PromptResponse response = toPromptResponse(conversationId, modelResponse);
       chatMemory.commit();
       transactionActive = false;
@@ -171,15 +172,14 @@ public class ChatProcessor {
     }
   }
 
-  private ChatResponse callModel(String conversationId,
-                                 String message,
-                                 AzureOpenAiChatOptions requestOptions) {
+  private ResponseEntity<ChatResponse, StructuredChatResponse> callModel(
+      String conversationId, String message, AzureOpenAiChatOptions requestOptions) {
     return chatClient.prompt()
       .user(message)
       .options(requestOptions)
       .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, conversationId))
       .call()
-      .chatResponse();
+      .responseEntity(outputConverter);
   }
 
   private void logResponse(String conversationId, PromptResponse response) {
@@ -196,12 +196,6 @@ public class ChatProcessor {
 
     Generation generation = modelResponse.getResult();
     return generation.getOutput().getText();
-  }
-
-  private void validateContent(String content) {
-    if (!StringUtils.hasText(content)) {
-      throw new StructuredOutputException();
-    }
   }
 
   private void validateStructuredResponse(StructuredChatResponse structuredResponse) {

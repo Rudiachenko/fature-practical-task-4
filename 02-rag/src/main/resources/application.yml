@@ -10,7 +10,13 @@ spring:
         endpoint: ${AZURE_OPEN_AI_ENDPOINT}
         chat:
           options:
-            deployment-name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME:gpt-4o}
+            # Default generator chosen on measured evidence, not on recency or size. On the
+            # Detail rubric - the one core-contract case whose completeness varies between
+            # identical calls - repeated 20 times each on one fixed index: gpt-5-mini 20/20,
+            # gpt-4o 9/20, gpt-4.1-nano 0/20. The two alternatives therefore fail a core-contract
+            # case and are disqualified as the default. The cost is latency: median 10.6 s against
+            # gpt-4o's 3.0 s on the comparison suite. See evaluation/RESULTS.md.
+            deployment-name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME:gpt-5-mini-2025-08-07}
         embedding:
           options:
             deployment-name: ${AZURE_OPEN_AI_EMBEDDING_DEPLOYMENT_NAME:text-embedding-3-small-1}
@@ -19,26 +25,29 @@ app:
   rag:
     system-prompt: classpath:prompts/rag_system_prompt.st
     max-memory-messages: 20
-    # QuestionAnswerAdvisor configuration
     question-answer:
       enabled: true
-      similarity-threshold: 0.3
-      top-k: 5
       allow-empty-context: false
-    # Query transformation configuration
     query-transformation:
-      compression-enabled: true    # Enable to use conversation history in retrieval
-      rewrite-enabled: true        # Enable to rewrite queries for better results
-    # Query expansion configuration
+      compression-enabled: false
+      rewrite-enabled: false
     query-expansion:
-      enabled: true                 # Enable to generate multiple query variations
+      enabled: false
       number-of-queries: 3
       include-original: true
-    # Document retrieval configuration
     retrieval:
       similarity-threshold: 0.3
       top-k: 5
+      # Heading-aware reranking stays opt-in. Enabling it globally over a broad candidate pool was
+      # measured on 2026-09-02 and rejected: its diversity penalty is per theme, so it helps a
+      # whole-document question but starves a question that legitimately needs several subsections
+      # of one theme - the Synthesis case (2.3.1 + 2.3.4 + 2.3.5, all under 2.3 INPUT AND OUTPUT)
+      # lost its context and produced a false refusal. See evaluation/RESULTS.md.
+      mmr-enabled: false
+      mmr-lambda: 0.5
+      mmr-final-top-k: 5
   vectorstore:
+    provider: ${VECTOR_STORE_PROVIDER:chroma}
     chroma:
       base-url: ${CHROMA_BASE_URL:http://localhost:8000}
       tenant-name: ${CHROMA_TENANT:default_tenant}
@@ -46,9 +55,22 @@ app:
       collection-name: ${CHROMA_COLLECTION:doc-qa-collection}
   documents:
     default:
+      bootstrap-enabled: ${DOCUMENT_BOOTSTRAP_ENABLED:false}
+      bootstrap-fail-fast: ${DOCUMENT_BOOTSTRAP_FAIL_FAST:false}
+      # Relative to the process working directory. Correct for the canonical start command
+      # (./mvnw -pl 02-rag spring-boot:run, cwd = 02-rag/); override when starting the
+      # executable JAR from the repository root (see 02-rag/RUNBOOK.md's "Build and run" section).
       resources:
-        - classpath:documents/llm_context_document.pdf
+        - file:EPAM_JavaSecureCodingGD.md
     processing:
+      max-resource-bytes: ${DOCUMENT_MAX_RESOURCE_BYTES:5242880}
+      max-resources-per-request: ${DOCUMENT_MAX_RESOURCES_PER_REQUEST:20}
+      embedding-model: ${AZURE_OPEN_AI_EMBEDDING_DEPLOYMENT_NAME:text-embedding-3-small-1}
+      allowed-file-roots:
+        - ${DOCUMENT_ALLOWED_FILE_ROOT:.}
+      max-delete-ids-per-request: ${DOCUMENT_MAX_DELETE_IDS_PER_REQUEST:100}
+      max-document-name-length: ${DOCUMENT_MAX_DOCUMENT_NAME_LENGTH:512}
+      max-delete-resolution-passes: ${DOCUMENT_MAX_DELETE_RESOLUTION_PASSES:3}
       chunking:
         enabled: true
         tokens-per-chunk: 800

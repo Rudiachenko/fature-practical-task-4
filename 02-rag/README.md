@@ -111,16 +111,20 @@ Set the following environment variables before starting:
 ```bash
 export AZURE_OPEN_AI_KEY=dial-key
 export AZURE_OPEN_AI_ENDPOINT=https://ai-proxy.lab.epam.com
-export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4o
+export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-5-mini-2025-08-07
 export AZURE_OPEN_AI_EMBEDDING_DEPLOYMENT_NAME=text-embedding-3-small-1
 # Optional: override Chroma defaults
 export CHROMA_BASE_URL=http://localhost:8000
 export CHROMA_COLLECTION=doc-qa-collection
 
 # Use next for subtask investigation of model choice:
+#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4o
 #export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4.1-nano-2025-04-14
-#export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-5-mini-2025-08-07 
 ```
+
+`AZURE_OPEN_AI_DEPLOYMENT_NAME` is optional: `gpt-5-mini-2025-08-07` is the configured default in
+`application.yml`, chosen on the measured evidence in [evaluation/RESULTS.md](evaluation/RESULTS.md).
+Leave it unset to run the shipped default.
 
 
 The defaults match the local `docker compose` stack (Chroma 1.0.0).
