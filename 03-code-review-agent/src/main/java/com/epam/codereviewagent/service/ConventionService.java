@@ -29,7 +29,7 @@ public class ConventionService {
 
   /**
    * Reads every configured convention resource and indexes it by language, derived from its
-   * filename prefix (e.g. {@code java-convention.md} -&gt; {@code java}).
+   * filename prefix (e.g., {@code java-convention.md} -&gt; {@code java}).
    */
   @EventListener(ApplicationReadyEvent.class)
   public void loadConventions() {
@@ -57,7 +57,7 @@ public class ConventionService {
   }
 
   /**
-   * Retrieve coding convention for a specific programming language
+   * Retrieve the coding convention for a specific programming language
    *
    * @param language Programming language (e.g., "java", "python")
    * @return Convention text or message if not found
@@ -83,7 +83,7 @@ public class ConventionService {
   }
 
   /**
-   * Get list of supported languages
+   * Get a list of supported languages
    */
   List<String> getSupportedLanguages() {
     return List.copyOf(conventions.keySet());

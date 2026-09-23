@@ -297,14 +297,35 @@ anywhere — the only coupling is the generic `ApplicationEventPublisher`/`CodeR
 Every failure mode inside the listener (scheduling failure, sub-agent failure) is caught, logged at
 `ERROR`, and never rethrown.
 
+## Token usage logging
+
+Every LLM call logs, at `INFO`, the token counts the provider reported for that call, so a runaway
+agent loop is visible in the log before it exhausts a token budget:
+
+| Log line | Emitted by | Token fields |
+|---|---|---|
+| `ReAct iteration N/M: chatModel call completed ...` | `CodeReviewReactAgent`, each phase-1 call | `promptTokens`, `completionTokens`, `totalTokens` |
+| `Phase-2 structured-output call completed ...` | `CodeReviewReactAgent`, each phase-2 attempt, including a retried one | same |
+| `Code review completed: ...` | `CodeReviewReactAgent`, once per successful review | `agentModelCalls`, `agentPromptTokens`, `agentCompletionTokens`, `agentTotalTokens` |
+| `ReAct loop exhausted ...` / `Phase-2 structured-output parsing failed again ...` | `CodeReviewReactAgent`, when a review fails | the same `agent*` totals, consumed before the failure |
+| `retrieveCodeLanguage chatModel call completed ...` / `getCodebaseContext chatModel call completed ...` | `CodeReviewTools`, each tool-internal LLM call | `promptTokens`, `completionTokens`, `totalTokens` |
+| `Executive-summary chatModel call completed ...` | `ExecutiveSummarySubAgent`, each summary | same |
+
+The `agent*` totals sum only the calls `CodeReviewReactAgent` makes itself (phase-1 iterations and
+phase-2 attempts); tool-internal and executive-summary calls are logged on their own lines and are not
+included. Counts are exactly what Azure OpenAI reports for each call; a provider that reports no usage is
+logged as `0`.
+
 ## Experiments and evaluation
 
 `03-code-review-agent/evaluation/RESULTS.md` accounts for all 8 README/ticket Experiments & Edge Cases
 (R13) and the R12 model-comparison subtask — every hermetically-provable mechanism is actually re-run and
-cited to a specific test method; every live-model-dependent piece is explicitly `REQUIRES OPERATOR`, with
-the exact steps needed once EPAM VPN/DIAL credentials are available. `evaluation/experiments.json` is the
-machine-readable companion (validated structurally, not just parsed, by `EvaluationAssetsTest`).
-`evaluation/model-comparison-schema.json` is the scaffold for R12's eventual 3-model × 2-run result set.
+cited to a specific test method; every live-model-dependent piece either cites a recorded live run under
+`evaluation/runs/` or is explicitly `REQUIRES OPERATOR`, with the exact steps needed once EPAM VPN/DIAL
+credentials are available. `evaluation/experiments.json` is the machine-readable companion (validated
+structurally, not just parsed, by `EvaluationAssetsTest`, which also checks that every cited live run
+records the cited case). `evaluation/model-comparison-schema.json` is the schema of R12's 3-model × 2-run
+result set, filled in `evaluation/runs/20260829T193452Z-model-comparison.json`.
 
 Run the hermetic (no live model, no network) portion of the experiments harness directly:
 

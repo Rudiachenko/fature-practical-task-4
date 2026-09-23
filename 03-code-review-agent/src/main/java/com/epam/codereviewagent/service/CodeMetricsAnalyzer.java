@@ -14,7 +14,7 @@ import java.util.Deque;
  * comments ({@code //...}) and traditional block comments (slash-asterisk through the matching
  * closing asterisk-slash marker) and skips any {@code '{'}/{@code '}'}
  * found inside them. This fixes a real, empirically reproduced defect: without this lexer pass, a
- * brace character inside an ordinary string literal (e.g. {@code String regexLike = "{";}), a
+ * brace character inside an ordinary string literal (e.g., {@code String regexLike = "{";}), a
  * line/block comment, or a text block was previously popped/pushed onto the same LIFO brace stack
  * as real structural braces, corrupting {@code maxNestingDepth}/{@code longestMethodLineSpan}
  * bookkeeping for the rest of the snippet - not just for the line containing the phantom brace.
@@ -23,7 +23,7 @@ import java.util.Deque;
  *
  * <p><strong>Recorded limitation</strong>: this lexer recognizes Java-like
  * string/comment/text-block conventions specifically. Other languages with materially different
- * conventions (e.g. Python's triple-quoted strings using {@code '''}, shell here-docs, Perl regex
+ * conventions (e.g., Python's triple-quoted strings using {@code '''}, shell here-docs, Perl regex
  * delimiters) are not specially recognized and may still be miscounted if their brace-containing
  * constructs don't happen to also be valid Java string/comment syntax. This remains an
  * approximate heuristic, not a full multi-language AST/static-analysis engine, per

@@ -166,7 +166,7 @@ public class CodeReviewExceptionHandler {
       .toList();
     // A client mistake, not a server fault: logged at DEBUG, matching 02-rag's ApiExceptionHandler
     // precedent for the identical exception type. Violation field/message text originates from the
-    // request DTO's own Bean Validation annotations (e.g. "must not be blank"), never from the
+    // request DTO's own Bean Validation annotations (e.g., "must not be blank"), never from the
     // rejected value itself, so no SafeLogFormatter wrapping is needed here.
     log.debug("Code review request validation failed, violationCount={}", violations.size());
     return ResponseEntity.badRequest()
@@ -262,7 +262,7 @@ public class CodeReviewExceptionHandler {
   public ResponseEntity<ApiError> handleMethodNotSupported(
     HttpRequestMethodNotSupportedException exception) {
     // Same catch-all-swallows-framework-dispatch-exceptions risk as handleMalformedRequest
-    // above: an unsupported HTTP method (e.g. GET /code-review) is a pure client mistake - 405,
+    // above: an unsupported HTTP method (e.g., GET /code-review) is a pure client mistake - 405,
     // not 500 - logged at DEBUG.
     log.debug("Unsupported HTTP method rejected for code review request, method={}",
       exception.getMethod());

@@ -16,7 +16,7 @@ package com.epam.codereviewagent.api.model;
  * <p>
  * <b>Recorded, explicitly out-of-scope limitation</b>: this record has no knowledge of the
  * actual file content the finding refers to, so it cannot validate that {@code startLine}/
- * {@code endLine} actually exist within that file (e.g. a finding claiming line 9999 of a
+ * {@code endLine} actually exist within that file (e.g., a finding claiming line 9999 of a
  * 40-line file is not rejected here). That check requires cross-referencing against the file
  * content retrieved by the {@code readFile} tool during the ReAct loop, which only exists from
  * Increment 5 onward — see {@code context/PROGRESS.md}'s Increment 4 entry for the explicit

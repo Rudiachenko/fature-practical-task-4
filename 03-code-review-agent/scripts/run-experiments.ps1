@@ -90,7 +90,10 @@ $hermeticExperiments = [ordered]@{
     name = 'Evidence enforcement'
     testCitations = @(
       'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileNeverSucceedsButModelClaimsFindings',
-      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings'
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings',
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAMissingFile',
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAnEmptyFile',
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldKeepTheModelsFindings_whenTheRealToolCallingManagerReadsARealFile'
     )
   }
   '5' = @{
@@ -107,7 +110,8 @@ $hermeticExperiments = [ordered]@{
     testCitations = @(
       'com.epam.codereviewagent.util.FileUtilsTest::shouldTruncateContentAndAppendMarker_whenLimitIsSmallerThanFileLength',
       'com.epam.codereviewagent.service.CodeReviewToolsTest::shouldReturnContentWrappedInMarkersWithVisibleTruncationMarker_whenContentExceedsConfiguredMaxFileChars',
-      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldSetTruncatedTrue_whenAnyToolResultContainsTruncationMarker_evenIfModelClaimsFalse'
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldSetTruncatedTrue_whenAnyToolResultContainsTruncationMarker_evenIfModelClaimsFalse',
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldSetTruncatedTrue_whenTheRealToolCallingManagerReturnsATruncatedFile_evenIfModelClaimsFalse'
     )
   }
   '7' = @{
@@ -123,7 +127,8 @@ $hermeticExperiments = [ordered]@{
     name = 'Empty / non-code input'
     testCitations = @(
       'com.epam.codereviewagent.service.CodeReviewToolsTest::shouldReturnExplicitNonErrorEmptyFileMessage_whenFileExistsButIsEmpty',
-      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings'
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings',
+      'com.epam.codereviewagent.service.CodeReviewReactAgentTest::shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAnEmptyFile'
     )
   }
 }

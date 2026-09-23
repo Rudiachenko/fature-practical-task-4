@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Increment 8 — proves the evaluation assets under {@code evaluation/} actually have the exact
@@ -99,8 +100,38 @@ class EvaluationAssetsTest {
       assertThat(experiment.path("hermeticStatus").path("status").asText())
         .isIn("PROVEN", "NOT_APPLICABLE");
       assertThat(experiment.path("liveEvaluation").path("status").asText())
-        .isIn("REQUIRES_OPERATOR", "NOT_APPLICABLE");
+        .isIn("COMPLETED", "REQUIRES_OPERATOR", "NOT_APPLICABLE");
     });
+  }
+
+  @Test
+  void shouldCiteARecordedCaseForEveryCompletedOrArtifactBackedLiveEvaluation_whenExperimentsFixtureIsLoaded()
+    throws Exception {
+    // Arrange
+    JsonNode experiments = objectMapper.readTree(EXPERIMENTS.toFile());
+    List<JsonNode> evidenced =
+      StreamSupport.stream(experiments.path("experiments").spliterator(), false)
+        .filter(experiment -> {
+          JsonNode live = experiment.path("liveEvaluation");
+          return "COMPLETED".equals(live.path("status").asText()) || live.has("artifact");
+        })
+        .toList();
+
+    // Act / Assert: a live half marked COMPLETED without an inspectable raw artifact would be a
+    // claim nobody can check - each one, and any other entry citing a live run, must name a file
+    // under evaluation/runs that records its case.
+    for (JsonNode experiment : evidenced) {
+      int id = experiment.path("id").asInt();
+      JsonNode live = experiment.path("liveEvaluation");
+      Path artifact = Path.of(live.path("artifact").asText());
+      assertThat(artifact.normalize()).as("artifact for experiment id=%s", id)
+        .startsWithRaw(Path.of("evaluation", "runs"))
+        .isRegularFile();
+      JsonNode recordedCases = objectMapper.readTree(artifact.toFile()).path("cases");
+      List<String> recordedCaseIds = textValues(recordedCases, "caseId");
+      assertThat(recordedCaseIds).as("cases recorded in %s", artifact)
+        .contains(live.path("caseId").asText());
+    }
   }
 
   @Test
@@ -202,8 +233,8 @@ class EvaluationAssetsTest {
   }
 
   @Test
-  void shouldRunPowerShellHarnessCleanlyInHermeticOnlyModeAndReportZeroFailures_whenSkippingTheBuild()
-    throws Exception {
+  void shouldRunPowerShellHarnessCleanlyInHermeticOnlyModeAndReportZeroFailures_whenSkippingTheBuild(
+    @TempDir Path tempDir) throws Exception {
     // Arrange: -SkipBuild reuses whatever Surefire reports already exist from this very test run
     // (Surefire is already executing, so target/surefire-reports is necessarily populated by the
     // time this test itself runs) - proving the script's own parsing logic against real report XML,
@@ -212,14 +243,21 @@ class EvaluationAssetsTest {
       "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass",
       "-File", SCRIPT.toAbsolutePath().toString(),
       "-HermeticOnly", "-SkipBuild");
+    Path outputFile = tempDir.resolve("harness-output.txt");
 
-    // Act
+    // Act: the output goes to a file, not a pipe - nothing reads a pipe until the script exits, so
+    // once the output outgrows the OS pipe buffer (4 KB on Windows) the script blocks on its next
+    // write and never finishes.
     Process process = new ProcessBuilder(command)
       .directory(Path.of(".").toAbsolutePath().toFile())
       .redirectErrorStream(true)
+      .redirectOutput(outputFile.toFile())
       .start();
     boolean finished = process.waitFor(60, java.util.concurrent.TimeUnit.SECONDS);
-    String output = new String(process.getInputStream().readAllBytes(),
+    if (!finished) {
+      process.destroyForcibly();
+    }
+    String output = new String(Files.readAllBytes(outputFile),
       java.nio.charset.StandardCharsets.UTF_8);
 
     // Assert: assert positively on the script's own zero-failure count rather than a finite list of
@@ -276,6 +314,12 @@ class EvaluationAssetsTest {
   private List<String> textValues(JsonNode array) {
     return StreamSupport.stream(array.spliterator(), false)
       .map(JsonNode::asText)
+      .toList();
+  }
+
+  private List<String> textValues(JsonNode array, String field) {
+    return StreamSupport.stream(array.spliterator(), false)
+      .map(element -> element.path(field).asText())
       .toList();
   }
 }

@@ -100,7 +100,7 @@ public final class FileUtils {
 
   /**
    * Returns {@code maxChars}, unless a cut at that exact index would fall between the two
-   * {@code char}s of a surrogate pair (i.e. {@code content.charAt(maxChars - 1)} is a high
+   * {@code char}s of a surrogate pair (i.e., {@code content.charAt(maxChars - 1)} is a high
    * surrogate), in which case it returns {@code maxChars - 1} so the cut lands before the pair
    * instead of inside it. A cut that already lands on a codepoint boundary is returned unchanged.
    */

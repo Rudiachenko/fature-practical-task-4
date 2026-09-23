@@ -29,44 +29,22 @@
                     },
     "httpStatusCode":  200,
     "rawResponse":  {
-                        "id":  "chatcmpl-EIWcMNDvYNv2GCH4jVGCuHRkhtBXy",
                         "choices":  [
                                         {
                                             "finish_reason":  "stop",
                                             "index":  0,
-                                            "logprobs":  null,
                                             "message":  {
                                                             "content":  "Here\u0027s a structured code review of the provided `FileUtils.java` file broken down into the specified categories:\n\n---\n\n### **1. Naming - Naming-Convention Violations**\n- **Class Name (`FileUtils`)**: The name \"FileUtils\" is commonly used as a generic utility class name. While it\u0027s descriptive, it could be made more specific to its functionality, such as `FileReaderUtils` or `FilePathResolver`, to reflect its focus on file reading and resolution. This could reduce the risk of clashing with other utility classes.\n- **Variable Names:**\n  - `cwd`: Acronym usage reduces readability. A more descriptive name like `currentWorkingDir` would be better.\n  - `trimmed`: While the name is valid, it\u0027s slightly ambiguous in this context. A more specific name like `normalizedPath` might clarify its purpose.\n  - `resolved`: This is a fair name, but `resolvedPath` would provide a little more clarity as to the data type and purpose.\n\n---\n\n### **2. Code Structure - Long Methods, Single-Responsibility Violations**\n- **Single Responsibility Principle Violations**:\n  - The `readFile` method is taking on multiple responsibilities: normalizing the file path, resolving the file location from multiple possible sources, and reading the file contents. Each responsibility could be its own method or class for better separation of concerns.\n  - Suggestions:\n    - Create a separate private helper method (e.g., `normalizePath`) for handling the path normalization logic.\n    - Create another private method (e.g., `resolveFilePath`) to encapsulate the logic for finding the correct file path.\n    - Leave the `readFile` method as a high-level method that delegates to the helper methods.\n- **Length**: The `readFile` method is approaching the point where it\u0027s doing too much, but it\u0027s not excessively long. Refactoring as suggested above will help simplify it.\n\n---\n\n### **3. Best Practices - Exception Handling, Resource Management**\n- **Exception Handling**:\n  - The message in `IllegalArgumentException(\"Path must not be blank\")` adequately describes the invalid input; however, including the actual provided value (`path`) in the exception message (or mentioning if it was `null`) could improve error debugging.\n  - For the `IllegalStateException` on file read failure, consider creating and using a custom application-specific exception (e.g., `FileUtilsException`) instead of a generic `IllegalStateException`.\n  - It\u0027s a good practice to catch more specific exceptions than `Exception` in the `try-catch` block inside `readFile`. For example, catching `IOException` would be better.\n  \n- **Resource Management**:\n  - The code relies on `Files.readString`, which abstracts resource management. However, if the implementation of `Files.readString` changes in the future, it could inadvertently leak resources (e.g., an open file handle). To ensure resource safety, consider using a `try-with-resources` construct when dealing with file reading or opt for lower-level stream handling.\n\n---\n\n### **4. Code Quality - Documentation, Readability**\n- **Documentation**:\n  - The `FileUtils` class does not have any **class-level documentation**. It would be helpful to describe its purpose at a high level and provide context around the list of candidate paths (e.g., why \"src/main/java\" and \"src/test/java\" are assumed to be common directory structures in the project).\n  - The `readFile` method lacks a method-level Javadoc. Adding clear documentation about:\n    - The method\u0027s purpose.\n    - What the `path` parameter expects (e.g., absolute path? relative path?).\n    - Format of the output (e.g., UTF-8-encoded string) would improve clarity for users of the utility.\n- **Readability**:\n  - The method has some inline comments (e.g., `// Normalize incoming value and support common relative patterns`) that clarify intent, which is a good practice. However, they could be turned into self-documenting code by breaking the code into self-explanatory methods with descriptive names.\n  - Using `java.util.Arrays.stream(candidates).map(Path::toString).toList()` in the exception message is compact but less readable for junior developers. Assign intermediate results to variables for better debugability and clarity.\n\n---\n\n### **5. Common Anti-Patterns**\n- **Magic Numbers**:\n  - There are no obvious magic numbers in the code. Well done on avoiding this anti-pattern!\n- **Naive String Handling**:\n  - The use of `trimmed.substring(1)` to remove the leading `/` is not inherently robust when dealing with arbitrary file paths or other contexts (e.g., handling paths with multiple leading slashes or dealing with platform-specific path separators like `\\` on Windows). Use `Path` APIs (`Paths.get`, `Path.relativize`, etc.) for more reliable path manipulation.\n- **Deep Nesting**:\n  - The nesting (e.g., the `for` loop and if-conditions inside the loop) is not excessive, but it can still be refactored to slightly improve clarity.\n  - The loop/iteration logic in `for (Path p : candidates)` could be replaced with a `stream`-based approach for both readability and functional style consistency.\n\n---\n\n### Refactored Version (Proposed Changes)\nHere’s a possible refactored version of the `readFile` method that addresses the issues highlighted above:\n\n```java\npackage com.epam.codereviewagent.util;\n\nimport java.nio.charset.StandardCharsets;\nimport java.nio.file.Files;\nimport java.nio.file.Path;\nimport java.nio.file.Paths;\nimport java.util.Arrays;\nimport java.util.List;\n\nimport org.springframework.util.StringUtils;\n\npublic final class FileUtils {\n\n    /**\n     * Reads the content of a file at the given path, using UTF-8 encoding.\n     * Resolves paths relative to common source directories if needed.\n     *\n     * @param path The file path (absolute or relative).\n     * @return The content of the file as a UTF-8 string.\n     * @throws IllegalArgumentException If the path is blank or the file is not found.\n     * @throws FileUtilsException If an error occurs while reading the file.\n     */\n    public static String readFile(String path) {\n        validatePath(path);\n\n        String normalizedPath = normalizePath(path);\n        Path resolvedPath = resolveFilePath(normalizedPath);\n\n        return readFileContent(resolvedPath);\n    }\n\n    private static void validatePath(String path) {\n        if (!StringUtils.hasText(path)) {\n            throw new IllegalArgumentException(\"Path must not be blank. Provided: \" + path);\n        }\n    }\n\n    private static String normalizePath(String path) {\n        String trimmed = path.trim();\n        if (trimmed.startsWith(\"/\")) {\n            return trimmed.substring(1); // Treat leading slash as classpath-style relative\n        }\n        return trimmed;\n    }\n\n    private static Path resolveFilePath(String normalizedPath) {\n        Path cwd = Paths.get(System.getProperty(\"user.dir\"));\n\n        // Possible candidates to try\n        List\u003cPath\u003e candidates = Arrays.asList(\n            cwd.resolve(normalizedPath).normalize(),\n            cwd.resolve(\"src/main/java\").resolve(normalizedPath).normalize(),\n            cwd.resolve(\"src/test/java\").resolve(normalizedPath).normalize(),\n            Paths.get(normalizedPath).normalize()\n        );\n\n        return candidates.stream()\n            .filter(p -\u003e Files.exists(p) \u0026\u0026 Files.isRegularFile(p))\n            .findFirst()\n            .orElseThrow(() -\u003e new IllegalArgumentException(\"File not found. Tried: \" + \n                    candidates));\n    }\n\n    private static String readFileContent(Path path) {\n        try {\n            return Files.readString(path, StandardCharsets.UTF_8);\n        } catch (Exception ex) {\n            throw new IllegalStateException(\"Failed to read file: \" + path, ex);\n        }\n    }\n}\n```\n\n---\n\n### Conclusion\nThe original code is functional and well-written for the most part, but breaking it into smaller, well-named methods improves readability, maintainability, and testability. Addressing the exception handling, documentation, and some common anti-patterns will also improve the robustness and developer experience.",
-                                                            "refusal":  null,
-                                                            "role":  "assistant",
-                                                            "annotations":  [
-
-                                                                            ]
-                                                        },
-                                            "content_filter_results":  {
-
-                                                                       }
+                                                            "role":  "assistant"
+                                                        }
                                         }
                                     ],
-                        "created":  1788083994,
                         "model":  "gpt-4o-2024-11-20",
-                        "object":  "chat.completion",
-                        "service_tier":  "default",
-                        "system_fingerprint":  "fp_85fa909971",
                         "usage":  {
-                                      "completion_tokens":  1696,
                                       "prompt_tokens":  571,
-                                      "total_tokens":  2267,
                                       "completion_tokens_details":  {
-                                                                        "accepted_prediction_tokens":  0,
-                                                                        "audio_tokens":  0,
-                                                                        "reasoning_tokens":  0,
-                                                                        "rejected_prediction_tokens":  0
+                                                                        "reasoning_tokens":  0
                                                                     },
-                                      "prompt_tokens_details":  {
-                                                                    "audio_tokens":  0,
-                                                                    "cached_tokens":  0
-                                                                },
                                       "latency_checkpoint":  {
                                                                  "engine_tbt_ms":  7,
                                                                  "engine_ttft_ms":  24,
@@ -77,18 +55,7 @@
                                                                  "service_ttlt_ms":  11826,
                                                                  "user_visible_ttft_ms":  66
                                                              }
-                                  },
-                        "prompt_filter_results":  [
-                                                      {
-                                                          "prompt_index":  0,
-                                                          "content_filter_results":  {
-
-                                                                                     }
-                                                      }
-                                                  ],
-                        "routing":  {
-                                        "serving_pipereplica":  "d20260816145643-bbca0994-default-r2-dp0-default"
-                                    }
+                                  }
                     },
     "errorText":  null
 }

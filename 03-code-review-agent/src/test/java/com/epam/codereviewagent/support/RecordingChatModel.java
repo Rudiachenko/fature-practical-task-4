@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.metadata.ChatResponseMetadata;
+import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
@@ -22,11 +24,17 @@ public final class RecordingChatModel implements ChatModel {
 
   private volatile Function<Prompt, String> responseFunction = prompt -> "deterministic-response";
 
+  private volatile Usage usage;
+
   @Override
   public ChatResponse call(Prompt prompt) {
     prompts.add(prompt);
     String response = responseFunction.apply(prompt);
-    return new ChatResponse(List.of(new Generation(new AssistantMessage(response))));
+    List<Generation> generations = List.of(new Generation(new AssistantMessage(response)));
+    if (usage == null) {
+      return new ChatResponse(generations);
+    }
+    return new ChatResponse(generations, ChatResponseMetadata.builder().usage(usage).build());
   }
 
   /**
@@ -53,5 +61,10 @@ public final class RecordingChatModel implements ChatModel {
    */
   public void setResponseFunction(Function<Prompt, String> responseFunction) {
     this.responseFunction = responseFunction;
+  }
+
+  /** Configures every subsequent response to report {@code usage} as its provider token usage. */
+  public void setUsage(Usage usage) {
+    this.usage = usage;
   }
 }

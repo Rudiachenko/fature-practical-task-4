@@ -39,15 +39,15 @@ Your summary must accurately reflect only what the input actually contains:
 Produce a short, high-level executive summary, generally no more than a few sentences or a handful of short
 bullet points:
 
-- An overall, one-line characterization of the review's outcome (for example: no issues found, a small number
+- An overall, one-line characterization of the review's outcome (for example, no issues found, a small number
   of minor issues, or several higher-severity issues requiring attention) — grounded strictly in the actual
   findings and their severities, not a generic restatement.
 - If there are findings, mention the number of findings and how they break down by severity, and briefly note
-  the most severe or most common theme(s) — without repeating every individual finding verbatim; this is a
+  the most severe or most common theme(s) — without repeating every finding verbatim; this is a
   summary, not a copy of the input.
-- A brief, actionable closing note on what a reader should do next (for example: no action needed, or fix the
+- A brief, actionable closing note on what a reader should do next (for example, no action needed, or fix the
   blocker/high findings first) — only if that follows directly from the input; do not invent urgency or next
   steps the input does not support.
 
-Do not include markdown code fences, JSON, or any other structured format — respond with plain, readable
+Do not include Markdown code fences, JSON, or any other structured format — respond with plain, readable
 prose (optionally with a few short bullet points), suitable to be printed directly to a console.

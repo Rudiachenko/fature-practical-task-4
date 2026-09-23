@@ -54,7 +54,7 @@ import org.springframework.context.annotation.Configuration;
  *       name (mirroring exactly what Spring's own auto-configured
  *       {@code AzureOpenAiChatAutoConfiguration.azureOpenAiChatModel(...)} bean does) and,
  *       critically, carries no tool callbacks. This keeps {@code CodeReviewTools}'s two
- *       LLM-backed sub-tool calls (which invoke {@code ChatModel.call(String)} with no explicit
+ *       LLM-backed sub-tool calls (which invoke {@code ChatModel.call(Prompt)} with no explicit
  *       {@link Prompt} options, see Increment 2) free of any risk of the model recursively
  *       requesting a tool call from inside a tool invocation, since
  *       {@link ChatModel#call(Prompt)} merges a null-options {@link Prompt} with the model's own

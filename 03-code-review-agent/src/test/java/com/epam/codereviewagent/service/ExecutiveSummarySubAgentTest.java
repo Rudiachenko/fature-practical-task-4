@@ -2,7 +2,11 @@ package com.epam.codereviewagent.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.epam.codereviewagent.api.model.CodeReviewResponse;
 import com.epam.codereviewagent.api.model.Finding;
 import com.epam.codereviewagent.api.model.Severity;
@@ -12,8 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.metadata.DefaultUsage;
 import org.springframework.ai.retry.TransientAiException;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.ByteArrayResource;
@@ -35,6 +42,9 @@ class ExecutiveSummarySubAgentTest {
   private RecordingChatModel chatModel;
   private CodeReviewProperties properties;
   private ExecutiveSummarySubAgent subAgent;
+  private final Logger subAgentLogger =
+    (Logger) LoggerFactory.getLogger(ExecutiveSummarySubAgent.class);
+  private final ListAppender<ILoggingEvent> logAppender = new ListAppender<>();
 
   @BeforeEach
   void setUp() {
@@ -43,6 +53,13 @@ class ExecutiveSummarySubAgentTest {
     properties.setExecutiveSummaryPrompt(
       new ByteArrayResource(SYSTEM_PROMPT_TEXT.getBytes(StandardCharsets.UTF_8)));
     subAgent = new ExecutiveSummarySubAgent(chatModel, properties);
+    logAppender.start();
+    subAgentLogger.addAppender(logAppender);
+  }
+
+  @AfterEach
+  void tearDown() {
+    subAgentLogger.detachAppender(logAppender);
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -295,6 +312,37 @@ class ExecutiveSummarySubAgentTest {
   }
 
   @Test
+  void shouldLogTheProviderReportedTokenUsage_whenSummarizing() {
+    // Arrange
+    chatModel.setResponse("Two issues found, one high severity.");
+    chatModel.setUsage(new DefaultUsage(640, 110));
+    CodeReviewResponse response = new CodeReviewResponse("ok", List.of(), false);
+
+    // Act
+    subAgent.summarize(response);
+
+    // Assert
+    assertThat(logMessages()).contains("Executive-summary chatModel call completed: "
+      + "promptTokens=640, completionTokens=110, totalTokens=750");
+  }
+
+  @Test
+  void shouldStillLogTheTokenUsage_whenTheModelReturnsABlankSummary() {
+    // Arrange
+    chatModel.setResponse("   ");
+    chatModel.setUsage(new DefaultUsage(640, 3));
+    CodeReviewResponse response = new CodeReviewResponse("ok", List.of(), false);
+
+    // Act
+    Throwable thrown = catchThrowable(() -> subAgent.summarize(response));
+
+    // Assert
+    assertThat(thrown).isInstanceOf(IllegalStateException.class);
+    assertThat(logMessages()).contains("Executive-summary chatModel call completed: "
+      + "promptTokens=640, completionTokens=3, totalTokens=643");
+  }
+
+  @Test
   void shouldThrowIllegalStateException_whenTheExecutiveSummaryPromptResourceCannotBeRead() {
     // Arrange
     properties.setExecutiveSummaryPrompt(new AbstractResource() {
@@ -354,6 +402,10 @@ class ExecutiveSummarySubAgentTest {
     String systemPromptText = chatModel.prompts().get(0).getSystemMessage().getText();
     assertThat(systemPromptText).isNotBlank();
     assertThat(systemPromptText).doesNotContain("TODO");
+  }
+
+  private List<String> logMessages() {
+    return logAppender.list.stream().map(ILoggingEvent::getFormattedMessage).toList();
   }
 
   private static Finding findingWith(String file, Integer startLine, Integer endLine,

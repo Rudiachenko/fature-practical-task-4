@@ -3,6 +3,7 @@ package com.epam.codereviewagent.service;
 import com.epam.codereviewagent.api.model.CodeReviewResponse;
 import com.epam.codereviewagent.api.model.Finding;
 import com.epam.codereviewagent.config.CodeReviewProperties;
+import com.epam.codereviewagent.support.TokenUsage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.springframework.util.StringUtils;
  * the {@code (List&lt;Message&gt;)} constructor, which (confirmed by decompiling
  * {@code spring-ai-model-1.1.2.jar}'s {@code Prompt} class with {@code javap -p -c} during this
  * increment) delegates to the two-argument constructor with a
- * {@code null} {@link org.springframework.ai.chat.prompt.ChatOptions} — i.e. this prompt carries
+ * {@code null} {@link org.springframework.ai.chat.prompt.ChatOptions} — i.e., this prompt carries
  * no explicit options and therefore no tool callbacks, the same mechanism already relied on by
  * {@code CodeReviewTools}'s own {@code retrieveCodeLanguage}/{@code getCodebaseContext} LLM
  * sub-calls (Increment 2). Combined with
@@ -114,6 +115,10 @@ public class ExecutiveSummarySubAgent {
     log.info("Requesting executive summary for a code review with {} finding(s)",
       response.findings().size());
     ChatResponse chatResponse = chatModel.call(prompt);
+    TokenUsage tokenUsage = TokenUsage.from(chatResponse);
+    log.info("Executive-summary chatModel call completed: promptTokens={}, completionTokens={}, "
+        + "totalTokens={}", tokenUsage.promptTokens(), tokenUsage.completionTokens(),
+      tokenUsage.totalTokens());
     String summary = chatResponse.getResult().getOutput().getText();
     if (!StringUtils.hasText(summary)) {
       throw new IllegalStateException("Executive-summary LLM call returned a blank response");

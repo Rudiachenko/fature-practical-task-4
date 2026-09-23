@@ -38,10 +38,17 @@ evidence-based results.
   unsupported-method and unsupported-media-type conditions each map to a
   deliberate HTTP status with a stable body that never exposes filesystem paths,
   stack traces or internals.
+- **Token usage logging.** Every model call — each agent loop step, the final
+  structured-output call, the two model-backed tools and the executive-summary
+  sub-agent — logs its provider-reported prompt, completion and total tokens, and
+  a request's closing log line, including on the iteration-limit and
+  unusable-output failures, sums the agent's own calls.
 - **Operational documentation** in `03-code-review-agent/RUNBOOK.md` and an
   experiments harness under `03-code-review-agent/evaluation/`, recording
   measured outcomes for the six assignment experiments that are provable without
-  a live model, and explicitly marking the rest as requiring an operator.
+  a live model, live results against a real deployment for five of them, and
+  explicitly marking what is still missing — the live halves of the tool-overload
+  and ambiguous-description experiments — as requiring an operator.
 
 ### Changed
 
@@ -72,6 +79,10 @@ evidence-based results.
   regex fragment or JSON sample in a log message was enough to trigger it.
 - A successful read of an *empty* file no longer counts as evidence, closing the
   path by which findings could be reported about a file with no content.
+- Evidence enforcement and the `truncated` flag now work with Spring AI's real
+  tool-calling manager, which JSON-encodes tool results. Before, a failed or
+  empty file read still counted as evidence, and `truncated` was set only when
+  the model itself reported the truncation.
 - Malformed model output is rejected rather than accepted: a bare JSON string
   previously deserialised into a "successful" review with an empty findings list,
   which reads as "no issues found".

@@ -2,6 +2,7 @@ package com.epam.codereviewagent.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -19,17 +20,22 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.azure.openai.AzureOpenAiChatOptions;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.ToolResponseMessage;
+import org.springframework.ai.chat.metadata.ChatResponseMetadata;
+import org.springframework.ai.chat.metadata.DefaultUsage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.model.tool.ToolCallingManager;
+import org.springframework.ai.support.ToolCallbacks;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.core.io.AbstractResource;
@@ -54,6 +60,8 @@ class CodeReviewReactAgentTest {
   private CodeReviewProperties properties;
   private FakeToolCallingManager fakeToolCallingManager;
   private CodeReviewStructuredOutputConverter structuredOutputConverter;
+  private final Logger agentLogger = (Logger) LoggerFactory.getLogger(CodeReviewReactAgent.class);
+  private final ListAppender<ILoggingEvent> logAppender = new ListAppender<>();
 
   @BeforeEach
   void setUp() {
@@ -63,6 +71,13 @@ class CodeReviewReactAgentTest {
     properties.setMaxIterations(8);
     fakeToolCallingManager = new FakeToolCallingManager();
     structuredOutputConverter = new CodeReviewStructuredOutputConverter();
+    logAppender.start();
+    agentLogger.addAppender(logAppender);
+  }
+
+  @AfterEach
+  void tearDown() {
+    agentLogger.detachAppender(logAppender);
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -396,6 +411,85 @@ class CodeReviewReactAgentTest {
   }
 
   // ---------------------------------------------------------------------------------------------
+  // Evidence/truncation enforcement through Spring AI's real DefaultToolCallingManager, which
+  // JSON-encodes a String tool result before the agent ever sees it
+  // ---------------------------------------------------------------------------------------------
+
+  @Test
+  void shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAMissingFile()
+    throws Exception {
+    // Arrange
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      toolCallResponse(readFileCall("missing.txt")),
+      textResponse("The file does not exist, but I will report findings anyway."),
+      textResponse(fabricatedFindingAnswer("missing.txt"))));
+    CodeReviewReactAgent agent =
+      agentWithRealToolCallingManager(chatModel, realToolsOverFixtures(20_000));
+
+    // Act
+    CodeReviewResponse result = agent.interact("review missing.txt");
+
+    // Assert
+    assertThat(result.findings()).isEmpty();
+    assertThat(result.review()).isEqualTo(CodeReviewReactAgent.NO_EVIDENCE_REVIEW_TEXT);
+  }
+
+  @Test
+  void shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAnEmptyFile()
+    throws Exception {
+    // Arrange
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      toolCallResponse(readFileCall("empty.txt")),
+      textResponse("The file is empty, but I will report findings anyway."),
+      textResponse(fabricatedFindingAnswer("empty.txt"))));
+    CodeReviewReactAgent agent =
+      agentWithRealToolCallingManager(chatModel, realToolsOverFixtures(20_000));
+
+    // Act
+    CodeReviewResponse result = agent.interact("review empty.txt");
+
+    // Assert
+    assertThat(result.findings()).isEmpty();
+    assertThat(result.review()).isEqualTo(CodeReviewReactAgent.NO_EVIDENCE_REVIEW_TEXT);
+  }
+
+  @Test
+  void shouldKeepTheModelsFindings_whenTheRealToolCallingManagerReadsARealFile() throws Exception {
+    // Arrange
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      toolCallResponse(readFileCall("top-level.txt")),
+      textResponse("I have read the file."),
+      textResponse(fabricatedFindingAnswer("top-level.txt"))));
+    CodeReviewReactAgent agent =
+      agentWithRealToolCallingManager(chatModel, realToolsOverFixtures(20_000));
+
+    // Act
+    CodeReviewResponse result = agent.interact("review top-level.txt");
+
+    // Assert
+    assertThat(result.findings()).hasSize(1);
+    assertThat(result.review()).isEqualTo("Found issues.");
+  }
+
+  @Test
+  void shouldSetTruncatedTrue_whenTheRealToolCallingManagerReturnsATruncatedFile_evenIfModelClaimsFalse()
+    throws Exception {
+    // Arrange: nested/long-method.txt holds 1312 characters, so a 200-character limit truncates it.
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      toolCallResponse(readFileCall("nested/long-method.txt")),
+      textResponse("Reviewed the retrieved portion."),
+      textResponse("{\"review\":\"Reviewed a large file.\",\"findings\":[],\"truncated\":false}")));
+    CodeReviewReactAgent agent =
+      agentWithRealToolCallingManager(chatModel, realToolsOverFixtures(200));
+
+    // Act
+    CodeReviewResponse result = agent.interact("review nested/long-method.txt");
+
+    // Assert
+    assertThat(result.truncated()).isTrue();
+  }
+
+  // ---------------------------------------------------------------------------------------------
   // Error paths
   // ---------------------------------------------------------------------------------------------
 
@@ -540,9 +634,151 @@ class CodeReviewReactAgentTest {
     }
   }
 
+  // ---------------------------------------------------------------------------------------------
+  // Token usage - logged per model call and summed per request
+  // ---------------------------------------------------------------------------------------------
+
+  @Test
+  void shouldLogEachModelCallsTokenUsageAndTheirSum_whenAReviewCompletes() {
+    // Arrange
+    fakeToolCallingManager.setToolResponseFunction(CodeReviewReactAgentTest::irrelevantToolResult);
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      withUsage(toolCallResponse(toolCall("call-1", "readFile", "{}")), 800, 40),
+      withUsage(textResponse("I have enough evidence now."), 950, 30),
+      withUsage(textResponse("{\"review\":\"ok\",\"findings\":[],\"truncated\":false}"), 1000,
+        150)));
+    CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
+
+    // Act
+    agent.interact("review a.txt");
+
+    // Assert
+    assertThat(logMessages())
+      .anyMatch(message -> message.startsWith("ReAct iteration 1/8:")
+        && message.endsWith("promptTokens=800, completionTokens=40, totalTokens=840"))
+      .anyMatch(message -> message.startsWith("ReAct iteration 2/8:")
+        && message.endsWith("promptTokens=950, completionTokens=30, totalTokens=980"))
+      .anyMatch(message -> message.startsWith("Phase-2 structured-output call completed")
+        && message.endsWith("promptTokens=1000, completionTokens=150, totalTokens=1150"))
+      .anyMatch(message -> message.startsWith("Code review completed:")
+        && message.endsWith("agentModelCalls=3, agentPromptTokens=2750, "
+          + "agentCompletionTokens=220, agentTotalTokens=2970"));
+  }
+
+  @Test
+  void shouldLogTheTokensConsumedSoFar_whenTheIterationLimitIsExceeded() {
+    // Arrange
+    properties.setMaxIterations(2);
+    fakeToolCallingManager.setToolResponseFunction(CodeReviewReactAgentTest::irrelevantToolResult);
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      withUsage(toolCallResponse(toolCall("call-1", "readFile", "{}")), 1200, 60),
+      withUsage(toolCallResponse(toolCall("call-2", "readFile", "{}")), 1500, 70)));
+    CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
+
+    // Act
+    Throwable thrown = catchThrowable(() -> agent.interact("keep calling tools forever"));
+
+    // Assert
+    assertThat(thrown).isInstanceOf(AgentIterationLimitExceededException.class);
+    assertThat(logMessages()).anyMatch(message -> message.startsWith("ReAct loop exhausted 2 ")
+      && message.endsWith("agentModelCalls=2, agentPromptTokens=2700, "
+        + "agentCompletionTokens=130, agentTotalTokens=2830"));
+  }
+
+  @Test
+  void shouldIncludeTheFailedPhaseTwoAttemptsTokens_whenPhaseTwoParsingSucceedsOnRetry() {
+    // Arrange
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      withUsage(textResponse("no tools needed"), 500, 10),
+      withUsage(textResponse("this is not JSON"), 600, 20),
+      withUsage(textResponse("{\"review\":\"ok\",\"findings\":[],\"truncated\":false}"), 600,
+        25)));
+    CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
+
+    // Act
+    agent.interact("review something");
+
+    // Assert
+    assertThat(logMessages()).anyMatch(message -> message.startsWith("Code review completed:")
+      && message.endsWith("agentModelCalls=3, agentPromptTokens=1700, "
+        + "agentCompletionTokens=55, agentTotalTokens=1755"));
+  }
+
+  @Test
+  void shouldLogTheTokensConsumedSoFar_whenPhaseTwoParsingFailsAfterItsRetry() {
+    // Arrange
+    FakeReactChatModel chatModel = new FakeReactChatModel(List.of(
+      withUsage(textResponse("no tools needed"), 500, 10),
+      withUsage(textResponse("this is not JSON"), 600, 20),
+      withUsage(textResponse("still not JSON"), 650, 30)));
+    CodeReviewReactAgent agent = agentWith(chatModel, optionsWithToolCallbacks());
+
+    // Act
+    Throwable thrown = catchThrowable(() -> agent.interact("review something"));
+
+    // Assert
+    assertThat(thrown).isInstanceOf(AgentOutputParsingException.class);
+    assertThat(logMessages()).anyMatch(
+      message -> message.startsWith("Phase-2 structured-output parsing failed again")
+        && message.endsWith("agentModelCalls=3, agentPromptTokens=1750, "
+          + "agentCompletionTokens=60, agentTotalTokens=1810"));
+  }
+
+  private List<String> logMessages() {
+    return logAppender.list.stream().map(ILoggingEvent::getFormattedMessage).toList();
+  }
+
+  private static ChatResponse withUsage(ChatResponse response, int promptTokens,
+                                        int completionTokens) {
+    ChatResponseMetadata metadata = ChatResponseMetadata.builder()
+      .usage(new DefaultUsage(promptTokens, completionTokens))
+      .build();
+    return new ChatResponse(response.getResults(), metadata);
+  }
+
+  private static ToolResponseMessage irrelevantToolResult(AssistantMessage assistantMessage) {
+    AssistantMessage.ToolCall call = assistantMessage.getToolCalls().get(0);
+    return ToolResponseMessage.builder()
+      .responses(
+        List.of(new ToolResponseMessage.ToolResponse(call.id(), call.name(), "irrelevant")))
+      .build();
+  }
+
   private CodeReviewReactAgent agentWith(ChatModel chatModel, ChatOptions chatOptions) {
     return new CodeReviewReactAgent(chatModel, chatOptions, fakeToolCallingManager, properties,
       structuredOutputConverter);
+  }
+
+  private CodeReviewReactAgent agentWithRealToolCallingManager(ChatModel chatModel,
+                                                              CodeReviewTools tools) {
+    AzureOpenAiChatOptions options = AzureOpenAiChatOptions.builder()
+      .deploymentName("test-deployment")
+      .toolCallbacks(ToolCallbacks.from(tools))
+      .internalToolExecutionEnabled(false)
+      .build();
+    return new CodeReviewReactAgent(chatModel, options, ToolCallingManager.builder().build(),
+      properties, structuredOutputConverter);
+  }
+
+  private static CodeReviewTools realToolsOverFixtures(int maxFileChars) {
+    CodeReviewProperties toolProperties = new CodeReviewProperties();
+    toolProperties.setMaxFileChars(maxFileChars);
+    return new CodeReviewTools(new RepositoryPathResolver(FIXTURE_ROOT), null, null,
+      toolProperties);
+  }
+
+  /** Names the argument exactly as the real tool callback's input schema does. */
+  private static AssistantMessage.ToolCall readFileCall(String relativePath) throws Exception {
+    String parameterName =
+      CodeReviewTools.class.getMethod("readFile", String.class).getParameters()[0].getName();
+    return toolCall("call-1", "readFile",
+      "{\"%s\":\"%s\"}".formatted(parameterName, relativePath));
+  }
+
+  private static String fabricatedFindingAnswer(String file) {
+    return "{\"review\":\"Found issues.\",\"findings\":[{\"file\":\"" + file + "\",\"startLine\":1,"
+      + "\"endLine\":1,\"rule\":\"fabricated-rule\",\"severity\":\"high\","
+      + "\"explanation\":\"fabricated\",\"recommendation\":\"fabricated\"}],\"truncated\":false}";
   }
 
   private static AzureOpenAiChatOptions optionsWithToolCallbacks() {

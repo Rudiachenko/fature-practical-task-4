@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import lombok.Getter;
 
 /**
  * Enforces a hard repository-root security boundary for every file/directory access requested
@@ -34,16 +35,20 @@ import java.util.stream.Stream;
  *   real path, to defeat symlink escape.</li>
  * </ol>
  */
+@Getter
 public final class RepositoryPathResolver {
 
   /**
-   * Matches a leading single-letter drive designator followed by a colon (e.g. {@code C:} or
+   * Matches a leading single-letter drive designator followed by a colon (e.g., {@code C:} or
    * {@code C:foo} or {@code C:\Windows}), which on Windows is treated by {@code java.nio.file.Path}
    * as either fully absolute or "drive-relative" (relative to that drive's current directory) - a
    * traversal vector that {@link Path#isAbsolute()} does not reliably flag by itself.
    */
   private static final Pattern DRIVE_LETTER_PREFIX = Pattern.compile("^[A-Za-z]:.*");
 
+  /**
+   * The canonical (real, symlink-resolved) repository root this resolver is bound to.
+   */
   private final Path root;
 
   /**
@@ -68,13 +73,6 @@ public final class RepositoryPathResolver {
       throw new IllegalStateException(
         "Configured repository root could not be canonicalized: " + configuredRoot, e);
     }
-  }
-
-  /**
-   * @return the canonical (real, symlink-resolved) repository root this resolver is bound to
-   */
-  public Path getRoot() {
-    return root;
   }
 
   /**
@@ -110,8 +108,8 @@ public final class RepositoryPathResolver {
    * methods already call, so there is exactly one copy of the security rule in this class, never a
    * second copy that could silently drift from it.
    *
-   * <p>Intended for an upfront, cheap rejection of an out-of-root or malformed
-   * {@code userInput} - e.g. by {@code CodeReviewController}, before the request ever reaches
+   * <p>Intended for an upfront, inexpensive rejection of an out-of-root or malformed
+   * {@code userInput} - e.g., by {@code CodeReviewController}, before the request ever reaches
    * the agent/model - so a caller can observe the repository-root security boundary via a
    * deterministic HTTP status code alone, with no model call spent on input that is rejected by
    * construction. A syntactically valid, in-root path that does not (yet) exist, or that names a
@@ -156,7 +154,7 @@ public final class RepositoryPathResolver {
       // Deliberate trade-off: Files.list(...).sorted(...) materializes the full directory
       // listing before limit() applies, so this is O(n log n) in the directory's total entry
       // count regardless of maxEntries. Chosen anyway because deterministic, name-sorted output
-      // is required for reproducible tool results; fixture/repo scale here is small enough that
+      // is required for reproducible tool results; the fixture/repo scale here is small enough that
       // bounding before sorting (which would make the result order depend on filesystem
       // iteration order) is not worth the loss of determinism.
       return entries
@@ -194,7 +192,7 @@ public final class RepositoryPathResolver {
       throw new PathSecurityViolationException(
         "Path is not a valid file system path: " + relativePath, e);
     }
-    if (!isWithinRoot(resolved)) {
+    if (escapesRoot(resolved)) {
       throw new PathSecurityViolationException("Path escapes the repository root: " + relativePath);
     }
     return resolved;
@@ -207,7 +205,7 @@ public final class RepositoryPathResolver {
    * designator (covers both fully-absolute {@code C:\...} and drive-relative {@code C:foo},
    * since {@link Path#isAbsolute()} alone does not flag the drive-relative form on Windows), and
    * finally falls back to {@link Path#isAbsolute()} as a defense-in-depth catch-all. Also
-   * converts a malformed path string (e.g. one containing a colon-delimited alternate-data-stream
+   * converts a malformed path string (e.g., one containing a colon-delimited alternate-data-stream
    * suffix such as {@code notes.txt:hidden}) into a security violation instead of letting
    * {@link InvalidPathException} escape uncaught.
    */
@@ -226,8 +224,8 @@ public final class RepositoryPathResolver {
     }
   }
 
-  private boolean isWithinRoot(Path candidate) {
-    return candidate.equals(root) || candidate.startsWith(root);
+  private boolean escapesRoot(Path candidate) {
+    return !candidate.equals(root) && !candidate.startsWith(root);
   }
 
   /**
@@ -243,7 +241,7 @@ public final class RepositoryPathResolver {
       throw new FileNotFoundInRepositoryException(
         "File not found in repository: " + originalInput, e);
     }
-    if (!isWithinRoot(real)) {
+    if (escapesRoot(real)) {
       throw new PathSecurityViolationException(
         "Path escapes the repository root via a symbolic link: " + originalInput);
     }

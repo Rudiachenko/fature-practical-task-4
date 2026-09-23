@@ -2,6 +2,9 @@ package com.epam.codereviewagent.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.epam.codereviewagent.config.CodeReviewProperties;
 import com.epam.codereviewagent.config.ConventionProperties;
 import com.epam.codereviewagent.support.RecordingChatModel;
@@ -15,10 +18,14 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.metadata.DefaultUsage;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.retry.NonTransientAiException;
 import org.springframework.ai.retry.TransientAiException;
@@ -40,6 +47,8 @@ class CodeReviewToolsTest {
   private ConventionService conventionService;
   private CodeReviewProperties codeReviewProperties;
   private CodeReviewTools tools;
+  private final Logger toolsLogger = (Logger) LoggerFactory.getLogger(CodeReviewTools.class);
+  private final ListAppender<ILoggingEvent> logAppender = new ListAppender<>();
 
   @BeforeEach
   void setUp() {
@@ -50,6 +59,13 @@ class CodeReviewToolsTest {
     codeReviewProperties.setMaxFileChars(DEFAULT_MAX_FILE_CHARS);
     tools = new CodeReviewTools(
       repositoryPathResolver, chatModel, conventionService, codeReviewProperties);
+    logAppender.start();
+    toolsLogger.addAppender(logAppender);
+  }
+
+  @AfterEach
+  void tearDown() {
+    toolsLogger.detachAppender(logAppender);
   }
 
   // --- Spring wiring / reflection-based regression guards ---------------------------------------
@@ -382,13 +398,12 @@ class CodeReviewToolsTest {
   }
 
   @Test
-  void shouldReturnUnknown_whenModelRespondsWithANullAssistantMessageTextThroughTheRealDefaultCallMethod() {
-    // Medium 3 (code review, retry 1): decompiled ChatModel.call(String)'s default-method bytecode
-    // (spring-ai-model 1.1.2) confirms it calls Generation.getOutput().getText() directly with no
-    // null-coalescing when getResult() itself is non-null; AbstractMessage/AssistantMessage's own
-    // constructor only Assert.notNull's the text for SYSTEM/USER, not ASSISTANT, so `new
-    // AssistantMessage(null)` is legal and this is reachable through the real, unmodified default
-    // method - not only via reflection or a hand-rolled ChatModel that violates its own contract.
+  void shouldReturnUnknown_whenModelRespondsWithANullAssistantMessageText() {
+    // Medium 3 (code review, retry 1): the tool reproduces ChatModel.call(String)'s default-method
+    // handling (spring-ai-model 1.1.2), which returns Generation.getOutput().getText() with no
+    // null-coalescing when getResult() is non-null; AssistantMessage's constructor only
+    // Assert.notNull's the text for SYSTEM/USER, not ASSISTANT, so `new AssistantMessage(null)` is
+    // a legal model response, not one only a contract-violating ChatModel could produce.
     chatModel.setResponse(null);
 
     String result = tools.retrieveCodeLanguage("public class Foo {}");
@@ -473,6 +488,41 @@ class CodeReviewToolsTest {
     assertThat(countOccurrences(promptText, CodeReviewTools.CODE_SNIPPET_END_MARKER)).isEqualTo(1);
     assertThat(promptText).contains(CodeReviewTools.NEUTRALIZED_BEGIN_MARKER_TEXT);
     assertThat(promptText).contains(CodeReviewTools.NEUTRALIZED_END_MARKER_TEXT);
+  }
+
+  // --- LLM sub-call token usage logging --------------------------------------------------------
+
+  @Test
+  void shouldLogTheSubCallsProviderReportedTokenUsage_whenDetectingTheCodeLanguage() {
+    chatModel.setResponse("java");
+    chatModel.setUsage(new DefaultUsage(310, 2));
+
+    tools.retrieveCodeLanguage("public class Foo {}");
+
+    assertThat(logMessages()).contains("retrieveCodeLanguage chatModel call completed: "
+      + "promptTokens=310, completionTokens=2, totalTokens=312");
+  }
+
+  @Test
+  void shouldLogTheSubCallsProviderReportedTokenUsage_whenGettingCodebaseContext() {
+    chatModel.setResponse("This class implements a simple counter.");
+    chatModel.setUsage(new DefaultUsage(420, 64));
+
+    tools.getCodebaseContext("class Counter { int n; }");
+
+    assertThat(logMessages()).contains("getCodebaseContext chatModel call completed: "
+      + "promptTokens=420, completionTokens=64, totalTokens=484");
+  }
+
+  @Test
+  void shouldReturnAnEmptyContext_whenTheModelReturnsNoGeneration() {
+    ChatModel noGenerationModel = prompt -> new ChatResponse(List.of());
+    CodeReviewTools toolsWithNoGeneration = new CodeReviewTools(
+      repositoryPathResolver, noGenerationModel, conventionService, codeReviewProperties);
+
+    String result = toolsWithNoGeneration.getCodebaseContext("class Counter { int n; }");
+
+    assertThat(result).isEmpty();
   }
 
   // --- getCodebaseContext (LLM-backed, no tool callbacks) ----------------------------------------
@@ -682,6 +732,10 @@ class CodeReviewToolsTest {
     String result = tools.analyzeCodeMetrics(content);
 
     assertThat(result).isEqualTo("lineCount=42, longestMethodLineSpan=40, maxNestingDepth=1");
+  }
+
+  private List<String> logMessages() {
+    return logAppender.list.stream().map(ILoggingEvent::getFormattedMessage).toList();
   }
 
   private static ConventionService loadRealConventionService() {

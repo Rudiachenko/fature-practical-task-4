@@ -115,7 +115,7 @@ public class ExecutiveSummaryRunner implements ApplicationRunner {
     }
 
     List<String> values = args.getOptionValues(INPUT_ARGUMENT_NAME);
-    String inputPath = (values == null || values.isEmpty()) ? null : values.get(0);
+    String inputPath = (values == null || values.isEmpty()) ? null : values.getFirst();
     if (!StringUtils.hasText(inputPath)) {
       log.error("The --{} argument was provided with no file path value.", INPUT_ARGUMENT_NAME);
       out.println("ERROR: --" + INPUT_ARGUMENT_NAME + " requires a file path, e.g. --"

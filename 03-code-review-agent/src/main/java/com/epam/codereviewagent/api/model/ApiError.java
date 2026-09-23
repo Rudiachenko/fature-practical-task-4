@@ -8,7 +8,7 @@ import java.util.List;
  * increment follows): a stable {@code code}, a human-readable {@code message}, and an optional list
  * of field-level {@code violations} (populated only for request-validation failures).
  *
- * @param code       a stable, machine-readable error code (e.g. {@code "PATH_SECURITY_VIOLATION"})
+ * @param code       a stable, machine-readable error code (e.g., {@code "PATH_SECURITY_VIOLATION"})
  * @param message    a static, human-readable description of the failure; never the raw exception's
  *                    own {@code getMessage()} text, so this body can never echo internal detail
  * @param violations field-level validation violations; empty for every non-validation failure

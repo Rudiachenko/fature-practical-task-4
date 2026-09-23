@@ -114,8 +114,9 @@ import org.springframework.util.StringUtils;
  * as a "successful", zero-findings review — code review, retry 1, High finding), a JSON array
  * where an object is expected, valid JSON with the wrong field types (including a fractional
  * numeric
- * value, e.g. {@code 1.5}, for an integer line-number field — code review, retry 1, Low finding),
- * trailing content after an otherwise-valid JSON value (e.g. a second concatenated JSON object, or
+ * value, e.g., {@code 1.5}, for an integer line-number field — code review, retry 1, Low
+ * finding),
+ * trailing content after an otherwise-valid JSON value (e.g., a second concatenated JSON object, or
  * stray prose after the closing brace — code review, retry 1, Low finding), a missing required
  * {@code review} field, an out-of-enum {@code severity} value (case-insensitively and after
  * trimming whitespace — a wholly unknown value like {@code "critical"} is still rejected, but a
@@ -123,7 +124,7 @@ import org.springframework.util.StringUtils;
  * {@link Severity}'s own Javadoc; code review, retry 1, Medium finding), and an impossible
  * {@code Finding} line range (non-positive line number, or {@code endLine < startLine} — see
  * {@link com.epam.codereviewagent.api.model.Finding}'s compact constructor) are all funneled into
- * {@link AgentOutputParsingException}. Content wrapped in markdown code fences (e.g. a
+ * {@link AgentOutputParsingException}. Content wrapped in markdown code fences (e.g., a
  * <code>```json</code> block) is deliberately <b>not</b> auto-stripped before parsing:
  * Increment 5's phase-2 call attaches this class's own {@link #responseFormat()} (a
  * {@code strict(true)}
@@ -187,7 +188,7 @@ public class CodeReviewStructuredOutputConverter
         "Model returned malformed structured code review JSON", exception);
     } catch (IllegalArgumentException exception) {
       // Defensive: catches any Finding/Severity invariant violation not already wrapped by
-      // Jackson's own exception hierarchy above (e.g. if Jackson ever changes how it surfaces a
+      // Jackson's own exception hierarchy above (e.g., if Jackson ever changes how it surfaces a
       // record canonical-constructor failure).
       throw new AgentOutputParsingException(
         "Model returned an invalid structured code review response", exception);
@@ -249,7 +250,7 @@ public class CodeReviewStructuredOutputConverter
    * get its own named, shared schema definition; its {@code enum} node is duplicated inline
    * wherever it is referenced. A content match is therefore both sufficient and simpler than a
    * path match today. <b>This would need revisiting</b> if a future increment introduces a shared
-   * record whose schema generation starts using {@code $defs}/{@code $ref} (e.g. because
+   * record whose schema generation starts using {@code $defs}/{@code $ref} (e.g., because
    * {@code Severity}, or another type, becomes reused across more than one top-level response
    * contract) — in that case a single
    * {@code $defs}-keyed correction could become both more precise (correcting the definition once,

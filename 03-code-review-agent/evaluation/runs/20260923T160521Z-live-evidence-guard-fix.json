@@ -1,0 +1,154 @@
+﻿{
+    "artifact":  "Live POST /code-review re-run after the evidence-guard fix",
+    "sessionStartUtc":  "2026-09-23T16:05:21Z",
+    "deployment":  "gpt-4o",
+    "endpointHost":  "ai-proxy.lab.epam.com",
+    "provenance":  "Real HTTP requests to the running 03-code-review-agent application (spring-boot:run, port 8099) backed by a live Azure OpenAI deployment through EPAM DIAL. Nothing here is simulated: responseBody is the verbatim HTTP response body, serverLog the verbatim application log lines of com.epam.codereviewagent loggers emitted while the case ran, and executiveSummaryStdout the text the executive-summary sub-agent printed to standard output. Verdicts are recorded in evaluation/RESULTS.md, not here. This session re-runs the empty-file (#4, #8) and large-file (#6) cases of evaluation/runs/20260923T114610Z-live-experiments.json, plus a missing-file case for #4, after CodeReviewReactAgent was changed to decode the JSON-encoded tool results produced by the real Spring AI DefaultToolCallingManager.",
+    "sourceState":  {
+                        "headCommit":  "e1e7f22bccc60a419dab417316f55bd4859c5e8c",
+                        "sourceTreeSha256":  "b581f2b744d8535c5a915ad39e8c0e1489362596bfe7ed9952f699f903d13ea5",
+                        "sourceTreeFiles":  35,
+                        "sourceTreeMethod":  "find 03-code-review-agent/src/main -type f | LC_ALL=C sort | xargs sha256sum | sha256sum",
+                        "note":  "HEAD plus the uncommitted working-tree changes made between 2026-09-14 and 2026-09-23 (the IntelliJ inspection fixes, including four wording edits to the executive-summary system prompt, token usage logging, and the tool-result decoding fix in CodeReviewReactAgent); the tree hash pins the exact production sources that ran."
+                    },
+    "hostWorkaround":  "TEMP and TMP set to C:\\Temp\\javatmp, per RUNBOOK.md \"Windows host note\"",
+    "cases":  [
+                  {
+                      "caseId":  "exp4-exp8-empty-file",
+                      "experiments":  [
+                                          4,
+                                          8
+                                      ],
+                      "session":  "afterfix",
+                      "configOverrides":  {
+
+                                          },
+                      "requestedAtUtc":  "2026-09-23T16:05:51Z",
+                      "request":  {
+                                      "method":  "POST",
+                                      "path":  "/code-review",
+                                      "body":  {
+                                                   "userInput":  "src/test/resources/fixtures/repo-root/empty.txt"
+                                               }
+                                  },
+                      "httpStatus":  200,
+                      "durationSeconds":  5.76,
+                      "responseBody":  {
+                                           "review":  "The file \u0027src/test/resources/fixtures/repo-root/empty.txt\u0027 exists but is completely empty and contains no content to review. No findings can be made for this file.",
+                                           "findings":  [
+
+                                                        ],
+                                           "truncated":  false
+                                       },
+                      "serverLog":  [
+                                        "2026-09-23T19:05:51.542+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-1] c.e.c.service.CodeReviewReactAgent       : Received code review request: userInput=src/test/resources/fixtures/repo-root/empty.txt",
+                                        "2026-09-23T19:05:54.593+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-1] c.e.c.service.CodeReviewReactAgent       : ReAct iteration 1/8: chatModel call completed in 3047 ms, requestedToolCalls=1, responseTextLength=0, promptTokens=2277, completionTokens=25, totalTokens=2302",
+                                        "2026-09-23T19:05:54.622+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-1] c.e.c.service.CodeReviewReactAgent       : Tool call executed: name=readFile, arguments={\"arg0\":\"src/test/resources/fixtures/repo-root/empty.txt\"}, batchDurationMs=26, resultLength=141",
+                                        "2026-09-23T19:05:55.888+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-1] c.e.c.service.CodeReviewReactAgent       : ReAct iteration 2/8: chatModel call completed in 1264 ms, requestedToolCalls=0, responseTextLength=168, promptTokens=2343, completionTokens=39, totalTokens=2382",
+                                        "2026-09-23T19:05:56.931+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-1] c.e.c.service.CodeReviewReactAgent       : Phase-2 structured-output call completed in 1042 ms, responseTextLength=208, promptTokens=1615, completionTokens=48, totalTokens=1663",
+                                        "2026-09-23T19:05:56.949+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-1] c.e.c.service.CodeReviewReactAgent       : Code review completed: iterationsUsed=2, findingsCount=0, truncated=false, evidenceGathered=false, agentModelCalls=3, agentPromptTokens=6235, agentCompletionTokens=112, agentTotalTokens=6347",
+                                        "2026-09-23T19:05:56.962+03:00  INFO 49388 --- [code-review-agent] [     virtual-89] c.e.c.service.ExecutiveSummarySubAgent   : Requesting executive summary for a code review with 0 finding(s)",
+                                        "2026-09-23T19:06:00.063+03:00  INFO 49388 --- [code-review-agent] [     virtual-89] c.e.c.service.ExecutiveSummarySubAgent   : Executive-summary chatModel call completed: promptTokens=881, completionTokens=33, totalTokens=914",
+                                        "2026-09-23T19:06:00.063+03:00  INFO 49388 --- [code-review-agent] [     virtual-89] c.e.c.service.ExecutiveSummarySubAgent   : Executive summary produced, length=165"
+                                    ],
+                      "executiveSummaryStdout":  "The review found no issues, as the file in question is entirely empty and contains no content to analyze. No findings were reported, and no further action is needed."
+                  },
+                  {
+                      "caseId":  "exp4-missing-file",
+                      "experiments":  [
+                                          4
+                                      ],
+                      "session":  "afterfix",
+                      "configOverrides":  {
+
+                                          },
+                      "requestedAtUtc":  "2026-09-23T16:06:03Z",
+                      "request":  {
+                                      "method":  "POST",
+                                      "path":  "/code-review",
+                                      "body":  {
+                                                   "userInput":  "src/main/java/com/epam/codereviewagent/DoesNotExist.java"
+                                               }
+                                  },
+                      "httpStatus":  200,
+                      "durationSeconds":  4.43,
+                      "responseBody":  {
+                                           "review":  "The file \u0027src/main/java/com/epam/codereviewagent/DoesNotExist.java\u0027 could not be located in the repository. No review could be conducted for this file.",
+                                           "findings":  [
+
+                                                        ],
+                                           "truncated":  false
+                                       },
+                      "serverLog":  [
+                                        "2026-09-23T19:06:03.651+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-3] c.e.c.service.CodeReviewReactAgent       : Received code review request: userInput=src/main/java/com/epam/codereviewagent/DoesNotExist.java",
+                                        "2026-09-23T19:06:05.191+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-3] c.e.c.service.CodeReviewReactAgent       : ReAct iteration 1/8: chatModel call completed in 1538 ms, requestedToolCalls=1, responseTextLength=0, promptTokens=2282, completionTokens=30, totalTokens=2312",
+                                        "2026-09-23T19:06:05.195+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-3] c.e.c.service.CodeReviewReactAgent       : Tool call executed: name=readFile, arguments={\"arg0\":\"src/main/java/com/epam/codereviewagent/DoesNotExist.java\"}, batchDurationMs=3, resultLength=96",
+                                        "2026-09-23T19:06:06.590+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-3] c.e.c.service.CodeReviewReactAgent       : ReAct iteration 2/8: chatModel call completed in 1394 ms, requestedToolCalls=0, responseTextLength=347, promptTokens=2348, completionTokens=77, totalTokens=2425",
+                                        "2026-09-23T19:06:08.070+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-3] c.e.c.service.CodeReviewReactAgent       : Phase-2 structured-output call completed in 1480 ms, responseTextLength=196, promptTokens=1620, completionTokens=49, totalTokens=1669",
+                                        "2026-09-23T19:06:08.070+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-3] c.e.c.service.CodeReviewReactAgent       : Code review completed: iterationsUsed=2, findingsCount=0, truncated=false, evidenceGathered=false, agentModelCalls=3, agentPromptTokens=6250, agentCompletionTokens=156, agentTotalTokens=6406",
+                                        "2026-09-23T19:06:08.070+03:00  INFO 49388 --- [code-review-agent] [     virtual-95] c.e.c.service.ExecutiveSummarySubAgent   : Requesting executive summary for a code review with 0 finding(s)",
+                                        "2026-09-23T19:06:10.446+03:00  INFO 49388 --- [code-review-agent] [     virtual-95] c.e.c.service.ExecutiveSummarySubAgent   : Executive-summary chatModel call completed: promptTokens=882, completionTokens=61, totalTokens=943",
+                                        "2026-09-23T19:06:10.446+03:00  INFO 49388 --- [code-review-agent] [     virtual-95] c.e.c.service.ExecutiveSummarySubAgent   : Executive summary produced, length=296"
+                                    ],
+                      "executiveSummaryStdout":  "No review could be conducted because the specified file (`DoesNotExist.java`) could not be located in the repository. As a result, there are no findings to report. No action is required unless the file\u0027s absence was unintended; in that case, ensure the file is added to the repository for review."
+                  },
+                  {
+                      "caseId":  "exp6-large-file",
+                      "experiments":  [
+                                          6
+                                      ],
+                      "session":  "afterfix",
+                      "configOverrides":  {
+
+                                          },
+                      "requestedAtUtc":  "2026-09-23T16:06:12Z",
+                      "request":  {
+                                      "method":  "POST",
+                                      "path":  "/code-review",
+                                      "body":  {
+                                                   "userInput":  "src/main/java/com/epam/codereviewagent/service/CodeReviewTools.java"
+                                               }
+                                  },
+                      "httpStatus":  200,
+                      "durationSeconds":  17.71,
+                      "responseBody":  {
+                                           "review":  "The `CodeReviewTools` class provides functionalities for file and repository management, language detection, and coding convention retrieval. It uses annotations and integrates with Spring components effectively. However, there are areas that could benefit from refactoring for improved readability and maintainability. For example, the hardcoded strings for error messages and delimiters could be managed more dynamically. Additionally, methods like `readFile` are somewhat complex and could be simplified by separating concerns and using helper methods.",
+                                           "findings":  [
+                                                            {
+                                                                "file":  "src/main/java/com/epam/codereviewagent/service/CodeReviewTools.java",
+                                                                "startLine":  31,
+                                                                "endLine":  40,
+                                                                "rule":  "Hardcoding of strings",
+                                                                "severity":  "low",
+                                                                "explanation":  "The class contains hardcoded strings for error messages and delimiters, which might be better organized using a configuration file or constants.",
+                                                                "recommendation":  "Consider refactoring these strings into a configuration file or a dedicated constants class for easier management and localization."
+                                                            },
+                                                            {
+                                                                "file":  "src/main/java/com/epam/codereviewagent/service/CodeReviewTools.java",
+                                                                "startLine":  92,
+                                                                "endLine":  120,
+                                                                "rule":  "Complex method logic",
+                                                                "severity":  "medium",
+                                                                "explanation":  "The `readFile` method contains complex logic for error handling and file reading that could be refactored for better readability.",
+                                                                "recommendation":  "Refactor the `readFile` method to separate the error handling from the main logic and consider using helper methods."
+                                                            }
+                                                        ],
+                                           "truncated":  true
+                                       },
+                      "serverLog":  [
+                                        "2026-09-23T19:06:12.390+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewReactAgent       : Received code review request: userInput=src/main/java/com/epam/codereviewagent/service/CodeReviewTools.java",
+                                        "2026-09-23T19:06:14.314+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewReactAgent       : ReAct iteration 1/8: chatModel call completed in 1917 ms, requestedToolCalls=1, responseTextLength=0, promptTokens=2283, completionTokens=31, totalTokens=2314",
+                                        "2026-09-23T19:06:14.320+03:00  WARN 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewTools            : readFile truncated content for \u0027src/main/java/com/epam/codereviewagent/service/CodeReviewTools.java\u0027: content exceeded the configured max-file-chars limit of 20000",
+                                        "2026-09-23T19:06:14.333+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewReactAgent       : Tool call executed: name=readFile, arguments={\"arg0\":\"src/main/java/com/epam/codereviewagent/service/CodeReviewTools.java\"}, batchDurationMs=15, resultLength=20212",
+                                        "2026-09-23T19:06:14.333+03:00  WARN 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewReactAgent       : Truncated tool result observed for tool \u0027readFile\u0027: content exceeded the configured character limit.",
+                                        "2026-09-23T19:06:26.297+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewReactAgent       : ReAct iteration 2/8: chatModel call completed in 11963 ms, requestedToolCalls=0, responseTextLength=4134, promptTokens=7369, completionTokens=809, totalTokens=8178",
+                                        "2026-09-23T19:06:30.093+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewReactAgent       : Phase-2 structured-output call completed in 3795 ms, responseTextLength=1505, promptTokens=6641, completionTokens=292, totalTokens=6933",
+                                        "2026-09-23T19:06:30.093+03:00  INFO 49388 --- [code-review-agent] [nio-8099-exec-5] c.e.c.service.CodeReviewReactAgent       : Code review completed: iterationsUsed=2, findingsCount=2, truncated=true, evidenceGathered=true, agentModelCalls=3, agentPromptTokens=16293, agentCompletionTokens=1132, agentTotalTokens=17425",
+                                        "2026-09-23T19:06:30.098+03:00  INFO 49388 --- [code-review-agent] [     virtual-96] c.e.c.service.ExecutiveSummarySubAgent   : Requesting executive summary for a code review with 2 finding(s)",
+                                        "2026-09-23T19:06:36.771+03:00  INFO 49388 --- [code-review-agent] [     virtual-96] c.e.c.service.ExecutiveSummarySubAgent   : Executive-summary chatModel call completed: promptTokens=1106, completionTokens=142, totalTokens=1248",
+                                        "2026-09-23T19:06:36.771+03:00  INFO 49388 --- [code-review-agent] [     virtual-96] c.e.c.service.ExecutiveSummarySubAgent   : Executive summary produced, length=769"
+                                    ],
+                      "executiveSummaryStdout":  "The review identifies two issues in the `CodeReviewTools` class:\n\n- **Low-severity issue:** Hardcoded strings for error messages and delimiters, which could be refactored into a configuration file or constants class for improved management and localization.\n- **Medium-severity issue:** The `readFile` method contains complex logic, particularly around error handling and file reading, which could benefit from refactoring to improve readability and maintainability by separating concerns and introducing helper methods.\n\nOverall, there are no critical issues, but addressing these findings would enhance code quality and maintainability. Prioritize refactoring the `readFile` method (medium severity) first, followed by organizing the hardcoded strings (low severity)."
+                  }
+              ]
+}

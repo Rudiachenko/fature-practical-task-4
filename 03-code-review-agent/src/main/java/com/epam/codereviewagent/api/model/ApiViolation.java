@@ -7,7 +7,7 @@ package com.epam.codereviewagent.api.model;
  *
  * @param field   the name of the offending request field (or the object name for a cross-field
  *                error)
- * @param message the constraint's own default violation message (e.g. {@code "must not be
+ * @param message the constraint's own default violation message (e.g., {@code "must not be
  *                blank"})
  */
 public record ApiViolation(

@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Published by {@code com.epam.codereviewagent.controller.CodeReviewController} exactly once,
  * immediately after {@code reviewReactAgent.interact(...)} returns successfully for a {@code
- * POST /code-review} request — i.e. after a review has genuinely completed, carrying that same,
+ * POST /code-review} request — i.e., after a review has genuinely completed, carrying that same,
  * already-built {@link CodeReviewResponse}.
  *
  * <p><b>Structural decoupling (retry 1, code review Medium finding).</b> This event, not a direct

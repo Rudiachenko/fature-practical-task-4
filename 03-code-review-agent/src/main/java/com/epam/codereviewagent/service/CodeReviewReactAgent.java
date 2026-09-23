@@ -5,7 +5,10 @@ import com.epam.codereviewagent.config.CodeReviewProperties;
 import com.epam.codereviewagent.exception.AgentIterationLimitExceededException;
 import com.epam.codereviewagent.exception.AgentOutputParsingException;
 import com.epam.codereviewagent.support.SafeLogFormatter;
+import com.epam.codereviewagent.support.TokenUsage;
 import com.epam.codereviewagent.util.FileUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -26,11 +29,12 @@ import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.model.tool.ToolExecutionResult;
+import org.springframework.ai.util.json.JsonParser;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
 /**
- * Manually-driven ReAct loop: repeatedly calls the {@link ChatModel} and, whenever the model
+ * Manually driven ReAct loop: repeatedly calls the {@link ChatModel} and, whenever the model
  * requests tool calls, executes them itself via {@link ToolCallingManager#executeToolCalls(Prompt,
  * ChatResponse)} rather than relying on the {@link ChatModel}'s own internal/automatic tool
  * execution (disabled by {@code AgentConfig}'s {@code chatOptions} bean, Increment 3) — so every
@@ -49,12 +53,13 @@ import org.springframework.util.StreamUtils;
  *
  * <p><b>Runtime evidence enforcement (Architecture Note A4).</b> The loop tracks, purely from
  * observed tool I/O, whether any {@code readFile} tool call ever returned real content (as opposed
- * to the Increment-2 error sentinel) and whether any tool result carried a visible truncation
- * marker. If the model's own final structured answer reports findings despite no {@code readFile}
- * call ever having succeeded, that answer is forcibly replaced with an honest, evidence-free
- * result — this is a runtime guard, not merely a system-prompt instruction, so a model that
- * ignores the prompt still cannot make fabricated findings reach a caller (Experiment #4).
- * Likewise, an observed truncation is always reflected in the final
+ * to the Increment-2 error sentinel) and whether any tool result carried a visible marker of
+ * truncation. If the model's own final structured answer reports findings despite no
+ * {@code readFile} call ever having succeeded, that answer is forcibly replaced with an honest,
+ * evidence-free result — this is a runtime guard, not merely a system-prompt instruction, so a
+ * model that ignores the prompt still cannot make fabricated findings reach a caller
+ * (Experiment #4).
+ * Likewise, observed truncation is always reflected in the final
  * {@link CodeReviewResponse#truncated()} flag regardless of what the model itself claims
  * (Experiment #6) — an objectively observable fact from tool I/O is never left solely to the
  * model's own self-report.
@@ -95,7 +100,7 @@ public class CodeReviewReactAgent {
    *                   {@code CodeReviewController} (Increment 6) runs
    *                   {@code RepositoryPathResolver#validateSecurityBoundary} against this value
    *                   before this method is ever called, so free text that is not a syntactically
-   *                   valid relative path (e.g. anything absolute or drive-qualified) never
+   *                   valid relative path (e.g., anything absolute or drive-qualified) never
    *                   reaches this method in practice — see that increment's own hand-off note
    *                   for why this Javadoc no longer describes "or free text describing the
    *                   review request" as a supported form
@@ -117,26 +122,30 @@ public class CodeReviewReactAgent {
 
     int maxIterations = codeReviewProperties.getMaxIterations();
     EvidenceTracker evidenceTracker = new EvidenceTracker();
+    TokenUsageTracker tokenUsageTracker = new TokenUsageTracker();
 
     for (int iteration = 1; iteration <= maxIterations; iteration++) {
       long callStartNanos = System.nanoTime();
       ChatResponse response = chatModel.call(prompt);
       long callDurationMs = elapsedMillis(callStartNanos);
+      TokenUsage callUsage = TokenUsage.from(response);
+      tokenUsageTracker.add(callUsage);
 
       AssistantMessage assistantMessage = response.getResult().getOutput();
       boolean requestsToolCalls = response.hasToolCalls();
       int toolCallCount = requestsToolCalls ? assistantMessage.getToolCalls().size() : 0;
       int responseTextLength = textLength(assistantMessage);
       log.info("ReAct iteration {}/{}: chatModel call completed in {} ms, requestedToolCalls={}, "
-          + "responseTextLength={}", iteration, maxIterations, callDurationMs, toolCallCount,
-        responseTextLength);
+          + "responseTextLength={}, promptTokens={}, completionTokens={}, totalTokens={}",
+        iteration, maxIterations, callDurationMs, toolCallCount, responseTextLength,
+        callUsage.promptTokens(), callUsage.completionTokens(), callUsage.totalTokens());
 
       if (!requestsToolCalls) {
         // Natural phase-1 exit: the model's own final phase-1 text (if any) is discarded, per
         // Architecture Note A5 - phase 2 below always regenerates the actual final answer under a
         // structured-output contract, using the accumulated history up to (but not including) this
         // no-tool-calls response.
-        return finalizeReview(prompt, evidenceTracker, iteration);
+        return finalizeReview(prompt, evidenceTracker, tokenUsageTracker, iteration);
       }
 
       ToolExecutionResult toolExecutionResult =
@@ -145,7 +154,8 @@ public class CodeReviewReactAgent {
     }
 
     log.error("ReAct loop exhausted {} iterations while tool calls were still being requested; "
-      + "aborting rather than returning a partial/fabricated answer.", maxIterations);
+        + "aborting rather than returning a partial/fabricated answer. {}", maxIterations,
+      tokenUsageTracker.summary());
     throw new AgentIterationLimitExceededException(
       "Code review agent exceeded the maximum of " + maxIterations
         + " ReAct loop iterations while the model was still requesting tool calls.");
@@ -163,7 +173,7 @@ public class CodeReviewReactAgent {
 
   /**
    * Executes every tool call requested by {@code assistantMessage} in one batch (via {@link
-   * ToolCallingManager#executeToolCalls(Prompt, ChatResponse)}), logs each individual tool call's
+   * ToolCallingManager#executeToolCalls(Prompt, ChatResponse)}), logs each tool call's
    * name, a bounded/redacted argument summary, the batch's execution duration, and the raw result
    * length, and updates {@code evidenceTracker} from the observed results.
    *
@@ -174,7 +184,7 @@ public class CodeReviewReactAgent {
    * {@code context/PROGRESS.md}'s Increment 5 entry); the {@code batchDurationMs} logged for each
    * tool call in a multi-tool-call turn is therefore the whole batch's duration, not that
    * individual call's own duration. This is logged explicitly as a batch duration rather than
-   * silently presented as a more precise per-call measurement it cannot actually be.
+   * silently presented as a more precise per-call measurement it cannot be.
    */
   private ToolExecutionResult executeAndLogToolCalls(Prompt prompt, ChatResponse response,
                                                        AssistantMessage assistantMessage,
@@ -184,8 +194,7 @@ public class CodeReviewReactAgent {
     long batchDurationMs = elapsedMillis(batchStartNanos);
 
     List<Message> conversationHistory = toolExecutionResult.conversationHistory();
-    ToolResponseMessage toolResponseMessage =
-      (ToolResponseMessage) conversationHistory.get(conversationHistory.size() - 1);
+    ToolResponseMessage toolResponseMessage = (ToolResponseMessage) conversationHistory.getLast();
 
     Map<String, String> argumentsByToolCallId = assistantMessage.getToolCalls().stream()
       .collect(Collectors.toMap(AssistantMessage.ToolCall::id, AssistantMessage.ToolCall::arguments,
@@ -193,7 +202,7 @@ public class CodeReviewReactAgent {
 
     for (ToolResponseMessage.ToolResponse toolResponse : toolResponseMessage.getResponses()) {
       String arguments = argumentsByToolCallId.getOrDefault(toolResponse.id(), "");
-      String resultData = toolResponse.responseData() == null ? "" : toolResponse.responseData();
+      String resultData = decodeToolResult(toolResponse.responseData());
       log.info("Tool call executed: name={}, arguments={}, batchDurationMs={}, resultLength={}",
         toolResponse.name(), SafeLogFormatter.format(arguments), batchDurationMs,
         resultData.length());
@@ -204,11 +213,29 @@ public class CodeReviewReactAgent {
   }
 
   /**
+   * Recovers the text a tool method returned from its tool-response payload. Spring AI's
+   * {@code DefaultToolCallResultConverter} JSON-encodes a {@code String} result unless it is
+   * already valid JSON, so every {@code CodeReviewTools} result arrives quoted and escaped; the
+   * evidence checks must see the original text, or none of them can ever match.
+   */
+  private static String decodeToolResult(String responseData) {
+    if (responseData == null) {
+      return "";
+    }
+    try {
+      JsonNode payload = JsonParser.getObjectMapper().readTree(responseData);
+      return payload.isTextual() ? payload.textValue() : responseData;
+    } catch (JsonProcessingException e) {
+      return responseData;
+    }
+  }
+
+  /**
    * Phase 2 (Architecture Note A5): issues exactly one additional, tools-disabled,
    * {@code responseFormat}-attached {@link ChatModel#call(Prompt)} using
    * {@code accumulatedPrompt}'s message history, parses it via
    * {@link CodeReviewStructuredOutputConverter}, applies the evidence-enforcement override
-   * (Architecture Note A4) and the observed-truncation OR-merge, and logs the final outcome.
+   * (Architecture Note A4) and the observed-truncation OR-merge, and logs the outcome.
    *
    * <p><b>Hand-off decision (Increment 4 retry 1's Medium finding — recorded in
    * {@code context/PROGRESS.md}'s Increment 5 entry): retry-once, not per-finding recovery.</b> If
@@ -221,23 +248,24 @@ public class CodeReviewReactAgent {
    */
   private CodeReviewResponse finalizeReview(Prompt accumulatedPrompt,
                                              EvidenceTracker evidenceTracker,
+                                             TokenUsageTracker tokenUsageTracker,
                                              int iterationsUsed) {
     ChatOptions phaseTwoOptions = buildPhaseTwoOptions();
     Prompt phaseTwoPrompt = new Prompt(accumulatedPrompt.getInstructions(), phaseTwoOptions);
 
     CodeReviewResponse parsed;
     try {
-      parsed = callAndParseStructuredOutput(phaseTwoPrompt);
+      parsed = callAndParseStructuredOutput(phaseTwoPrompt, tokenUsageTracker);
     } catch (AgentOutputParsingException firstFailure) {
       log.warn("Phase-2 structured-output parsing failed on the first attempt; "
         + "retrying exactly once. reason={}",
         SafeLogFormatter.format(firstFailure.getMessage()));
       try {
-        parsed = callAndParseStructuredOutput(phaseTwoPrompt);
+        parsed = callAndParseStructuredOutput(phaseTwoPrompt, tokenUsageTracker);
       } catch (AgentOutputParsingException secondFailure) {
         log.error(
-          "Phase-2 structured-output parsing failed again after one retry; exceptionType={}",
-          secondFailure.getClass().getSimpleName(), secondFailure);
+          "Phase-2 structured-output parsing failed again after one retry; exceptionType={}, {}",
+          secondFailure.getClass().getSimpleName(), tokenUsageTracker.summary(), secondFailure);
         throw secondFailure;
       }
     }
@@ -248,21 +276,26 @@ public class CodeReviewReactAgent {
       new CodeReviewResponse(evidenceChecked.review(), evidenceChecked.findings(), finalTruncated);
 
     log.info("Code review completed: iterationsUsed={}, findingsCount={}, truncated={}, "
-        + "evidenceGathered={}",
+        + "evidenceGathered={}, {}",
       iterationsUsed, finalResponse.findings().size(), finalResponse.truncated(),
-      evidenceTracker.evidenceGathered());
+      evidenceTracker.evidenceGathered(), tokenUsageTracker.summary());
     return finalResponse;
   }
 
-  private CodeReviewResponse callAndParseStructuredOutput(Prompt phaseTwoPrompt) {
+  private CodeReviewResponse callAndParseStructuredOutput(Prompt phaseTwoPrompt,
+                                                          TokenUsageTracker tokenUsageTracker) {
     long callStartNanos = System.nanoTime();
     ChatResponse response = chatModel.call(phaseTwoPrompt);
     long callDurationMs = elapsedMillis(callStartNanos);
+    TokenUsage callUsage = TokenUsage.from(response);
+    tokenUsageTracker.add(callUsage);
 
     AssistantMessage assistantMessage = response.getResult().getOutput();
     String text = assistantMessage.getText();
-    log.info("Phase-2 structured-output call completed in {} ms, responseTextLength={}",
-      callDurationMs, textLength(assistantMessage));
+    log.info("Phase-2 structured-output call completed in {} ms, responseTextLength={}, "
+        + "promptTokens={}, completionTokens={}, totalTokens={}",
+      callDurationMs, textLength(assistantMessage), callUsage.promptTokens(),
+      callUsage.completionTokens(), callUsage.totalTokens());
 
     return structuredOutputConverter.convert(text);
   }
@@ -276,12 +309,12 @@ public class CodeReviewReactAgent {
    * {@code Builder(AzureOpenAiChatOptions)} constructor (via {@code javap -p -c} against the
    * resolved {@code spring-ai-azure-openai-1.1.2.jar}) shows it stores the exact instance passed to
    * it ({@code this.options = options;}, no defensive copy), and every builder setter mutates that
-   * same instance's fields directly (e.g. {@code toolCallbacks(...)} compiles to
+   * same instance's fields directly (e.g., {@code toolCallbacks(...)} compiles to
    * {@code options.setToolCallbacks(...)}). Wrapping the shared, singleton {@code chatOptions}
    * bean directly in {@code new AzureOpenAiChatOptions.Builder(chatOptions)} and then calling
    * {@code .toolCallbacks(List.of())} would therefore silently strip every tool callback from the
    * <em>production, request-scoped-forever</em> {@code chatOptions} bean itself, breaking every
-   * subsequent request's phase-1 tool-calling ability. This method instead calls {@code
+   * later request's phase-1 tool-calling ability. This method instead calls {@code
    * AzureOpenAiChatOptions.copy()} first (decompiled to confirm it delegates to the static
    * {@code fromOptions(...)}, which builds a brand-new instance field-by-field via a fresh
    * {@code builder()} - not an alias) and only wraps/mutates that independent copy.
@@ -335,8 +368,8 @@ public class CodeReviewReactAgent {
   /**
    * Tracks, purely from observed tool-call results across the whole request, whether any {@code
    * readFile} call ever returned real content and whether any tool result carried a visible
-   * truncation marker - the two objective, tool-I/O-derived signals Architecture Note A4/Task 6 use
-   * to override or correct whatever the model's own final answer claims.
+   * marker of truncation - the two objective, tool-I/O-derived signals Architecture Note A4/Task 6
+   * use to override or correct whatever the model's own final answer claims.
    *
    * <p><b>Fixed in Increment 5 retry 1 (code review, High finding) - the empty-file sentinel no
    * longer counts as evidence.</b> A {@code readFile} call that succeeds against a real, in-root,
@@ -378,6 +411,29 @@ public class CodeReviewReactAgent {
 
     boolean truncated() {
       return truncated;
+    }
+  }
+
+  /**
+   * Sums the provider-reported usage of every model call this class makes itself for one request
+   * (each phase-1 iteration and each phase-2 attempt). Summing does not double-count: with internal
+   * tool execution disabled, {@code AzureOpenAiChatModel} 1.1.2 reports each response's usage for
+   * that single call only. LLM calls made inside tools are logged by the tools, not counted here.
+   */
+  private static final class TokenUsageTracker {
+
+    private int modelCalls;
+    private TokenUsage total = TokenUsage.ZERO;
+
+    void add(TokenUsage callUsage) {
+      modelCalls++;
+      total = total.plus(callUsage);
+    }
+
+    String summary() {
+      return ("agentModelCalls=%d, agentPromptTokens=%d, agentCompletionTokens=%d, "
+        + "agentTotalTokens=%d").formatted(modelCalls, total.promptTokens(),
+        total.completionTokens(), total.totalTokens());
     }
   }
 }

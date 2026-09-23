@@ -14,8 +14,11 @@ structurally evidence-based: a runtime `EvidenceTracker` forces an honest "no ev
 whenever the agent never actually reads usable file content, regardless of what the model's own final answer
 claims. A second, fully independent executive-summary sub-agent (no tools, a single `ChatModel` call)
 condenses a completed review to standard output, reachable both from a CLI flag and automatically after every
-successful live review. The work shipped across 8 numbered increments (`c574dc4`…`a6abcac`), followed by a
-same-day addendum that actually ran the R12 model-comparison subtask live against DIAL.
+successful live review. Every model call logs its provider-reported token usage, and each request logs the
+agent's total. The work shipped across 8 numbered increments (`cf6cd00`…`23bf829`), followed by a same-day
+addendum that actually ran the R12 model-comparison subtask live against DIAL, and, on 2026-09-23, by a live
+run of the experiments through the real `POST /code-review` endpoint that found and fixed a production defect
+in the evidence guard (see Experiment #4 below).
 
 ## 🗒️ Key Takeaways (REQUIRED)
 
@@ -70,6 +73,16 @@ before first submission:**
    of defect as #6, caught the same way — confirming "boot it first" generalizes beyond the specific defect
    shape that originally motivated it in Module 2.
 
+**Found later, by the first live run through the real endpoint (2026-09-23): the evidence guard behind #1 —
+the original check and its fix alike — never fired in production, and neither did the truncation guard.**
+Spring AI's real `DefaultToolCallingManager` JSON-encodes every `String` tool result, so the agent received
+`"ERROR: ..."` in quotes and the `EvidenceTracker`'s prefix, suffix and truncation-marker checks could never
+match. Every agent test used a fake tool-calling manager that passed the tool's text through unchanged — it
+proved an assumption about the framework, not the behaviour. Would have been caught by one test through the
+real `DefaultToolCallingManager`; four such tests now exist, and three of them fail without the fix. This is
+the same lesson as the list above, one level down: a fake is itself a claim, and needs reconstructing
+against the real thing.
+
 **The recurring "confidently-wrong self-reporting" failure mode showed up here too — three times, inside
 `context/PROGRESS.md` itself, not just in production code:**
 
@@ -111,6 +124,11 @@ primitive itself rather than in Tomcat-specific code, the same restriction block
 event-loop creation — which the Azure SDK's HTTP client depends on for outbound calls — so neither an
 inbound HTTP demo nor a live outbound model call could be routed through this sandbox's actual running JVM.
 See the Screenshots section below for how the required visual evidence was captured despite this constraint.
+**Update (2026-09-23):** on the operator's Windows host, the workaround in `RUNBOOK.md`'s "Windows host
+note" — `TEMP`/`TMP` pointed at a short path such as `C:\Temp\javatmp` — makes `Selector.open()` work.
+With it, `clean verify` passes including `HermeticApplicationContextIT`, and the running application
+served the 10 live requests recorded in `evaluation/runs/20260923T114610Z-live-experiments.json` and
+`evaluation/runs/20260923T160521Z-live-evidence-guard-fix.json`.
 
 **R12 — is `gpt-4o` justified as the default?** On the ticket-compliant, formal 2-run-per-model series (6
 calls total, against `03-code-review-agent/evaluation/fixtures/FileUtils.java`), `gpt-4o` reversed verdict
@@ -156,6 +174,18 @@ of what the model itself answered. The actual contract, corrected during review:
 with the empty-file sentinel suffix — the original version of this guard covered the error case but missed
 the ticket's own literally-named empty-file case, and was only fixed after review caught the gap.
 
+**Live run (2026-09-23, `gpt-4o`, real endpoint):** reviewing the real empty file returned `200` with 0
+findings and an honest "the file is empty" review — but the log showed `evidenceGathered=true`: the guard
+above had never fired in production, because the real tool-calling manager JSON-encodes tool results (see
+Key Takeaways). After the fix — the agent now decodes the tool result before inspecting it — the same request
+logs `evidenceGathered=false`, and a request for a non-existent file logs `evidenceGathered=false` and answers
+that the file "could not be located in the repository". `gpt-4o` never claimed findings in these runs, so the
+override never had to replace an answer live; that path is covered by the new tests through the real manager.
+Before and after: `evaluation/runs/20260923T114610Z-live-experiments.json` and
+`evaluation/runs/20260923T160521Z-live-evidence-guard-fix.json`. The truncation guard behind Experiment #6
+had the same defect and the same fix: before it, `truncated: true` on a 30 000-character file came only from
+the model's own claim; after it, the agent observes the truncation itself.
+
 ### Experiment #5 — Path traversal
 
 **Trigger:** submit `../../etc/passwd` or an absolute path outside the repository root. **What to observe:**
@@ -171,7 +201,8 @@ resolver-unit-level) are measured `[PASS]`. This closes the experiment with no l
 model call is ever reached for a rejected path — but it wasn't the shipped behaviour from the start: the
 original submission returned `200` with an in-band, model-narrated rejection instead of an observable `4xx`,
 flagged during review as contradicting the plan's own "observable HTTP contract" requirement, and fixed by
-adding this pre-check ahead of any agent invocation.
+adding this pre-check ahead of any agent invocation. Reconfirmed over real HTTP on 2026-09-23: `400` in
+0.06 s, and the only application log line is the security warning — no model call was made.
 
 ### Experiment #7 — Loop non-termination
 
@@ -187,40 +218,40 @@ Spring Boot startup itself (`@Min(1)` JSR-303 validation), not silently on the f
 are measured `[PASS]` — a direct, off-by-one-checked proof of the guard the ticket asks for, plus a fail-fast
 configuration check that prevents the same misconfiguration from ever reaching production traffic.
 
+**Live run (2026-09-23, `gpt-4o`, `max-iterations=2`, `userInput` = `src`):** the model kept exploring
+(`src`, then `src/main` and `src/test`), and after exactly two model calls the agent returned
+`500`/`AGENT_ITERATION_LIMIT_EXCEEDED` in 8.54 s — no hang and no partial answer. The error log records what
+the aborted attempt cost: 2 model calls, 4661 tokens.
+
 ## 🕵️ Quality check (REQUIRED)
 
 - [x] I have verified that the functionality works properly
 - [x] I have performed self-review of my code
 
-Both re-confirmed directly while preparing this MR, not restated from memory: `./mvnw -pl 03-code-review-agent
-test` — **310 run, 0 failures, 0 errors, 2 honest symlink-capability skips**; `./mvnw -pl 03-code-review-agent
-clean verify -DskipITs=true` — bundle coverage **96.71% line (647/669), 96.90% instruction (2751/2839),
-94.98% branch (246/259)**, read directly from a freshly regenerated `jacoco.csv`; `git diff --stat HEAD --
-03-code-review-agent/README.md README.md` — empty, both files remain byte-identical. (Note: an honest
-discrepancy: `03-code-review-agent/evaluation/RESULTS.md`'s own "Final verification" section still quotes the
-pre-retry figure of `309`/0/2 — it was not updated after the Increment 8 review retry added an 11th
-`EvaluationAssetsTest` case; `310` is what both a fresh run today and `context/PROGRESS.md`'s own retry-1
-verification confirm.) Self-review took the form of the workflow's own review/retry discipline: all 8
-increments went through implementation → test-runner + code review → exactly one retry each before passing,
-with every retry's finding and fix recorded in `context/PROGRESS.md`.
+Both re-confirmed directly on 2026-09-23, not restated from memory: `./mvnw -pl 03-code-review-agent test` —
+**331 run, 0 failures, 0 errors, 2 honest symlink-capability skips**; `./mvnw -pl 03-code-review-agent clean
+verify`, integration tests included — **BUILD SUCCESS**, with bundle coverage **96.97% line (703/725),
+97.25% instruction (3045/3131), 94.80% branch (255/269)**, read directly from a freshly regenerated
+`jacoco.csv`; 10 real `POST /code-review` requests against `gpt-4o` through the running application,
+recorded in `evaluation/runs/`; and `git diff --stat HEAD -- 03-code-review-agent/README.md README.md` —
+empty, both files remain byte-identical. Self-review took the form of the workflow's own review/retry
+discipline: all 8 increments went through implementation → test-runner + code review → exactly one retry
+each before passing, with every retry's finding and fix recorded in `context/PROGRESS.md`.
 
 ## Operator follow-ups
 
 Everything below requires a human with credentials or access this workflow's agents do not have:
 
-- **Retroactive commit signing.** 8 of the 11 commits between `c574dc4` and the current branch tip lack a GPG
-  signature (`git log --pretty=format:"%h %G? %s"` confirms `c574dc4`, `b830546`, and `2d4cc34` are signed;
-  the other 8 carry no signature). An operator with working GPG can re-sign the chain with:
-  ```
-  git rebase --exec 'git commit --amend --no-edit -S' -i c574dc4
-  ```
-- **Push the branch** (`feature/practical-task-3`) to your personal EPAM GitLab repository.
+- **Push the branch** (`feature/practical-task-3`) to your personal EPAM GitLab repository. It was rebased
+  onto `main` on 2026-09-14 (every commit is now signed), so the remote copy needs a force-push
+  (`git push --force-with-lease`).
 - **Open the Merge Request itself (R11)** and ensure it is accessible to facilitators — no agent in this
   workflow has GitLab credentials or screenshot capability, so this step, and filling in this template inside
   GitLab, has to be completed by a human.
 - **The live-model halves of Experiments #1 (tool overload) and #2 (ambiguous tool descriptions)** remain
-  `REQUIRES OPERATOR` in `03-code-review-agent/evaluation/RESULTS.md`. Unlike the other six experiments, no
-  hermetic mechanism could meaningfully exist for #1's actual claim (wrong tool selection is an emergent
+  `REQUIRES OPERATOR` in `03-code-review-agent/evaluation/RESULTS.md` — the other six were run live on
+  2026-09-23 (#5 has no live half and was reconfirmed). No hermetic mechanism could meaningfully exist for
+  #1's actual claim (wrong tool selection is an emergent
   property of a live model's own reasoning); #2's tool-description-quality regression guard is hermetically
   proven, but the actual mis-selection/confusion behaviour the ticket asks about still needs a live run
   against real DIAL credentials.

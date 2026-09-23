@@ -18,7 +18,7 @@ import java.util.List;
  * @param findings   machine-readable structured findings (R10); never {@code null} — a missing
  *                   or explicit {@code null} JSON value normalizes to an empty list
  * @param truncated  {@code true} if any evidence gathered during the review was truncated
- *                   (e.g. a file exceeded the configured character limit), so a consumer of this
+ *                   (e.g., a file exceeded the configured character limit), so a consumer of this
  *                   response can tell a review is based on partial evidence
  */
 public record CodeReviewResponse(
@@ -33,7 +33,7 @@ public record CodeReviewResponse(
 
   /**
    * Convenience constructor kept for backward compatibility with call sites that only have a
-   * review string to report (e.g. an honest "no evidence gathered" override); defaults
+   * review string to report (e.g., an honest "no evidence gathered" override); defaults
    * {@code findings} to empty and {@code truncated} to {@code false}.
    * <p>
    * <b>{@code @JsonCreator(mode = DISABLED)} is load-bearing, not decorative.</b> Jackson's
@@ -47,7 +47,7 @@ public record CodeReviewResponse(
    * forces Jackson back onto the three-argument canonical constructor's property-based creator
    * for all JSON deserialization, so a bare JSON scalar (string or number) at the top level
    * correctly fails with a parse error instead of being silently accepted. This constructor
-   * remains fully usable from ordinary Java code (e.g. Increment 5's evidence-enforcement
+   * remains fully usable from ordinary Java code (e.g., Increment 5's evidence-enforcement
    * override) — only its use as a Jackson creator is disabled. See
    * {@code CodeReviewStructuredOutputConverterTest}'s
    * {@code shouldThrowAgentOutputParsingException_whenTopLevelJsonIsABareString}/

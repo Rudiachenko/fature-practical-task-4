@@ -1,6 +1,6 @@
 # Module 3 Code Review Agent — Evaluation Results
 
-**Status: PARTIALLY COMPLETE — every hermetically-provable mechanism actually re-run and confirmed passing in this session; R12's model-comparison subtask has now actually been run live against the DIAL API (see its own section below) and is `COMPLETED`, not `REQUIRES OPERATOR`; every other live-model-dependent piece (Experiments #1/#2's live half, the live halves of #3/#4/#6/#7/#8, and R11's Merge Request) remains explicitly `REQUIRES OPERATOR`, not fabricated.**
+**Status: PARTIALLY COMPLETE — every hermetically-provable mechanism actually re-run and confirmed passing in this session; R12's model-comparison subtask has now actually been run live against the DIAL API (see its own section below) and is `COMPLETED`, not `REQUIRES OPERATOR`; on 2026-09-23 the live halves of Experiments #3/#4/#6/#7/#8 were run through the real `POST /code-review` endpoint and are `COMPLETED` (#5 was reconfirmed over real HTTP), and that session found and fixed a production defect in the evidence and truncation guards (see "Live session (2026-09-23)" below); the remaining live-model-dependent pieces (Experiments #1/#2's live half and R11's Merge Request) remain explicitly `REQUIRES OPERATOR`, not fabricated.**
 
 This file accounts for all 8 README/`context/TICKET.md` Experiments & Edge Cases (R13), the R12
 model-choice-justification subtask, and R11 (GitLab Merge Request). `03-code-review-agent/README.md`
@@ -27,14 +27,21 @@ plausible outcome.
   (2026-08-30), 12 further, supplementary `chat/completions` calls were made** (4 more per model) using a
   disclosed, token-count-validated prompt reconstruction, reported as a separate, unpooled second series —
   see R12's "Supplementary evidence" subsection and
-  `03-code-review-agent/evaluation/r12-extension-2026-08-30.md`.
-- **Not run in this session, because it requires EPAM VPN + live DIAL credentials this sandbox does
-  not have**: any `POST /code-review` call against a real Azure OpenAI/DIAL deployment through the
+  `03-code-review-agent/evaluation/r12-extension-2026-08-30.md`. **In a session on 2026-09-23**, with
+  DIAL access and the host's embedded-server limitation worked around (see "Known environment
+  limitation" below), the application itself was started and **10 real `POST /code-review` requests**
+  were sent to it, backed by `gpt-4o`: 7 recorded in
+  `evaluation/runs/20260923T114610Z-live-experiments.json` and, after a defect those runs exposed was
+  fixed, 3 more in `evaluation/runs/20260923T160521Z-live-evidence-guard-fix.json` — see "Live session
+  (2026-09-23)" below.
+- **Not run in the original session, because it required EPAM VPN + live DIAL credentials that sandbox
+  did not have**: any `POST /code-review` call against a real Azure OpenAI/DIAL deployment through the
   actual REST endpoint (R12 was run as direct DIAL `chat/completions` calls instead, since the embedded
-  server cannot bind a socket in this sandbox — see R12's section for why), the live halves of
-  Experiments #1, #2, #3, #4, #6, #7, #8, and R11's GitLab Merge Request. Every one of these is labeled
-  `REQUIRES OPERATOR` below, with the exact command/steps an operator needs once credentials are
-  available — never narrated as if it had happened.
+  server could not bind a socket in that sandbox — see R12's section for why), the live halves of
+  Experiments #1–#4 and #6–#8, and R11's GitLab Merge Request. The 2026-09-23 session has since run the
+  live halves of #3, #4, #6, #7 and #8. **Still outstanding**: the live halves of Experiments #1 and
+  #2, and R11's GitLab Merge Request (the operator's own action) — each labeled `REQUIRES OPERATOR`
+  below, with the exact command/steps an operator needs — never narrated as if it had happened.
 
 ## Experiments & Edge Cases (R13) — all 8, individually accounted for
 
@@ -91,9 +98,17 @@ message ("No coding convention found for language: go...") rather than any fabri
 **Measured in this session**: `[PASS]`. This is the exact tool-level mechanism the ReAct loop's evidence
 path relies on for this case.
 
-**Live half: `REQUIRES OPERATOR`.** `POST /code-review` with `userInput` pointing at a real Go/Kotlin
-file under the repository root, against a live-credentialed instance, to confirm the model's own final
-review text honestly states no convention was found rather than inventing plausible-sounding rules.
+**Live half: `COMPLETED` (2026-09-23, `gpt-4o`) — honest, no invented rules.** Case
+`exp3-missing-convention` in `evaluation/runs/20260923T114610Z-live-experiments.json`: `userInput` =
+`evaluation/fixtures/cache.go`, a 40-line Go file added as a fixture for this run. The agent read the
+file, detected `go`, and called `retrieveCodeConvention("go")`; the application log shows
+`ConventionService`'s `No convention found for language: go` warning, and the final review says "No
+coding convention specific to Go was found for this review." No Go rule was invented or borrowed from
+the Java/Python conventions. Two observations beyond the experiment's question: the one finding (the
+errors of `json.Marshal` and `os.WriteFile` ignored in `Save`) is real but cites line 20 instead of
+38–39, because `readFile` hands the model the content without line numbers; and the fixture's other
+issues (unsynchronized map access, expired entries never evicted, the exported `New` without a doc
+comment) were not reported.
 
 ### Experiment #4 — Evidence enforcement
 
@@ -120,9 +135,30 @@ restated here since it is this experiment's exact mechanism): `evidenceGathered`
 least one tool response named exactly `readFile` (a) does not start with `FileUtils.READ_ERROR_PREFIX`
 **and** (b) does not end with `CodeReviewTools.EMPTY_FILE_MESSAGE_SUFFIX`.
 
-**Live half: `REQUIRES OPERATOR`.** `POST /code-review` with `userInput` pointing at
-`fixtures/repo-root/empty.txt` against a live-credentialed instance, to confirm the same empty-findings/
-honest-review outcome holds end to end with a real model in the loop.
+**Correction (2026-09-23): in production this guard never fired until that day.** Both tests above hand
+the tool result to the agent as the plain text the tool returned. The real Spring AI
+`DefaultToolCallingManager` does not: its `DefaultToolCallResultConverter` JSON-encodes every `String`
+tool result that is not already valid JSON, so the agent received `"ERROR: ..."` in quotes, and
+`startsWith(READ_ERROR_PREFIX)`/`endsWith(EMPTY_FILE_MESSAGE_SUFFIX)` could never match —
+`evidenceGathered` became `true` after any `readFile` call, including one for a missing or empty file.
+The live run below exposed it. `CodeReviewReactAgent` now decodes the tool result before inspecting it
+(`decodeToolResult`); the payload sent back to the model is untouched. Three tests run real
+`CodeReviewTools` through the real `DefaultToolCallingManager`:
+`...whenTheRealToolCallingManagerReadsAMissingFile` and `...whenTheRealToolCallingManagerReadsAnEmptyFile`
+fail without the fix, and `shouldKeepTheModelsFindings_whenTheRealToolCallingManagerReadsARealFile` is
+the control proving the fix does not suppress genuine findings. See "Live session (2026-09-23)" below.
+
+**Live half: `COMPLETED` (2026-09-23, `gpt-4o`) — no fabrication observed; the guard is now armed.**
+Before the fix (case `exp4-exp8-empty-file` in `evaluation/runs/20260923T114610Z-live-experiments.json`),
+`userInput` = `src/test/resources/fixtures/repo-root/empty.txt` returned `200` with 0 findings and an
+honest review ("exists in the repository but is empty (zero bytes)"), but the log line `Code review
+completed: ... evidenceGathered=true` shows the guard was disarmed: had the model claimed findings, they
+would have been returned. After the fix (`evaluation/runs/20260923T160521Z-live-evidence-guard-fix.json`)
+the same request logs `evidenceGathered=false`, and the missing-file case `exp4-missing-file`
+(`src/main/java/com/epam/codereviewagent/DoesNotExist.java`) logs `evidenceGathered=false` and answers
+that the file "could not be located in the repository". In all three runs `gpt-4o` itself reported 0
+findings, so the override never had to replace an answer live; that path is proven by the real-manager
+tests above.
 
 ### Experiment #5 — Path traversal
 
@@ -152,6 +188,11 @@ by an effect-verified `never()` assertion, not inferred from the status code alo
 is no separate live-behavior half of this experiment to run. An operator may still `POST /code-review`
 with `../../etc/passwd` against a live-credentialed instance purely to visually confirm the same `400`
 response over real HTTP, but this reconfirms the hermetic proof rather than adding new evidence.
+Reconfirmed on 2026-09-23 (case `exp5-path-traversal` in
+`evaluation/runs/20260923T114610Z-live-experiments.json`): `../../etc/passwd` over real HTTP returned
+`400`/`PATH_SECURITY_VIOLATION` in 0.06 s, and the only application log line is
+`CodeReviewExceptionHandler`'s "Path security violation rejected" warning — no ReAct iteration and no
+token line, i.e. zero model calls.
 
 ### Experiment #6 — Large file / context overload
 
@@ -173,10 +214,34 @@ response over real HTTP, but this reconfirms the hermetic proof rather than addi
 behind the truncation half of the ticket's "what to observe" column; "degraded analysis quality" and
 "token-limit errors" are qualitative/live-model observations that cannot be hermetically measured.
 
-**Live half: `REQUIRES OPERATOR`.** Lower `app.code-review.max-file-chars` (or use a genuinely large
-source file) against a live-credentialed instance, confirm `truncated: true` in the real response, and
-qualitatively assess whether analysis degrades on the truncated remainder; an upstream token-limit error
-would surface as `502`/`AI_PROVIDER_FAILURE` via `CodeReviewExceptionHandler`.
+**Correction (2026-09-23): in production the third layer never fired until that day**, for the same
+reason as Experiment #4's guard: the Increment 5 test hands the tool result to the agent unchanged, while
+the real `DefaultToolCallingManager` JSON-encodes it, which turns the marker's leading newline into the
+two characters `\n`, so `contains(TRUNCATION_MARKER)` never matched. `truncated: true` still reached
+clients whenever the model itself reported truncation in its structured output, but not because the
+runtime observed it. Fixed by the same `decodeToolResult` change;
+`CodeReviewReactAgentTest#shouldSetTruncatedTrue_whenTheRealToolCallingManagerReturnsATruncatedFile_evenIfModelClaimsFalse`
+runs real `CodeReviewTools` through the real manager and fails without the fix.
+
+**Live half: `COMPLETED` (2026-09-23, `gpt-4o`) — truncation now surfaced by the runtime; analysis
+quality degraded; no token-limit error.** `userInput` =
+`src/main/java/com/epam/codereviewagent/service/CodeReviewTools.java` (about 30 000 characters on disk)
+with the default `max-file-chars` of 20000. Before the fix (case `exp6-large-file` in
+`evaluation/runs/20260923T114610Z-live-experiments.json`) the response had `truncated: true`, but only
+because the model said so: the log has `CodeReviewTools`' own `readFile truncated content` warning and
+no `Truncated tool result observed` warning from the agent. After the fix
+(`evaluation/runs/20260923T160521Z-live-evidence-guard-fix.json`) the agent logs `Truncated tool result
+observed for tool 'readFile'`, so the flag no longer depends on the model. Against the ticket's three
+columns:
+- *Truncation*: surfaced in the `truncated` flag in both runs, but neither review text says the content
+  was truncated, although the system prompt's "Handling Truncated Content" section requires it. The
+  runtime flag is therefore the only reliable signal.
+- *Degraded analysis quality*: the findings are generic ("hardcoded strings", "complex `readFile`") and
+  cite wrong lines (`readFile` at 92–120; it starts at line 218), and the pre-fix run's "inconsistent
+  naming conventions for constants (e.g., some are uppercase, some camelCase)" is unsupported: every
+  constant in the file is `UPPER_SNAKE_CASE`. Wrong line citations also appear on the 40-line Go file
+  (Experiment #3), so they cannot be blamed on truncation alone.
+- *Token-limit errors*: none; the 20000-character cap kept the largest call at 7369 prompt tokens.
 
 ### Experiment #7 — Loop non-termination
 
@@ -201,10 +266,14 @@ would surface as `502`/`AI_PROVIDER_FAILURE` via `CodeReviewExceptionHandler`.
 own "need for (and behavior of) a max-iteration guard" — the guard exists, fires at the exact configured
 boundary (not off-by-one), and a bad configuration is caught before the application even accepts traffic.
 
-**Live half: `REQUIRES OPERATOR`.** A small `app.code-review.max-iterations` (e.g. 1-2) against a
-live-credentialed instance, with a `userInput` likely to encourage repeated exploration (e.g. a large,
-deeply-nested directory), to confirm the response is `500`/`AGENT_ITERATION_LIMIT_EXCEEDED` rather than a
-hang once genuine model tool-calling behavior is involved.
+**Live half: `COMPLETED` (2026-09-23, `gpt-4o`) — the guard fired exactly at the limit.** Case
+`exp7-loop-limit` in `evaluation/runs/20260923T114610Z-live-experiments.json`, run in a separate
+application start with `app.code-review.max-iterations=2` and `userInput` = `src`: the model called
+`exploreRepository("src")`, then `exploreRepository("src/main")` and `exploreRepository("src/test")` in
+one turn, and after exactly two model calls the agent aborted with `500`/`AGENT_ITERATION_LIMIT_EXCEEDED`
+in 8.54 s — no hang, no partial or fabricated review. The ERROR log line records what the aborted attempt
+cost: `agentModelCalls=2, agentPromptTokens=4595, agentCompletionTokens=66, agentTotalTokens=4661`. With
+the default of 8 iterations no reviewed file came close to the limit (the most was 4, in Experiment #3).
 
 ### Experiment #8 — Empty / non-code input
 
@@ -221,7 +290,9 @@ hang once genuine model tool-calling behavior is involved.
   additionally forces empty findings/honest review text even if a fake model claims findings anyway for
   an empty file.
 
-**Measured in this session**: both `[PASS]`.
+**Measured in this session**: both `[PASS]`. Added 2026-09-23:
+`CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAnEmptyFile`,
+the same scenario through the real `DefaultToolCallingManager` (see Experiment #4's correction).
 
 **Non-empty-but-non-code-file sub-case (e.g. a real README/prose file): a deliberate, documented hand-off,
 not a silent gap.** Per Increment 5's own `context/PROGRESS.md` entry ("Two hand-off decisions this
@@ -234,10 +305,102 @@ was judged a worse failure mode than the status quo. This is a real, honestly-di
 shipped system — a model that ignores the prompt and fabricates findings about a successfully-read,
 non-empty README would not be caught by any runtime guard.
 
-**Live half: `REQUIRES OPERATOR`.** Two `POST /code-review` calls against a live-credentialed instance —
-once with `userInput` pointing at `fixtures/repo-root/empty.txt` (hermetically enforced regardless, per
-above), once with `userInput` pointing at a real README/prose file — to observe whether the model's own
-behavior on the second, prompt-only-mitigated case is in fact graceful.
+**Live half: `COMPLETED` (2026-09-23, `gpt-4o`) — graceful in both sub-cases.** Prose file (case
+`exp8-prose-file` in `evaluation/runs/20260923T114610Z-live-experiments.json`, `userInput` =
+`README.md`, the module's assignment text): `200`, 0 findings, and a review that summarizes the document
+and says "No issues were identified in the content of this file." The prompt-only mitigation held for
+this input — one run, so no proof it always will. Empty file (case `exp4-exp8-empty-file`, see
+Experiment #4): 0 findings and an honest "the file is empty" review both before and after the fix; the
+runtime override described above protects this case in production only since the fix, which is when
+the guard became armed (`evidenceGathered=false`).
+
+## Live session (2026-09-23) — the real endpoint against `gpt-4o`
+
+**How it was run.** The application was started with `./mvnw -pl 03-code-review-agent spring-boot:run`
+on port 8099 (8080 was taken on the host), with `TEMP`/`TMP` pointed at `C:\Temp\javatmp` (see "Known
+environment limitation" below) and the operator's `AZURE_OPEN_AI_*` values for the `gpt-4o` deployment on
+`ai-proxy.lab.epam.com`. Each case was one `curl` `POST /code-review`; its request body, HTTP status,
+wall-clock duration, response body, every `com.epam.codereviewagent` log line it produced, and the text the
+executive-summary sub-agent printed were captured verbatim into the two artifacts below. Neither artifact
+contains the API key (checked by searching both for the key's value). Each artifact pins the exact
+production code that ran: `HEAD` (`e1e7f22`) plus a SHA-256 over all 35 files under `src/main`, since the
+code included uncommitted changes — the IntelliJ inspection fixes (among them four wording edits to the
+executive-summary system prompt), token usage logging, and, in the second artifact, the fix below.
+
+- `evaluation/runs/20260923T114610Z-live-experiments.json` — 7 cases, two application starts (defaults;
+  then `app.code-review.max-iterations=2` for the loop case).
+- `evaluation/runs/20260923T160521Z-live-evidence-guard-fix.json` — 3 cases re-run after the fix below.
+
+| Artifact | Case | Exp. | HTTP | Time | Findings | `truncated` | `evidenceGathered` | Agent calls / tokens |
+|---|---|---|---|---|---|---|---|---|
+| before fix | `baseline` (`evaluation/fixtures/FileUtils.java`) | — | 200 | 34.06 s | 2 | false | true | 4 / 16850 |
+| before fix | `exp3-missing-convention` | #3 | 200 | 16.37 s | 1 | false | true | 5 / 15381 |
+| before fix | `exp4-exp8-empty-file` | #4, #8 | 200 | 3.48 s | 0 | false | **true (wrong)** | 3 / 6363 |
+| before fix | `exp8-prose-file` | #8 | 200 | 8.15 s | 0 | false | true | 3 / 12236 |
+| before fix | `exp6-large-file` | #6 | 200 | 11.95 s | 2 | true (model only) | true | 3 / 17308 |
+| before fix | `exp5-path-traversal` | #5 | 400 | 0.06 s | — | — | — | 0 / 0 |
+| before fix | `exp7-loop-limit` (`max-iterations=2`) | #7 | 500 | 8.54 s | — | — | — | 2 / 4661 |
+| after fix | `exp4-exp8-empty-file` | #4, #8 | 200 | 5.76 s | 0 | false | false | 3 / 6347 |
+| after fix | `exp4-missing-file` | #4 | 200 | 4.43 s | 0 | false | false | 3 / 6406 |
+| after fix | `exp6-large-file` | #6 | 200 | 17.71 s | 2 | true (observed) | true | 3 / 17425 |
+
+"Agent calls / tokens" are the `agentModelCalls`/`agentTotalTokens` of the request's final log line; the
+calls made inside the two LLM-backed tools and by the executive-summary sub-agent are logged separately
+and not included (for the baseline: 545 + 1285 tool-call tokens, 1259 summary tokens).
+
+**Baseline (not an experiment).** The first case sent R12's ground-truth file through the full agent.
+`gpt-4o` again missed the file's most severe defect, the unvalidated path resolution (see R12): it
+reported an encoding-configuration finding and a "file-resolution-flexibility" finding whose
+recommendation — support more resolution paths — is the opposite of the fix the file actually needed.
+
+### Defect found and fixed: the evidence and truncation guards never fired in production
+
+- **Symptom**: the first run of the empty-file case logged `evidenceGathered=true`, and the large-file
+  case logged `CodeReviewTools`' truncation warning but not the agent's own `Truncated tool result
+  observed` warning. The logged `resultLength` was also longer than the text the tool returns (143
+  characters for the 141-character empty-file message).
+- **Root cause**: Spring AI's `DefaultToolCallingManager` converts each tool result with
+  `DefaultToolCallResultConverter`, which JSON-encodes any `String` that is not already valid JSON — so
+  the agent received the tool's text quoted and escaped. `EvidenceTracker`'s
+  `startsWith(READ_ERROR_PREFIX)`, `endsWith(EMPTY_FILE_MESSAGE_SUFFIX)` and
+  `contains(TRUNCATION_MARKER)` compared against the unencoded text and could never match.
+- **Why the tests missed it**: every `CodeReviewReactAgentTest` case used `FakeToolCallingManager`, which
+  passes the tool's text through unchanged, so the tests encoded an assumption about the framework rather
+  than exercising it.
+- **Fix**: `CodeReviewReactAgent#decodeToolResult` parses the payload and uses its text when it is a
+  JSON string; anything else is inspected as-is. The payload sent back to the model is untouched — the
+  model sees exactly what it saw before — so the model behavior in the pre-fix artifact is still
+  representative; only the agent's own inspection changed.
+- **Tests**: four new `CodeReviewReactAgentTest` cases run real `CodeReviewTools` through the real
+  `DefaultToolCallingManager`. The missing-file, empty-file and truncated-file cases failed before the
+  fix and pass after it; the real-file case is the control proving genuine findings are kept.
+- **Impact**: from Increment 5 until this fix, a fabricated finding about a missing or empty file would
+  have been returned to the client, and `truncated` depended on the model reporting it. No recorded
+  verdict changes: R12's runs bypass the agent loop, and in every live run above the model itself
+  reported 0 findings for the missing and empty files.
+
+### Token usage
+
+Every model call now logs its provider-reported token usage, and each request's final log line sums the
+agent's calls. The sums were checked against the per-call lines — baseline: 2292 + 4272 + 5634 + 4652 =
+16850 = `agentTotalTokens`. Observed: the fixed overhead of the system prompt and the six tool schemas is
+about 2270 prompt tokens on every request's first call (2267–2283 across the nine requests that reached
+the model); `getCodebaseContext` generated 721 completion tokens for the 53-line baseline file; and a
+failed request still reports what it cost (4661 tokens for Experiment #7's aborted run).
+
+### Other observations (not acted on)
+
+- **Line citations are unreliable**: `readFile` returns content without line numbers, and `gpt-4o`'s
+  citations were wrong for a 40-line file (Experiment #3) and a 30 000-character one (Experiment #6).
+  Prefixing line numbers would likely help, but changes what the model sees and how much of a file fits
+  under `max-file-chars`.
+- **Tool parameters reach the model as `arg0`** (e.g. `arguments={"arg0":"README.md"}`): the module is
+  compiled without `-parameters`, so Spring AI names method parameters by position. `gpt-4o` still called
+  every tool with the right argument in every request that reached it; renaming would change the tool
+  schema all recorded runs were made with.
+- **An alternative fix** — a `ToolCallResultConverter` that passes strings through unencoded — would also
+  shrink what the model receives (the encoded large-file result was 21060 characters versus 20212
+  decoded), but it changes the model's input; the decoding fix was chosen as the smaller change.
 
 ## R12 — Model-choice-justification subtask
 
@@ -391,8 +554,9 @@ a statistically powered claim about either model's general code-review accuracy 
 languages, or issue types. Treat this as one concrete, fully-verified data point, not a general verdict.
 
 **This 2-run result is the ticket-compliant, formal, headline R12 answer ("twice in a row per model"),
-already committed as `2d4cc34`. It is restated above exactly as originally measured — nothing in this
-section was re-derived or averaged over the supplementary runs below.**
+already committed as `2159fc3` (`2d4cc34` before the branch was rebased onto `main` on 2026-09-14). It is
+restated above exactly as originally measured — nothing in this section was re-derived or averaged over
+the supplementary runs below.**
 
 ### Supplementary evidence (2026-08-30) — 12 additional runs, NOT pooled with the 6-run result above
 
@@ -446,6 +610,16 @@ just parameter-presence flags.
 
 **Sample-size caveat, restated**: 18 runs total across two non-pooled series on one 53-line file remains a
 small, single-file sample — not a statistically powered general claim about either model.
+
+**Raw-artifact trim (2026-09-23), disclosed**: fields that no verdict or number in this file uses were
+removed from the `rawResponse` of the 18 run files — `id`, `created`, `object`, `system_fingerprint`,
+`service_tier`, `routing`, `prompt_filter_results`, each choice's `logprobs` and `content_filter_results`,
+the message's `refusal` and `annotations`, and `usage.completion_tokens`, `usage.total_tokens`,
+`usage.prompt_tokens_details` and the non-reasoning `usage.completion_tokens_details` counters. Everything
+cited above is unchanged: the review text, `finish_reason`, `latency_checkpoint`, `model`,
+`usage.prompt_tokens`, `usage.completion_tokens_details.reasoning_tokens`, and the recorded request data.
+The untrimmed files remain in git history (`2159fc3` for the 2026-08-29 runs, `9665330` for the
+2026-08-30 runs).
 
 ## R11 — GitLab Merge Request
 
@@ -511,6 +685,30 @@ Quality check checklist), and ensure the MR is accessible to facilitators.
   `03-code-review-agent/evaluation/`, `03-code-review-agent/scripts/`, and
   `03-code-review-agent/src/test/java/.../support/EvaluationAssetsTest.java`.
 
+### Re-verification (2026-09-23, after token usage logging and the evidence-guard fix)
+
+Run on the operator's Windows host with `TEMP`/`TMP` set to `C:\Temp\javatmp`:
+
+- **`./mvnw -pl 03-code-review-agent test`**: **BUILD SUCCESS** — `Tests run: 331, Failures: 0, Errors: 0,
+  Skipped: 2` across 21 test classes (310 plus 21 new: 7 `TokenUsageTest`, 8 `CodeReviewReactAgentTest` —
+  4 token-logging and 4 real-manager cases — 3 `CodeReviewToolsTest`, 2 `ExecutiveSummarySubAgentTest`,
+  1 `EvaluationAssetsTest`). The 2 skips are the same symlink capability gates ("Symbolic-link creation is
+  unavailable on this host"). Screenshot: `docs/screenshots/03-tests-passing.png`.
+- **`./mvnw -pl 03-code-review-agent clean verify`** (Surefire, Failsafe and JaCoCo, no `-DskipITs`):
+  **BUILD SUCCESS**. `HermeticApplicationContextIT`: `Tests run: 2, Failures: 0` — it passes on this host
+  with the `TEMP` workaround (see below). `jacoco:check`: "All coverage checks have been met." Summed from
+  the fresh `target/site/jacoco/jacoco.csv` over all 34 `src/main` classes (32 plus `TokenUsage` and
+  `CodeReviewReactAgent`'s nested `TokenUsageTracker`): **LINE = 703/725 = 96.97%**, INSTRUCTION =
+  3045/3131 = 97.25%, BRANCH = 255/269 = 94.80%.
+- **`03-code-review-agent/scripts/run-experiments.ps1 -HermeticOnly -SkipBuild`** (with `AZURE_OPEN_AI_*`
+  cleared): **22/22 cited hermetic test citations `[PASS]`, 0 `FAIL`, 0 `UNKNOWN`** — the original 17
+  plus the five citations of the new real-manager tests (three under Experiment #4, one each under #6
+  and #8), which were added to the harness's citation table. The longer output (4613 bytes, up from
+  3812) exposed a latent deadlock in `EvaluationAssetsTest`'s harness test: it waited for the script
+  before reading the script's output pipe, so once the output outgrew the 4 KB Windows pipe buffer the
+  script blocked and the test timed out at 60 s. The test now sends the output to a file and passes in
+  about 1 s.
+
 ## Known environment limitation, restated for the operator (per this increment's own explicit instruction)
 
 `HermeticApplicationContextIT`'s `@SpringBootTest(webEnvironment = RANDOM_PORT)` tests cannot run in this
@@ -523,3 +721,10 @@ untouched `02-rag/RagChatIT` failing the same way). This affects only `HermeticA
 this limitation. The operator must close this gap by re-running
 `./mvnw -pl 03-code-review-agent verify` (no `-DskipITs`) on a machine where loopback TCP sockets are
 available.
+
+**Update (2026-09-23): closed on the operator's Windows host.** The workaround already documented in
+`RUNBOOK.md`'s "Windows host note" — pointing `TEMP`/`TMP` at a short path such as `C:\Temp\javatmp`
+before starting Maven — makes `Selector.open()` work there. With it, `./mvnw -pl 03-code-review-agent
+clean verify` passes including `HermeticApplicationContextIT` (see "Re-verification" above), and
+`spring-boot:run` serves real HTTP, which is how the live session above was run. Without it, the same
+failure still reproduces on that host.

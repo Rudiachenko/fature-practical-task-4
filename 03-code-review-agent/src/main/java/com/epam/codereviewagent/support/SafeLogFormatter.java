@@ -10,21 +10,22 @@ import java.util.regex.Pattern;
  * in-repo precedent for R8's "user input and file content must not be able to forge log lines"
  * requirement. {@code CodeReviewReactAgent} applies this at every log call site that could carry
  * caller-supplied or repository-derived text: the incoming request, per-tool-call argument
- * summaries, and any model-derived text (e.g. a parse-failure reason) that might itself echo
+ * summaries, and any model-derived text (e.g., a parse-failure reason) that might itself echo
  * untrusted content back.
  *
  * <p><b>Diverged from the {@code 01-prompting-llm} original in Increment 5 retry 1 (code review,
  * Medium finding) - deliberately, not by accident; {@code 01-prompting-llm} itself is not
  * modified.</b> The original port stripped only {@code \r\n\t} and redacted {@code api-key}/
- * {@code Authorization} substrings, which was sufficient for {@code 01-prompting-llm} because the
+ * {@code Authorization} substrings, which was enough for {@code 01-prompting-llm} because the
  * only attacker-influenceable input reaching it was end-user chat text. In this module,
- * {@link CodeReviewTools#readFile(String)}/{@link CodeReviewTools#exploreRepository(String)}
+ * {@link com.epam.codereviewagent.service.CodeReviewTools#readFile(String)}/
+ * {@link com.epam.codereviewagent.service.CodeReviewTools#exploreRepository(String)}
  * return real, attacker-influenceable repository file content that this class's caller
  * ({@code CodeReviewReactAgent}) can pass straight into a tool-call argument summary or,
  * indirectly (via {@code retrieveCodeLanguage}/{@code getCodebaseContext}'s
  * {@code codeSnippet} argument), into further logged text - so a reviewed file containing a raw
  * ANSI/terminal escape sequence (the ESC code point U+001B followed by a control-sequence body,
- * e.g. {@code "[31m"}) in a comment could forge colored or cursor-moving output in a live log
+ * e.g., {@code "[31m"}) in a comment could forge colored or cursor-moving output in a live log
  * stream once written by any ANSI-aware terminal/log viewer. This class now also strips the full
  * C0 control-character range (including the ESC code point, U+001B, that begins every ANSI escape
  * sequence) and the two Unicode line-separator code points some log viewers honor as line breaks

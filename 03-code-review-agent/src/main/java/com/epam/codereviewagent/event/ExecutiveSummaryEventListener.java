@@ -36,9 +36,10 @@ import org.springframework.stereotype.Component;
  * {@code ChatModel} call) is handed off to {@link #executor} rather than run inline inside
  * {@link #onCodeReviewCompleted(CodeReviewCompletedEvent)}, which is itself invoked synchronously
  * by {@code ApplicationEventPublisher.publishEvent(...)} on the calling (request) thread. Handing
- * the work off to an {@link Executor} keeps that synchronous portion to a cheap, non-blocking
- * submission, so the caller of {@code publishEvent(...)} — {@code CodeReviewController}, after it
- * has already built the HTTP response — is never blocked waiting for a second LLM round-trip. The
+ * the work off to an {@link Executor} keeps that synchronous portion to an inexpensive,
+ * non-blocking submission, so the caller of {@code publishEvent(...)} —
+ * {@code CodeReviewController}, after it has already built the HTTP response — is never blocked
+ * waiting for a second LLM round-trip. The
  * production default {@link Executor} is {@link Executors#newVirtualThreadPerTaskExecutor()}
  * (lightweight, unbounded, one virtual thread per submitted task); tests substitute a directly
  * observable {@link Executor} via this class's package-private constructor, mirroring the exact
@@ -66,7 +67,7 @@ public class ExecutiveSummaryEventListener {
   /**
    * Test-only constructor: substitutes an explicit, directly observable {@link Executor} and
    * {@link PrintStream} instead of the production defaults, so tests can assert
-   * scheduling/ordering directly (e.g. by capturing the submitted task without running it) and
+   * scheduling/ordering directly (e.g., by capturing the submitted task without running it) and
    * capture printed output without {@code System.setOut(...)}.
    */
   ExecutiveSummaryEventListener(ExecutiveSummarySubAgent executiveSummarySubAgent,
