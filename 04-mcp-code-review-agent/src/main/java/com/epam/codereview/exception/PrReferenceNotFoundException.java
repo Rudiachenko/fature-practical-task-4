@@ -1,0 +1,19 @@
+package com.epam.codereview.exception;
+
+/**
+ * Thrown by {@link com.epam.codereview.util.PrReferenceResolver#validatePrReferencePresent(String)}
+ * when a request's free-text {@code userInput} carries no PR-shaped signal at all - no GitHub PR
+ * URL fragment, no {@code #<digits>} token, and no {@code owner/repo}-shaped slug. A weak or
+ * incomplete signal never triggers this exception; only a complete absence of one does (see that
+ * method's own Javadoc).
+ */
+public class PrReferenceNotFoundException extends RuntimeException {
+
+  public PrReferenceNotFoundException(String message) {
+    super(message);
+  }
+
+  public PrReferenceNotFoundException(String message, Throwable cause) {
+    super(message, cause);
+  }
+}

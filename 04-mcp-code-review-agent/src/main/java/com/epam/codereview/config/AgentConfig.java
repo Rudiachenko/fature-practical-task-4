@@ -3,6 +3,7 @@ package com.epam.codereview.config;
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.epam.codereview.service.CodeReviewTools;
 import com.epam.codereview.service.ConventionService;
+import com.epam.codereview.util.PrReferenceResolver;
 import org.springframework.ai.azure.openai.AzureOpenAiChatModel;
 import org.springframework.ai.azure.openai.AzureOpenAiChatOptions;
 import org.springframework.ai.chat.model.ChatModel;
@@ -40,5 +41,10 @@ public class AgentConfig {
         Tips: MCP tool callbacks can be retrieved from mcpToolCallbackProvider
        */
       .build();
+  }
+
+  @Bean
+  public PrReferenceResolver prReferenceResolver() {
+    return new PrReferenceResolver();
   }
 }
