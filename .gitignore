@@ -38,6 +38,10 @@ build/
 ### Local backlog ###
 BACKLOG.md
 
+### Local MR/changelog drafts (copy-pasted into GitLab, not versioned) ###
+MR.md
+CHANGELOG.md
+
 ### Local agent workspace ###
 /context/
 .claude/settings.local.json
