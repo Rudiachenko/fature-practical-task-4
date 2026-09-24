@@ -1,13 +1,15 @@
 # Ground truth — `FileUtils.java` fixture (R12 subtask)
 
-**Written before any model run was issued, per `context/TICKET.md`'s R12 analysis protocol ("Establish
-ground truth FIRST, before issuing any run or reading any model output").**
+**Written before any model run was issued, per the R12 subtask's own analysis protocol (establish ground
+truth first, before issuing any run or reading any model output) — see `03-code-review-agent/evaluation/RESULTS.md`'s R12 section. Committed together with the run artifacts in `2159fc3`, so git history cannot
+independently corroborate the ordering; this is the author's own session record.**
 
 Source: `03-code-review-agent/evaluation/fixtures/FileUtils.java`, verified byte-identical to
 `git show add6f68:03-code-review-agent/src/main/java/com/epam/codereviewagent/util/FileUtils.java`
 (pre-Increment-1 version of this repo's real `FileUtils`, before it was rewritten for genuine security
-reasons — see `context/PROGRESS.md`'s Increment 1 entry). 53 lines (`wc -l` = 53, one trailing newline
-after the closing brace on line 53).
+reasons — see commit `cf6cd00`'s message: "Rewrite FileUtils as a stateless bounded reader over an
+already-validated Path, dropping the previous user.dir candidate-root guessing"). 53 lines (`wc -l` = 53,
+one trailing newline after the closing brace on line 53).
 
 This analysis was derived independently, line by line, against the fixture content itself, and only
 cross-checked against Increment 1's record afterward (that cross-check is called out explicitly below
@@ -71,7 +73,7 @@ wherever it applies — it did not shape the initial derivation).
 53  }
 ```
 
-## Independently derived findings, by the ticket's five categories
+## Independently derived findings, by the subtask's five categories
 
 ### 1. Naming (naming-convention violations)
 
@@ -87,19 +89,19 @@ wherever it applies — it did not shape the initial derivation).
 
 ### 2. Code structure (long methods, single-responsibility violations)
 
-- The entire class is one method (lines 10–51, ~32 non-blank/non-brace statement lines). It performs
-  four distinct responsibilities inline: (a) blank-input validation (11–13), (b) leading-slash
-  normalization (16–19), (c) heuristic multi-candidate path construction and first-match resolution
-  (21–39), (d) file reading with exception translation (46–50).
+- The entire class is one method, spanning lines 10–51 (42 lines total, including braces, comments and
+  blank lines). It performs four distinct responsibilities inline: (a) blank-input validation (11–13),
+  (b) leading-slash normalization (16–19), (c) heuristic multi-candidate path construction and
+  first-match resolution (21–39), (d) file reading with exception translation (46–50).
 - **Real, legitimate finding**: this is a defensible "does too much in one method / SRP violation"
   critique — the path-resolution heuristic (b+c) is conceptually a different concern from "read this
   file's bytes" (d). This is not merely plausible-sounding: it is exactly the real, historical reason
-  this file was rewritten in this repository — `context/PROGRESS.md`'s Increment 1 entry describes
-  replacing "the insecure four-candidate-root path-guessing" with a dedicated, separately-testable
-  `RepositoryPathResolver`, leaving `FileUtils` as "a stateless bounded UTF-8 reader" with "zero
-  knowledge of path resolution, `user.dir`, or candidate roots." A model citing lines in the 21–39 range
-  as beyond a single method's responsibility, or as needing extraction, is credited as accurate.
-  (Cross-checked against Increment 1 after independent derivation — consistent.)
+  this file was rewritten in this repository — commit `cf6cd00` replaced this heuristic with a
+  dedicated, separately-testable `RepositoryPathResolver` and rewrote `FileUtils` itself into "a
+  stateless bounded reader over an already-validated Path" (commit message), leaving it with no
+  knowledge of `user.dir` or candidate roots. A model citing lines in the 21–39 range as beyond a single
+  method's responsibility, or as needing extraction, is credited as accurate. (Cross-checked against the
+  actual rewrite after independent derivation — consistent.)
 - 42 total lines (10–51) for one method is on the border of "long" by common heuristics (~20–30 line
   guidance); calling it "long" is defensible given point (a)-(d) above, but calling it "extremely long"
   or citing a much larger line count would be an overstatement.
@@ -114,7 +116,8 @@ wherever it applies — it did not shape the initial derivation).
   file, so there is nothing to leak and no missing try-with-resources. **A model claiming a resource
   leak, an unclosed stream, or a missing try-with-resources block is making a false claim** — flag this
   specifically, since "resource management" is one of the two things this category explicitly asks
-  about and it is exactly the kind of generic, templated claim the ticket warns about.
+  about and it is exactly the kind of generic, templated claim README.md's subtask section warns about
+  ("Watch for generic, templated claims that sound true for almost any class but may not be true here").
 - Minor, real: the not-found exception message (lines 42–43) embeds the full list of internally
   constructed candidate filesystem paths via `.toList()`, which could leak local filesystem layout
   details in an error message — a defensible minor best-practice note, not a blocker.
@@ -126,7 +129,7 @@ wherever it applies — it did not shape the initial derivation).
 - **Real finding — no Javadoc**: neither the public class (line 8) nor the public static method (line
   10) has any Javadoc, despite the method being public API with non-obvious multi-candidate-resolution
   behavior that would benefit from documentation. Legitimate.
-- **Not entirely fair as a blanket "no comments" claim**: the file does have four inline comments (lines
+- **Not entirely fair as a blanket "no comments" claim**: the file does have five inline comments (lines
   15, 18, 24, 26, 29) explaining the normalization and each candidate. A model asserting the file "has no
   comments at all" would be factually wrong; a model asserting "lacks Javadoc despite having a few inline
   comments" would be accurate.
@@ -154,8 +157,8 @@ wherever it applies — it did not shape the initial derivation).
   `1` as a magic number is citing something real (not fabricated) — score it as a defensible, if
   aggressive/debatable, catch, not a false claim. **Any magic-number finding that does NOT trace back to
   this one literal on line 18** (e.g. a citation to any other line, or a vague unattributed "magic
-  numbers are present" claim) **is a false claim** — this remains the clearest trap in the ticket's own
-  category list, just narrower than originally stated.
+  numbers are present" claim) **is a false claim** — this remains the clearest trap in this category,
+  just narrower than originally stated (see trap #1 below, updated to match).
 - **Real finding — naive string handling**: lines 17–19 strip only a single leading `"/"` character via
   `startsWith("/")`/`substring(1)`. This does not handle a leading backslash, a Windows drive-letter
   prefix (`C:\...`), a UNC path (`\\server\share\...`), or multiple leading slashes. This is a genuine,
@@ -172,16 +175,15 @@ wherever it applies — it did not shape the initial derivation).
   boundary (e.g. the working directory or a repository root) before it is read. A caller-supplied
   `path` such as `../../../../etc/passwd` (or an absolute path, since `Path.of(trimmed)` on line 30 is
   tried raw) can resolve and be read from entirely outside any intended root. This is the exact,
-  documented reason this file was replaced in this repository: `context/PROGRESS.md`'s Increment 1 entry
-  describes the original as "insecure four-candidate-root path-guessing" and introduces
-  `RepositoryPathResolver` specifically to add "a single, deterministic, independently testable" path
-  containment check that this fixture version does not have. Whether a model's own category taxonomy
-  places this under "Best practices" (missing input validation) or "Common anti-patterns," **any model
-  that fails to identify some form of unrestricted/unvalidated path resolution as a significant issue is
-  missing the single most important real defect in this file** — this is the primary blind-spot check
-  for every run. (Cross-checked against Increment 1 after independent derivation — consistent; this is
-  the ground-truth item Increment 1's own commit message and PROGRESS.md entry exist specifically to
-  document.)
+  documented reason this file was replaced in this repository: commit `cf6cd00` adds
+  `RepositoryPathResolver`, whose own Javadoc (`03-code-review-agent/src/main/java/com/epam/codereviewagent/util/RepositoryPathResolver.java`)
+  describes exactly this containment check, which this fixture version does not have. Whether a model's
+  own category taxonomy places this under "Best practices" (missing input validation) or "Common
+  anti-patterns," **any model that fails to identify some form of unrestricted/unvalidated path
+  resolution as a significant issue is missing the single most important real defect in this file** —
+  this is the primary blind-spot check for every run. (Cross-checked against the actual rewrite after
+  independent derivation — consistent; this is the ground-truth item commit `cf6cd00` exists
+  specifically to fix.)
 - Also a real, secondary point under this heading: line 21's `System.getProperty("user.dir")` makes path
   resolution depend on the JVM's launch-time working directory, which is fragile/non-deterministic
   across different invocation contexts (IDE run, `mvn` reactor build, packaged jar) — a legitimate,
@@ -203,7 +205,8 @@ wherever it applies — it did not shape the initial derivation).
 Any of the following, if asserted by a model as present in `FileUtils.java`, is a **false claim** and
 must be scored as such, quoted verbatim from the response:
 
-1. Any magic-number finding (zero numeric literals exist in the file).
+1. Any magic-number finding that does not trace to line 18's literal `1` (the file's only numeric
+   literal; citing that one literal is a defensible, debatable catch, not a false claim — see above).
 2. Any unclosed-resource / resource-leak / missing-try-with-resources finding (`Files.readString`
    self-manages its stream; nothing is manually opened).
 3. Any "swallowed exception" / "lost stack trace" / "cause not chained" finding about lines 48–49 (the
@@ -228,9 +231,9 @@ regardless of what else it finds.
 
 ## Addendum — corrections and additions made after reading the six live model responses
 
-Per the ticket's own instruction to verify every claim against the file (which applies to this document
-too, not only to model output), two things surfaced during scoring that belong here, disclosed rather
-than silently absorbed:
+Per this evaluation's own instruction to verify every claim against the file (which applies to this
+document too, not only to model output), two things surfaced during scoring that belong here, disclosed
+rather than silently absorbed:
 
 1. **The "zero magic numbers" claim above was originally wrong and has been corrected in place** (see the
    struck-through-and-replaced paragraph under "Common anti-patterns" above) — line 18's `substring(1)`
@@ -243,10 +246,11 @@ than silently absorbed:
    here as a confirmed real finding, not merely accepted on the model's say-so: verified directly against
    the file — line 35 is indeed the existence/regular-file check and line 47 is indeed the later read,
    with no re-verification of file state in between. Interestingly, this exact TOCTOU class of gap is
-   also independently documented for the *replacement* code in `context/PROGRESS.md`'s Increment 1 entry
-   ("Medium — TOCTOU between `resolveFile()` and `readFile()`"), so it is a recurring, structurally
-   inherent property of this two-step check-then-read design, not a one-off coincidence.
+   also independently documented for the *replacement* code: `FileUtils.java`'s own Javadoc in this
+   repository carries a "TOCTOU note" for the same check-then-read split, narrowed but not eliminated by
+   opening with `NOFOLLOW_LINKS`, so it is a recurring, structurally inherent property of this two-step
+   design, not a one-off coincidence in this fixture alone.
 
 This document's own initial derivation was not perfectly exhaustive, and that imperfection is recorded
-here explicitly rather than quietly patched, consistent with `context/RETROSPECTIVE.md`'s standing rule
-against confidently-wrong self-reporting.
+here explicitly rather than quietly patched — the same honesty standard this evaluation holds every
+model response to.

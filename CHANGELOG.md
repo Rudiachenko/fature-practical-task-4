@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com).
 
-## [Unreleased] — 2026-08-29
+## [Unreleased]
 
 Module 3 (`03-code-review-agent`): an LLM-powered code review agent that reasons
 over repository code through a bounded tool-assisted loop and returns
@@ -43,12 +43,14 @@ evidence-based results.
   sub-agent — logs its provider-reported prompt, completion and total tokens, and
   a request's closing log line, including on the iteration-limit and
   unusable-output failures, sums the agent's own calls.
-- **Operational documentation** in `03-code-review-agent/RUNBOOK.md` and an
-  experiments harness under `03-code-review-agent/evaluation/`, recording
+- **Operational documentation** in `03-code-review-agent/RUNBOOK.md`, an
+  experiments harness (`03-code-review-agent/scripts/run-experiments.ps1`) and
+  evaluation records under `03-code-review-agent/evaluation/`, recording
   measured outcomes for the six assignment experiments that are provable without
-  a live model, live results against a real deployment for five of them, and
-  explicitly marking what is still missing — the live halves of the tool-overload
-  and ambiguous-description experiments — as requiring an operator.
+  a live model (a regression guard only for one of them), live results against a
+  real deployment for five of them, and explicitly marking what is still missing
+  — the live halves of the tool-overload and ambiguous-description experiments —
+  as requiring an operator.
 
 ### Changed
 

@@ -1,5 +1,5 @@
 {
-  "$comment": "Fillable instance of model-comparison-schema.json (R12 subtask). This is the actual 6-entry (3 deployments x 2 runs) result set an operator fills in - not the schema itself. Every score/verdict field below starts unpopulated (status: PENDING, verdict: null) because no live DIAL/VPN run has been performed in this sandbox; see 03-code-review-agent/evaluation/RESULTS.md's R12 section for what an operator must do to turn this template into a real, COMPLETED artifact. Copy this file to evaluation/runs/<timestamp>-model-comparison.json before filling it in, so this template itself stays a clean, always-empty starting point.",
+  "$comment": "Fillable instance of model-comparison-schema.json (R12 subtask): the 6-entry (3 deployments x 2 runs) result set a completed run fills in. Every score/verdict field below stays unpopulated (status: PENDING, verdict: null) by design - this template is never filled in place. The completed instance is evaluation/runs/20260829T193452Z-model-comparison.json (COMPLETED, 2026-08-29; see RESULTS.md's R12 section). To run this subtask again, copy this file to evaluation/runs/<timestamp>-model-comparison.json and fill in the copy, so this template stays a clean, always-empty starting point.",
   "schemaVersion": 1,
   "status": "REQUIRES_OPERATOR",
   "sourceFile": null,

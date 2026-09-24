@@ -2,9 +2,9 @@
 
 **Status: PARTIALLY COMPLETE — every hermetically-provable mechanism actually re-run and confirmed passing in this session; R12's model-comparison subtask has now actually been run live against the DIAL API (see its own section below) and is `COMPLETED`, not `REQUIRES OPERATOR`; on 2026-09-23 the live halves of Experiments #3/#4/#6/#7/#8 were run through the real `POST /code-review` endpoint and are `COMPLETED` (#5 was reconfirmed over real HTTP), and that session found and fixed a production defect in the evidence and truncation guards (see "Live session (2026-09-23)" below); the remaining live-model-dependent pieces (Experiments #1/#2's live half and R11's Merge Request) remain explicitly `REQUIRES OPERATOR`, not fabricated.**
 
-This file accounts for all 8 README/`context/TICKET.md` Experiments & Edge Cases (R13), the R12
+This file accounts for all 8 README Experiments & Edge Cases (R13), the R12
 model-choice-justification subtask, and R11 (GitLab Merge Request). `03-code-review-agent/README.md`
-is the original, unmodified ticket text; this file — together with `03-code-review-agent/RUNBOOK.md`
+is the original, unmodified assignment text; this file — together with `03-code-review-agent/RUNBOOK.md`
 — documents what was actually built and actually measured. No score, verdict, or "ran successfully"
 claim below is made for anything that did not actually run in this session; where live DIAL/VPN access
 was required and unavailable, the section says so explicitly rather than estimating or narrating a
@@ -12,15 +12,17 @@ plausible outcome.
 
 ## What was actually run in this session, and what was not
 
-- **Actually run in this session**: `./mvnw -pl 03-code-review-agent test` (Surefire, 310 tests — the
-  Increment 7 baseline of 299 plus this increment's 11 `EvaluationAssetsTest` cases, corrected from an
-  earlier, stale count of 309 recorded before a retry added the 11th case),
+- **Actually run on 2026-08-29 (Increment 8)**: `./mvnw -pl 03-code-review-agent test` (Surefire, 310
+  tests — the Increment 7 baseline of 299 plus this increment's 11 `EvaluationAssetsTest` cases, corrected
+  from an earlier, stale count of 309 recorded before a retry added the 11th case),
   `./mvnw -pl 03-code-review-agent clean verify -DskipITs=true` (JaCoCo), `./mvnw -pl 03-code-review-agent
   verify` (full Failsafe pipeline, to re-confirm the known `HermeticApplicationContextIT` environment
   limitation still holds and has not silently changed), `./mvnw -DskipTests compile` (full 4-module
-  reactor), and `03-code-review-agent/scripts/run-experiments.ps1 -HermeticOnly` (twice — once with
-  `-SkipBuild` reusing a fresh Surefire run's own reports, and once via the script's own `mvnw test`
-  invocation). See "Final verification" below for the exact numbers. **In a later session with live
+  reactor), and `03-code-review-agent/scripts/run-experiments.ps1 -SkipBuild` (plain, not
+  `-HermeticOnly`, with `AZURE_OPEN_AI_*` cleared from the process environment first, so the
+  "no credentials" live-portion path is genuinely exercised, not merely asserted, alongside the 17
+  hermetic citations). See "Final verification" below for the exact 2026-08-29 numbers, and
+  "Re-verification (2026-09-23)" for the current ones. **In a later session with live
   EPAM VPN + DIAL access, the R12 model-comparison subtask was also actually run** — 6 real
   `chat/completions` calls against `gpt-4o`, `gpt-4.1-nano-2025-04-14`, and `gpt-5-mini-2025-08-07` (2
   runs each) — see R12's own section below for the full, measured result. **In a still later session
@@ -46,11 +48,12 @@ plausible outcome.
 ## Experiments & Edge Cases (R13) — all 8, individually accounted for
 
 Machine-readable companion: `03-code-review-agent/evaluation/experiments.json` (walked structurally by
-`EvaluationAssetsTest`, not merely parsed). Raw output of the actually-run hermetic harness:
-`03-code-review-agent/evaluation/runs/20260829T072308Z-hermetic-experiments.txt` (produced by
-`scripts/run-experiments.ps1 -HermeticOnly -SkipBuild` in this session, with `AZURE_OPEN_AI_*`
-explicitly cleared from the process environment first, so the "no credentials" path is genuinely
-exercised, not merely asserted).
+`EvaluationAssetsTest`, not merely parsed). Raw output of the actually-run hermetic harness, current as of
+2026-09-24 (23 citations — the historical 2026-08-29 run recorded 17, see "Increment 8 verification" below):
+`03-code-review-agent/evaluation/runs/20260924T113734Z-hermetic-experiments.txt` (produced by plain
+`scripts/run-experiments.ps1 -SkipBuild`, not `-HermeticOnly`, with `AZURE_OPEN_AI_*` explicitly cleared
+from the process environment first, so the "no credentials" live-portion path is genuinely exercised, not
+merely asserted, alongside the hermetic citations).
 
 ### Experiment #1 — Tool overload
 
@@ -61,8 +64,7 @@ exercised, not merely asserted).
 meaningfully exist.** Tool-selection quality under an inflated tool list is an emergent property of a
 live model's own reasoning; no fake/hermetic `ChatModel` can distinguish "the model picked a worse tool
 because there were more of them" from "the model picked the same tool regardless" — a fake always does
-exactly what the test tells it to do. This is consistent with `context/TICKET.md`'s own R13 disposition
-("experiments #1 and #2 ... require an operator with DIAL/VPN access"). To run this experiment once
+exactly what the test tells it to do. To run this experiment once
 credentials are available, see `evaluation/experiments.json`'s `id: 1` entry for the exact manual steps
 (temporarily add 2-4 redundant `@Tool` methods to `AgentConfig#chatOptions`'s callback list, compare a
 live run's tool-call sequence and iteration count against a baseline).
@@ -75,8 +77,10 @@ live run's tool-call sequence and iteration count against a baseline).
 **Hermetic regression guard: PROVEN, re-run in this session.**
 `CodeReviewToolsTest#shouldHaveNonBlankDescriptionLongerThanTwentyCharacters_forEveryToolAnnotatedMethod`
 reflects over every `@Tool`-annotated method on the real `CodeReviewTools` and asserts every description
-is non-blank, longer than 20 characters, and that no two descriptions are identical. **Measured in this
-session**: `[PASS]` — see the artifact above. This proves the shipped tool descriptions are not currently
+is non-blank and longer than 20 characters; a second test,
+`CodeReviewToolsTest#shouldHaveNoTwoIdenticalToolDescriptions_amongAllToolAnnotatedMethods`, separately
+asserts no two are identical. **Measured in this session**: both `[PASS]` — see the artifact above. This
+proves the shipped tool descriptions are not currently
 blank/duplicated/ambiguous by a concrete, checkable bar (Increment 2's own regression guard against this
 exact failure mode being reintroduced later); it does not and cannot prove anything about a real model's
 behavior once a description is deliberately degraded.
@@ -106,9 +110,9 @@ file, detected `go`, and called `retrieveCodeConvention("go")`; the application 
 coding convention specific to Go was found for this review." No Go rule was invented or borrowed from
 the Java/Python conventions. Two observations beyond the experiment's question: the one finding (the
 errors of `json.Marshal` and `os.WriteFile` ignored in `Save`) is real but cites line 20 instead of
-38–39, because `readFile` hands the model the content without line numbers; and the fixture's other
-issues (unsynchronized map access, expired entries never evicted, the exported `New` without a doc
-comment) were not reported.
+38–39, most likely because `readFile` hands the model the content without line numbers; and the fixture's
+other issues (unsynchronized map access, expired entries never evicted, the exported `New`, `Set`, `Get`
+and `Save` without doc comments) were not reported.
 
 ### Experiment #4 — Evidence enforcement
 
@@ -130,8 +134,9 @@ Two effect-verified tests, both against a fake model that claims non-empty findi
 `EvidenceTracker` override (Architecture Note A4) forces the returned `CodeReviewResponse` to empty
 `findings` plus the honest `NO_EVIDENCE_REVIEW_TEXT`, regardless of what the fake model's own final
 answer claimed — a structural, code-level guard, not a prompt-only mitigation. **Corrected
-evidence-enforcement contract** (Increment 5 retry 1, recorded once already in `context/PROGRESS.md`,
-restated here since it is this experiment's exact mechanism): `evidenceGathered` becomes `true` iff at
+evidence-enforcement contract** (Increment 5 retry 1, commit `d55a71a`'s message records this same
+correction — excluding the empty-file sentinel alongside the error sentinel — restated here since it is
+this experiment's exact mechanism): `evidenceGathered` becomes `true` iff at
 least one tool response named exactly `readFile` (a) does not start with `FileUtils.READ_ERROR_PREFIX`
 **and** (b) does not end with `CodeReviewTools.EMPTY_FILE_MESSAGE_SUFFIX`.
 
@@ -294,9 +299,9 @@ the default of 8 iterations no reviewed file came close to the limit (the most w
 `CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAnEmptyFile`,
 the same scenario through the real `DefaultToolCallingManager` (see Experiment #4's correction).
 
-**Non-empty-but-non-code-file sub-case (e.g. a real README/prose file): a deliberate, documented hand-off,
-not a silent gap.** Per Increment 5's own `context/PROGRESS.md` entry ("Two hand-off decisions this
-increment made explicitly", decision 1): this narrower case is left as a **prompt-only mitigation** (the
+**Non-empty-but-non-code-file sub-case (e.g. a real README/prose file): a deliberate hand-off, not a
+silent gap — recorded here, since it is a design decision made during Increment 5, not something a test
+or a commit message documents on its own.** This narrower case is left as a **prompt-only mitigation** (the
 system prompt's "Evidence Requirements" section instructs the model to say so honestly when a file "is
 empty or contains no meaningfully reviewable content"), not a runtime/structural guard. The decision was
 made deliberately, not overlooked: a hand-rolled "is this reviewable code" classifier risks **false
@@ -310,7 +315,8 @@ non-empty README would not be caught by any runtime guard.
 `README.md`, the module's assignment text): `200`, 0 findings, and a review that summarizes the document
 and says "No issues were identified in the content of this file." The prompt-only mitigation held for
 this input — one run, so no proof it always will. Empty file (case `exp4-exp8-empty-file`, see
-Experiment #4): 0 findings and an honest "the file is empty" review both before and after the fix; the
+Experiment #4): 0 findings and an honest review ("exists in the repository but is empty (zero bytes)"
+before the fix, "exists but is completely empty" after it) both before and after the fix; the
 runtime override described above protects this case in production only since the fix, which is when
 the guard became armed (`evidenceGathered=false`).
 
@@ -323,9 +329,16 @@ environment limitation" below) and the operator's `AZURE_OPEN_AI_*` values for t
 wall-clock duration, response body, every `com.epam.codereviewagent` log line it produced, and the text the
 executive-summary sub-agent printed were captured verbatim into the two artifacts below. Neither artifact
 contains the API key (checked by searching both for the key's value). Each artifact pins the exact
-production code that ran: `HEAD` (`e1e7f22`) plus a SHA-256 over all 35 files under `src/main`, since the
-code included uncommitted changes — the IntelliJ inspection fixes (among them four wording edits to the
-executive-summary system prompt), token usage logging, and, in the second artifact, the fix below.
+production code that ran with a SHA-256 over all 35 files under `src/main` — at the time of the run, `HEAD`
+(`e1e7f22`) plus uncommitted changes (the IntelliJ inspection fixes, among them four wording edits to the
+executive-summary system prompt, token usage logging, and, in the second artifact, the fix below), all of
+which are now committed as `7bd8d11`. The after-fix run's tree hash (`b581f2b7…`) is reproducible by
+anyone from the committed tree: `git rev-parse 7bd8d11:03-code-review-agent/src/main` resolves to tree
+`0446ad8c…`, matching. The pre-fix tree is that same tree minus the `decodeToolResult` change (three
+imports, the method itself, and one line in `executeAndLogToolCalls`) and is not independently
+reproducible from a later commit. The SHA-256 command itself (`find ... | LC_ALL=C sort | xargs sha256sum
+| sha256sum`) is only guaranteed to reproduce the recorded digest on a checkout with the same line endings
+as the one it ran on (CRLF, per this repository's `.gitattributes`).
 
 - `evaluation/runs/20260923T114610Z-live-experiments.json` — 7 cases, two application starts (defaults;
   then `app.code-review.max-iterations=2` for the loop case).
@@ -372,8 +385,12 @@ recommendation — support more resolution paths — is the opposite of the fix 
   model sees exactly what it saw before — so the model behavior in the pre-fix artifact is still
   representative; only the agent's own inspection changed.
 - **Tests**: four new `CodeReviewReactAgentTest` cases run real `CodeReviewTools` through the real
-  `DefaultToolCallingManager`. The missing-file, empty-file and truncated-file cases failed before the
-  fix and pass after it; the real-file case is the control proving genuine findings are kept.
+  `DefaultToolCallingManager`. The missing-file, empty-file and truncated-file cases are constructed to
+  fail without the fix — `JsonParser.toJson` quotes the tool's `String` result, defeating each
+  `startsWith`/`endsWith`/`contains` check the same way the live run above observed — and pass with it;
+  the real-file case is the control proving genuine findings are kept. (This was not separately captured
+  as a red-then-green run in this session; reverting `decodeToolResult` and re-running
+  `CodeReviewReactAgentTest` reproduces the failure directly.)
 - **Impact**: from Increment 5 until this fix, a fabricated finding about a missing or empty file would
   have been returned to the client, and `truncated` depended on the model reporting it. No recorded
   verdict changes: R12's runs bypass the agent loop, and in every live run above the model itself
@@ -414,15 +431,21 @@ result remains the 2-run measurement immediately below, unchanged.**
 
 The scaffolding above (still accurate as a description of what was built earlier) assumed an operator
 would drive this subtask through the real `POST /code-review` endpoint. That endpoint could not be used
-here either: the embedded Tomcat server in this sandbox still cannot bind a loopback socket
+on 2026-08-29 either: the embedded Tomcat server could not bind a loopback socket
 (`java.nio.channels.Selector.open()` fails — the same, already-documented `HermeticApplicationContextIT`
-limitation). Instead, this subtask was run as **direct DIAL `chat/completions` calls**
+limitation; the `TEMP`/`TMP` workaround used from 2026-09-23 onward, see "Known environment limitation"
+below, postdates this series and was not applied here). Instead, this subtask was run as **direct DIAL
+`chat/completions` calls**
 (`POST {endpoint}/openai/deployments/{deployment}/chat/completions?api-version=2024-10-21`, header
 `Api-Key`), sending the file content and the five required categories directly in the prompt, bypassing
-the agent's own tool-calling ReAct loop entirely. This is a deliberate, disclosed deviation: the ticket's
-subtask itself only requires "run the same review prompt with each model... twice in a row per model on
-the identical file" — it does not require exercising the ReAct/tool-calling machinery, and doing so was
-not possible in this sandbox regardless. **The identical request shape was used for all six calls**: a
+the agent's own tool-calling ReAct loop entirely. This is a deliberate, disclosed deviation: README.md's
+subtask description itself only requires "run the same review prompt with each model... twice in a row
+per model on the identical file" — it does not require exercising the ReAct/tool-calling machinery, and
+doing so was not possible on 2026-08-29 regardless. **What this measures, stated precisely**: how each
+model reviews a file given the same single prompt, not how the shipped agent (with its tool-calling loop,
+system prompt and evidence guard) reviews it — the 2026-09-23 "baseline" case in the live session above is
+a first, single data point on the agent path, using only the default `gpt-4o` deployment; no live agent-path
+run exists yet for the other two deployments. **The identical request shape was used for all six calls**: a
 `system` + `user` message pair only, no `temperature`/`top_p` parameter on any of the three deployments
 (so `gpt-5-mini-2025-08-07`'s reasoning-model parameter sensitivity never came into play — it was avoided
 by construction rather than special-cased). Full request/response artifacts, one file per run:
@@ -439,7 +462,7 @@ Chosen file: `03-code-review-agent/evaluation/fixtures/FileUtils.java` — the r
 version of this repository's own `util/FileUtils.java` (verified byte-identical to `git show
 add6f68:03-code-review-agent/src/main/java/com/epam/codereviewagent/util/FileUtils.java`, 53 lines), a
 genuine non-trivial file with a real mix of issues, and one whose actual defects and later fix are
-independently documented elsewhere in this repository (`context/PROGRESS.md`'s Increment 1 entry),
+independently documented elsewhere in this repository (commit `cf6cd00`'s message, which rewrote it),
 giving an unusually strong independent check on the ground truth.
 
 **Ground truth was derived independently, line by line, before any run was issued or any model output
@@ -458,10 +481,10 @@ exact, historically documented reason this file was rewritten in this repository
 | Deployment | Run | Verdict | Why |
 |---|---|---|---|
 | `gpt-4o` | 1 | **PASS** | Every cited line verified against the file (two minor off-by-one citations, substance still accurate); no false claims. Missed the path-traversal issue, the missing private constructor, and the TOCTOU race. |
-| `gpt-4o` | 2 | **FAIL** | Four new, verified-false claims not present in run 1 (see quotes below). |
+| `gpt-4o` | 2 | **FAIL** | Two new, verified-false claims not present in run 1 (see quotes below) — rescored from an original four after two off-by-one citations with accurate substance were found to be scored inconsistently with how run 1's own off-by-one citations were treated; see the "rescored 2026-09-24" note in `model-comparison.json`. |
 | `gpt-4.1-nano-2025-04-14` | 1 | **PASS** | No false claims; correctly avoided every trap (no magic-number claim, no resource-leak claim, no deep-nesting overstatement). Weakness was under-claiming (explicitly denied a real issue), not fabricating one. |
 | `gpt-4.1-nano-2025-04-14` | 2 | **PASS** | No false claims; caught a genuinely specific, correct, non-generic detail (`.toList()` is Java 16+) no other run mentioned; came close to (but did not fully name) the path-traversal issue. |
-| `gpt-5-mini-2025-08-07` | 1 | **PASS** | No false claims; uniquely caught the missing private constructor and the TOCTOU race. |
+| `gpt-5-mini-2025-08-07` | 1 | **PASS** | No false claims; the only run of all six to catch the missing private constructor; caught the TOCTOU race (as did run 2). |
 | `gpt-5-mini-2025-08-07` | 2 | **PASS** | No false claims; the **only run of all six** to explicitly name the file's single most severe real issue — unvalidated path resolution allowing escape outside the intended directory — with accurate line citations. |
 
 **Reversed verdicts**: `gpt-4o` reversed between its two runs (PASS → FAIL) — the ticket treats this as a
@@ -471,32 +494,39 @@ the PASS/FAIL level, though `gpt-4.1-nano-2025-04-14` reversed at the level of a
 "performs multiple responsibilities... consider splitting into smaller, focused methods" — the same
 underlying question, opposite conclusions, on the identical file).
 
-### `gpt-4o` run 2's four false claims — quoted verbatim, scored against the real file
+### `gpt-4o` run 2's two false claims — quoted verbatim, scored against the real file
 
 1. Claimed the candidate array **"lacks in-line comments or explanations for each path"** (cited lines
    23-31). **False**: lines 24, 26 and 29 each carry an inline comment (`// As passed...`, `// Common
    source roots`, `// If user included src/ already...`).
-2. Claimed **"the purpose of the logic to remove the leading slash is unclear and might benefit from a
-   comment"** (cited line 17). **False**: line 18, immediately adjacent, already has
-   `// treat leading slash as classpath-style relative`, which states exactly that rationale.
-3. Claimed **"the hardcoded `\"src/main/java\"` and `\"src/test/java\"` strings are effectively magic
-   strings"** and cited **line 30**. The underlying observation (hardcoded path segments) is real, but
-   line 30 is `Path.of(trimmed).normalize()` — it contains no string literal at all; the actual literals
-   are on lines 27 and 28. Per the ticket's own rule ("a finding citing a line number is false if that
-   line does not contain what it claims"), this is scored false as cited.
-4. Claimed **"the loop checking each candidate path introduces a deep nesting structure"** (cited lines
+2. Claimed **"the loop checking each candidate path introduces a deep nesting structure"** (cited lines
    33-39). **False**: the maximum nesting depth in the entire file is 2 (one `for` containing one `if`)
    — not deep by any normal standard, and this exact overstatement was flagged in advance as the
    clearest trap in the ground-truth document.
 
-None of these four claims appear in `gpt-4o` run 1, satisfying the ticket's own fail rule ("a new false
+Neither of these two claims appears in `gpt-4o` run 1, satisfying README.md's own fail rule ("a new false
 claim not present in the model's other run") directly.
+
+**Rescored 2026-09-24** (was originally scored as four false claims; see `model-comparison.json`'s own
+`$comment` for the full rationale): two further citations were initially scored false but, on review,
+apply a stricter standard than this evaluation applies to comparable citations elsewhere, and are now
+scored as citation defects with accurate substance rather than false claims — the same treatment run 1's
+own off-by-one citations already received (see "Per-run results" above). Claimed **"the purpose of the
+logic to remove the leading slash is unclear and might benefit from a comment"** (cited line 17): line 18,
+immediately adjacent, already has `// treat leading slash as classpath-style relative`, which states
+exactly that rationale — an off-by-one citation, not a fabrication. Claimed **"the hardcoded
+`\"src/main/java\"` and `\"src/test/java\"` strings are effectively magic strings"** (cited line 30): line
+30 is `Path.of(trimmed).normalize()`, containing no string literal at all, but the underlying observation
+is real — the actual literals are on lines 27 and 28, three lines off. Both are moved to "Generic/templated
+claims flagged" below.
 
 ### Generic/templated claims flagged (checked specifically against this file, not accepted on plausibility)
 
-- `gpt-4o` run 2's "candidates array lacks comments" and "no comment on the leading-slash logic" are
-  exactly the ticket's own named example of a generic, plausible-sounding "add documentation" claim that
-  turns out to be false for this specific file.
+- `gpt-4o` run 2's "no comment on the leading-slash logic" (cited line 17, comment is on line 18) and
+  "hardcoded path strings are magic strings" (cited line 30, the literals are on lines 27-28) are each an
+  off-by-one/mis-cited claim with accurate underlying substance — not counted as false claims (see the
+  rescoring note above), but flagged since a generic, plausible-sounding "add documentation"/"magic
+  string" claim checked closely against this specific file turns out to be imprecisely cited.
 - `gpt-5-mini-2025-08-07`'s "`substring(1)`'s literal `1` is a magic number" (both runs, consistently)
   is a real citation, not a fabrication, but a debatable/aggressive classification — common
   static-analysis conventions (e.g. Checkstyle's `MagicNumber` check) exclude small self-evident literals
@@ -530,16 +560,18 @@ claim not present in the model's other run") directly.
 ### Recommendation: is the default `gpt-4o` justified for code review?
 
 **On this single 53-line file and six runs, no — `gpt-5-mini-2025-08-07` was the strongest and most
-reliable reviewer, and the cheap `gpt-4.1-nano-2025-04-14` was more reliable than `gpt-4o`,** reported
-plainly rather than defending the ticket's own default:
+reliable reviewer, and `gpt-4.1-nano-2025-04-14` was more reliable than `gpt-4o`,** reported plainly
+rather than defending the shipped default:
 
 - `gpt-4o` is the only deployment that produced a **false claim** in either run, and reversed from PASS
   to FAIL between its two identical-input runs — a reliability concern independent of average quality.
-- `gpt-4.1-nano-2025-04-14`, the cheapest of the three, produced **zero false claims across both runs**
-  and, in run 2, an unprompted and correct Java-version-compatibility observation (`.toList()` requires
-  Java 16+) that no other run made. Its main weakness was conservatism/under-claiming, not fabrication.
+- `gpt-4.1-nano-2025-04-14` produced **zero false claims across both runs** and, in run 2, an unprompted
+  and correct Java-version-compatibility observation (`.toList()` requires Java 16+) that no other run
+  made. Its main weakness was conservatism/under-claiming, not fabrication. (No pricing source is cited
+  in this repository, so no cost comparison between the three deployments is claimed here.)
 - `gpt-5-mini-2025-08-07` (a reasoning model, ~1.7-1.9k reasoning tokens spent per run per the raw
-  response `usage.reasoning_tokens` field) produced the most thorough, most precisely-cited findings of
+  response `usage.completion_tokens_details.reasoning_tokens` field) produced the most thorough, most
+  precisely-cited findings of
   the six, the only two catches of the TOCTOU race, the only catch of the missing private constructor,
   and the only explicit catch of the file's single most severe real issue (unvalidated path resolution).
   It was also markedly slower (~20s vs. ~1-8s per call, from each response's own `latency_checkpoint`).
@@ -553,10 +585,10 @@ own two runs disagreeing on the same file is itself evidence, independent of sam
 a statistically powered claim about either model's general code-review accuracy across arbitrary files,
 languages, or issue types. Treat this as one concrete, fully-verified data point, not a general verdict.
 
-**This 2-run result is the ticket-compliant, formal, headline R12 answer ("twice in a row per model"),
-already committed as `2159fc3` (`2d4cc34` before the branch was rebased onto `main` on 2026-09-14). It is
-restated above exactly as originally measured — nothing in this section was re-derived or averaged over
-the supplementary runs below.**
+**This 2-run result is the formal, headline R12 answer ("twice in a row per model"), already committed as
+`2159fc3`. It is restated above exactly as originally measured — nothing in this section was re-derived or
+averaged over the supplementary runs below; the two false-claim rescorings on 2026-09-24 are the only
+change since (see the "Rescored 2026-09-24" note above).**
 
 ### Supplementary evidence (2026-08-30) — 12 additional runs, NOT pooled with the 6-run result above
 
@@ -569,23 +601,28 @@ full literal request body — unlike the original 6, which saved only request sh
 reproducibility lesson below).
 
 **Why not pooled**: the original prompt's literal text was unrecoverable (only request *shape* was ever
-saved). A prompt was reconstructed from this document's own description ("numbered file content, the
-ticket's exact five categories") and validated by a one-shot token-count probe per model before spending
-any further budget. None of the three matched the original series' literal `usage.prompt_tokens`
+saved). A prompt was reconstructed from the method description above (the file content and the five
+required categories), with each line additionally prefixed by its line number — a reconstruction choice
+with no tracked written source, made because the original six runs' own line citations imply the model saw
+numbered content — and validated by a one-shot token-count probe per model before spending any further
+budget. None of the three matched the original series' literal `usage.prompt_tokens`
 (`gpt-4o`: 571 vs. 753 expected; `gpt-4.1-nano-2025-04-14`: 571 vs. 753; `gpt-5-mini-2025-08-07`: 570 vs.
-752 — no iteration was attempted to chase these numbers, per the coordinator's explicit instruction not to
-fit text to a number). The 12 new runs are therefore reported as their own separate, internally
+752 — no iteration was attempted to chase these numbers, deliberately, to avoid fitting the reconstructed
+text to a target token count rather than to the documented method). The 12 new runs are therefore reported
+as their own separate, internally
 self-consistent series (confirmed self-consistent: all 4 calls per model returned identical
 `prompt_tokens` within that model), not pooled with the original 6.
 
 **Headline findings from the supplementary series** (full detail and every quote in the linked document):
 
-- **`gpt-4o`**: 1 of 4 new runs had a verified-false claim (a claimed `StringIndexOutOfBoundsException`
-  risk in `substring(1)` that is structurally impossible given the existing `startsWith("/")` guard); the
-  other 3 were clean. Stated plainly, per the honesty requirement this task carries: **`gpt-4o`'s new runs
-  did not come back entirely clean, but they materially weaken the original finding** — 1 false claim
-  across 4 new runs is a much smaller, more equivocal problem than the original run 2's 4 unhedged false
-  claims.
+- **`gpt-4o`**: 1 of 4 new runs (run 4) had two verified-false claims — a claimed
+  `StringIndexOutOfBoundsException` risk in `substring(1)` that is structurally impossible given the
+  existing `startsWith("/")` guard, and a claim that `catch (Exception)` on line 48 catches
+  `OutOfMemoryError`, which extends `java.lang.Error`, not `Exception`; the other 3 runs were clean.
+  Stated plainly: **`gpt-4o`'s new runs did not come back entirely clean, but they materially weaken the
+  original finding** — 2 false claims in 1 of 4 new runs is a smaller, more equivocal problem than the
+  original run 2's 2 unhedged false claims (rescored 2026-09-24 from an original four — see "Per-run
+  results" above).
 - **`gpt-4.1-nano-2025-04-14`**: 1 of 4 new runs had a verified (disclosed-as-debatable) false claim — an
   internally self-contradicted assertion that the code "uses constants instead of hardcoded strings,"
   which the file does not (and which the same response's own later "Suggestions" section contradicts).
@@ -593,7 +630,8 @@ self-consistent series (confirmed self-consistent: all 4 calls per model returne
 - **`gpt-5-mini-2025-08-07`**: 0 of 4 new runs had a false claim — 6 of 6 total runs measured across both
   series (2 original + 4 new) are clean. It remains the most reliable of the three by this measure, though
   its own run 3 in this series is a materially weaker *thoroughness* showing than its other runs (misses
-  the missing-private-constructor, TOCTOU, and path-containment findings that its runs 4/5/6 all catch).
+  the missing-private-constructor, TOCTOU, and path-containment findings; runs 4 and 6 catch all three,
+  run 5 catches the private constructor and path-containment but not TOCTOU).
 - **Path-resolution defect naming, re-examined**: the original 6-run series found only `gpt-5-mini` ever
   named the file's most severe real defect (unvalidated path resolution allowing escape outside the
   intended directory). **In the 12 new runs, this is no longer exclusive**: `gpt-4.1-nano-2025-04-14`
@@ -602,7 +640,7 @@ self-consistent series (confirmed self-consistent: all 4 calls per model returne
   namer (3 of 4 new runs, with the sharpest framing) but is no longer the *only* model ever observed to
   name it.
 
-**Reproducibility lesson**, recorded here and in `context/PROGRESS.md`: the original 6-run series saved
+**Reproducibility lesson**: the original 6-run series saved
 only request-shape flags, not the literal request body, making exact replication impossible and forcing
 this token-count-validation workaround. All 12 new run artifacts fix this — each saves its own full,
 literal `requestBody`. Any future run of this harness must persist the full request body verbatim, not
@@ -618,21 +656,64 @@ the message's `refusal` and `annotations`, and `usage.completion_tokens`, `usage
 `usage.prompt_tokens_details` and the non-reasoning `usage.completion_tokens_details` counters. Everything
 cited above is unchanged: the review text, `finish_reason`, `latency_checkpoint`, `model`,
 `usage.prompt_tokens`, `usage.completion_tokens_details.reasoning_tokens`, and the recorded request data.
-The untrimmed files remain in git history (`2159fc3` for the 2026-08-29 runs, `9665330` for the
-2026-08-30 runs).
+The untrimmed files remain in git history: `2159fc3` for the 2026-08-29 runs
+(<https://git.epam.com/fedir_rudiachenko/spring-ai-skeleton/-/tree/2159fc3/03-code-review-agent/evaluation/runs>),
+`9665330` for the 2026-08-30 runs
+(<https://git.epam.com/fedir_rudiachenko/spring-ai-skeleton/-/tree/9665330/03-code-review-agent/evaluation/runs>).
+These links resolve by commit SHA, independent of whether `feature/practical-task-3` itself survives a
+future merge.
 
 ## R11 — GitLab Merge Request
 
 **Status: `REQUIRES OPERATOR` — cannot be performed by any agent in this workflow.**
 
-No agent in this workflow has GitLab credentials, a personal EPAM GitLab repository to push to, or
-screenshot capability. Per `context/TICKET.md`'s own Out of Scope section, this is the user's own action
-after the code is ready. The operator must, from their own EPAM GitLab account: push this branch, open a
+No agent in this workflow has GitLab credentials, a personal EPAM GitLab repository to push to, or access
+to the GitLab UI — the four screenshots under `docs/screenshots/` were rendered from recorded artifacts,
+not captured from a running browser session. Pushing the branch and opening the Merge Request itself is
+the user's own action, since it requires the user's own GitLab account. The operator must, from their own
+EPAM GitLab account: push this branch, open a
 Merge Request, and fill in the required template sections (🗒️ Key Takeaways, 📸 Screenshots, 🧪
 Experiments & Edge Cases — this file and `experiments.json` are the source material for that section, 🕵️
 Quality check checklist), and ensure the MR is accessible to facilitators.
 
-## Final verification (this session, measured — not restated from an earlier increment's number)
+## Verification
+
+### Re-verification (2026-09-23, after token usage logging and the evidence-guard fix) — current
+
+Run on the operator's Windows host with `TEMP`/`TMP` set to `C:\Temp\javatmp`:
+
+- **`./mvnw -pl 03-code-review-agent test`**: **BUILD SUCCESS** — `Tests run: 331, Failures: 0, Errors: 0,
+  Skipped: 2` across 21 test classes (310 plus 21 new: 7 `TokenUsageTest`, 8 `CodeReviewReactAgentTest` —
+  4 token-logging and 4 real-manager cases — 3 `CodeReviewToolsTest`, 2 `ExecutiveSummarySubAgentTest`,
+  1 `EvaluationAssetsTest`). The 2 skips are the same symlink capability gates ("Symbolic-link creation is
+  unavailable on this host"). Screenshot: `docs/screenshots/03-tests-passing.png`.
+- **`./mvnw -pl 03-code-review-agent clean verify`** (Surefire, Failsafe and JaCoCo, no `-DskipITs`):
+  **BUILD SUCCESS**. `HermeticApplicationContextIT`: `Tests run: 2, Failures: 0` — it passes on this host
+  with the `TEMP` workaround (see "Known environment limitation" below). `jacoco:check`: "All coverage
+  checks have been met." Summed from the fresh `target/site/jacoco/jacoco.csv` over all 34 `src/main`
+  classes (32 plus `TokenUsage` and `CodeReviewReactAgent`'s nested `TokenUsageTracker`): **LINE =
+  703/725 = 96.97%**, INSTRUCTION = 3045/3131 = 97.25%, BRANCH = 255/269 = 94.80%.
+- **`03-code-review-agent/scripts/run-experiments.ps1 -HermeticOnly -SkipBuild`** (with `AZURE_OPEN_AI_*`
+  cleared): **23/23 cited hermetic test citations `[PASS]`, 0 `FAIL`, 0 `UNKNOWN`** — the historical 17
+  plus six citations added on 2026-09-23/24: five real-manager tests (three under Experiment #4, one each
+  under #6 and #8) and, under Experiment #2, a second test asserting no two tool descriptions are
+  identical. The longer output (4613 bytes, up from 3812, for the 22-citation intermediate run) exposed a
+  latent deadlock in `EvaluationAssetsTest`'s harness test: it waited for the script before reading the
+  script's output pipe, so once the output outgrew the 4 KB Windows pipe buffer the script blocked and the
+  test timed out at 60 s. The test now sends the output to a file and passes in about 1 s. The current
+  23-citation raw output, produced plain `-SkipBuild` (not `-HermeticOnly`, so it also exercises the
+  no-credentials live-portion path), is saved at
+  `evaluation/runs/20260924T113734Z-hermetic-experiments.txt`; the 17-citation run below is historical.
+- **`git status --porcelain -- 03-code-review-agent/src/main`**: not empty — this pass changed
+  `CodeReviewReactAgent.java` and `CodeReviewTools.java` (the `decodeToolResult` fix and token usage
+  logging), unlike Increment 8 below, which made none.
+
+### Increment 8 verification (2026-08-29) — historical, superseded by the re-verification above
+
+These numbers describe the state of the code and test suite as of Increment 8 (2026-08-29), before the
+2026-09-23 work (token usage logging, the evidence-guard fix, and the doc/evidence audit this file itself
+records) was added on top. They are kept for historical traceability, not as the current state of the
+branch — use the section above for current numbers.
 
 - **`./mvnw -pl 03-code-review-agent test`** (Surefire only): **BUILD SUCCESS** — `Tests run: 310,
   Failures: 0, Errors: 0, Skipped: 2` (the Increment 7 baseline of 299 plus this increment's 11
@@ -653,8 +734,8 @@ Quality check checklist), and ensure the MR is accessible to facilitators.
   `src/main` (no production file was modified in this increment — confirmed by
   `git status --porcelain -- 03-code-review-agent/src/main`, see below — and the figure was identical,
   647/669, both before and after `EvaluationAssetsTest` was added, since that new file is entirely under
-  `src/test`). Per this increment's own explicit instruction, the number reported here is the one actually
-  read from this session's `jacoco.csv`, not the earlier figure.
+  `src/test`). The number reported here is the one actually read from this session's `jacoco.csv`, not the
+  earlier figure.
 - **`./mvnw -pl 03-code-review-agent verify`** (full Failsafe pipeline, no `-DskipITs`): **BUILD FAILURE**
   at `failsafe:verify`, re-confirmed in this session — `HermeticApplicationContextIT` fails with the
   identical, already-documented `WebServerException: Unable to start embedded Tomcat server` →
@@ -665,51 +746,29 @@ Quality check checklist), and ensure the MR is accessible to facilitators.
   code defect and not introduced by this increment** — the failure occurs strictly *after*
   `finishBeanFactoryInitialization()` already completes successfully for the entire real application
   (every bean, including this increment's own unchanged wiring, constructs correctly), at the very last
-  step of context refresh (starting the embedded web server). An operator on an unrestricted machine (a
-  normal developer machine, most CI runners, WSL/Linux) should re-run this exact command and expects a
-  literal `PASS`, since the test code itself is written and was already proven, by the earlier increments'
-  own progressive defect-fixing, to be correct once network I/O is available.
+  step of context refresh (starting the embedded web server). **Since closed** — see "Known environment
+  limitation" below: the `TEMP`/`TMP` workaround makes this test pass, as the "Re-verification" section
+  above shows.
 - **`./mvnw -DskipTests compile`** (full 4-module reactor): **BUILD SUCCESS** — `spring-ai`,
   `prompting-llm`, `doc-qa-chatbot` (`02-rag`), and both `code-review-agent` modules (`03-code-review-agent`,
   `04-mcp-code-review-agent`) all compile; this increment's additions do not break the reactor.
-- **`03-code-review-agent/scripts/run-experiments.ps1 -HermeticOnly`**: actually executed twice in this
-  session (once driving its own `mvnw test` invocation, once with `-SkipBuild` reusing that run's Surefire
-  reports with `AZURE_OPEN_AI_*` explicitly cleared from the environment first) — **17/17 cited hermetic
-  test citations `[PASS]`, 0 `FAIL`, 0 `UNKNOWN`**. Raw output:
-  `03-code-review-agent/evaluation/runs/20260829T072308Z-hermetic-experiments.txt`.
+- **`03-code-review-agent/scripts/run-experiments.ps1 -SkipBuild`** (plain, not `-HermeticOnly`, with
+  `AZURE_OPEN_AI_*` explicitly cleared from the environment first, reusing a preceding `mvnw test` run's
+  Surefire reports): **17/17 cited hermetic test citations `[PASS]`, 0 `FAIL`, 0 `UNKNOWN`**, plus the
+  live-model portion genuinely exercising its no-credentials path (prints `SKIPPED - no credentials`,
+  confirmed by the artifact's own saved output containing that section — a `-HermeticOnly` run would not
+  reach this branch at all). Raw output:
+  `03-code-review-agent/evaluation/runs/20260829T072308Z-hermetic-experiments.txt` (17 citations —
+  superseded by the current 23-citation harness; see "Re-verification" above for the current count).
 - **`git diff --stat HEAD -- 03-code-review-agent/README.md README.md`**: empty output — both files
   remain byte-identical to their state at the start of this increment.
-- **`git status --porcelain -- 03-code-review-agent/src/main`**: empty output — this increment made no
-  production-code changes, exactly as the plan's own scope boundary requires ("documentation/tooling/
-  verification only"); every new/changed path is under `03-code-review-agent/RUNBOOK.md`,
+- **`git status --porcelain -- 03-code-review-agent/src/main`**: empty output — this increment was scoped
+  to documentation, tooling and verification only, and made no production-code changes; every new/changed
+  path was under `03-code-review-agent/RUNBOOK.md`,
   `03-code-review-agent/evaluation/`, `03-code-review-agent/scripts/`, and
   `03-code-review-agent/src/test/java/.../support/EvaluationAssetsTest.java`.
 
-### Re-verification (2026-09-23, after token usage logging and the evidence-guard fix)
-
-Run on the operator's Windows host with `TEMP`/`TMP` set to `C:\Temp\javatmp`:
-
-- **`./mvnw -pl 03-code-review-agent test`**: **BUILD SUCCESS** — `Tests run: 331, Failures: 0, Errors: 0,
-  Skipped: 2` across 21 test classes (310 plus 21 new: 7 `TokenUsageTest`, 8 `CodeReviewReactAgentTest` —
-  4 token-logging and 4 real-manager cases — 3 `CodeReviewToolsTest`, 2 `ExecutiveSummarySubAgentTest`,
-  1 `EvaluationAssetsTest`). The 2 skips are the same symlink capability gates ("Symbolic-link creation is
-  unavailable on this host"). Screenshot: `docs/screenshots/03-tests-passing.png`.
-- **`./mvnw -pl 03-code-review-agent clean verify`** (Surefire, Failsafe and JaCoCo, no `-DskipITs`):
-  **BUILD SUCCESS**. `HermeticApplicationContextIT`: `Tests run: 2, Failures: 0` — it passes on this host
-  with the `TEMP` workaround (see below). `jacoco:check`: "All coverage checks have been met." Summed from
-  the fresh `target/site/jacoco/jacoco.csv` over all 34 `src/main` classes (32 plus `TokenUsage` and
-  `CodeReviewReactAgent`'s nested `TokenUsageTracker`): **LINE = 703/725 = 96.97%**, INSTRUCTION =
-  3045/3131 = 97.25%, BRANCH = 255/269 = 94.80%.
-- **`03-code-review-agent/scripts/run-experiments.ps1 -HermeticOnly -SkipBuild`** (with `AZURE_OPEN_AI_*`
-  cleared): **22/22 cited hermetic test citations `[PASS]`, 0 `FAIL`, 0 `UNKNOWN`** — the original 17
-  plus the five citations of the new real-manager tests (three under Experiment #4, one each under #6
-  and #8), which were added to the harness's citation table. The longer output (4613 bytes, up from
-  3812) exposed a latent deadlock in `EvaluationAssetsTest`'s harness test: it waited for the script
-  before reading the script's output pipe, so once the output outgrew the 4 KB Windows pipe buffer the
-  script blocked and the test timed out at 60 s. The test now sends the output to a file and passes in
-  about 1 s.
-
-## Known environment limitation, restated for the operator (per this increment's own explicit instruction)
+## Known environment limitation, restated for the operator
 
 `HermeticApplicationContextIT`'s `@SpringBootTest(webEnvironment = RANDOM_PORT)` tests cannot run in this
 implementation sandbox because `java.nio.channels.Selector.open()` itself fails (confirmed with a

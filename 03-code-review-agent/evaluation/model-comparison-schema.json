@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Module 3 model-comparison subtask (R12) results schema",
-  "description": "Schema for the R12 subtask: pick one real, non-trivial source file with a genuine mix of issues, run the same structured review request against POST /code-review with each of the three named deployments, twice in a row per model on the identical file, and score each run per context/TICKET.md's stated method. This file is a scaffold only - as of Increment 8, no live DIAL/VPN run has been performed in this sandbox (see 03-code-review-agent/evaluation/RESULTS.md's R12 section), so every score/verdict field below is REQUIRES_OPERATOR or null rather than fabricated, per context/RETROSPECTIVE.md's standing honesty rule (do not attribute a review/score to a run that never happened). An operator completing this subtask should either fill in evaluation/runs/<timestamp>-model-comparison.json conforming to this schema, or extend this file directly, and update RESULTS.md's R12 section to cite the real artifact.",
+  "description": "Schema for the R12 subtask: pick one real, non-trivial source file with a genuine mix of issues, run the same structured review request with each of the three named deployments, twice in a row per model on the identical file, and score each run per the method described in RESULTS.md's R12 section. This file is the schema only, not a result - it stays unpopulated by design. The completed instance is evaluation/runs/20260829T193452Z-model-comparison.json (COMPLETED, 2026-08-29): the same request shape run as direct chat/completions calls rather than through POST /code-review, since the embedded server could not bind a loopback socket in that session - see RESULTS.md's R12 'Method actually used' for why. A never-run field must stay REQUIRES_OPERATOR or null rather than a fabricated score.",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -45,7 +45,7 @@
     },
     "scoringMethod": {
       "type": "object",
-      "description": "Restates context/TICKET.md's own subtask analysis method, so this schema is self-describing without needing the ticket open side by side.",
+      "description": "Restates the subtask's own analysis method (RESULTS.md's R12 section), so this schema is self-describing without needing that document open side by side.",
       "required": ["passRule", "failRule", "verificationSteps"],
       "properties": {
         "passRule": {

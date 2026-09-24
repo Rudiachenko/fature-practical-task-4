@@ -1,0 +1,59 @@
+
+=== Hermetic mechanisms (Experiments #2-#8 - no live model, no network) ===
+Skipping build (-SkipBuild); reading whatever Surefire reports already exist under target/surefire-reports.
+
+Experiment #2: Ambiguous tool descriptions (regression guard only)
+  [PASS] com.epam.codereviewagent.service.CodeReviewToolsTest#shouldHaveNonBlankDescriptionLongerThanTwentyCharacters_forEveryToolAnnotatedMethod
+  [PASS] com.epam.codereviewagent.service.CodeReviewToolsTest#shouldHaveNoTwoIdenticalToolDescriptions_amongAllToolAnnotatedMethods
+
+Experiment #3: Missing convention
+  [PASS] com.epam.codereviewagent.service.CodeReviewToolsTest#shouldReturnHonestNoConventionFoundMessageUnmodified_whenLanguageIsGo
+
+Experiment #4: Evidence enforcement
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileNeverSucceedsButModelClaimsFindings
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAMissingFile
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAnEmptyFile
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldKeepTheModelsFindings_whenTheRealToolCallingManagerReadsARealFile
+
+Experiment #5: Path traversal
+  [PASS] com.epam.codereviewagent.controller.CodeReviewControllerTest#shouldReturnBadRequestWithPathSecurityViolationCode_whenUserInputAttemptsPathTraversal
+  [PASS] com.epam.codereviewagent.controller.CodeReviewControllerTest#shouldRejectBeforeInvokingTheAgent_whenUserInputIsAnAbsoluteWindowsPath
+  [PASS] com.epam.codereviewagent.util.RepositoryPathResolverTest#shouldRejectPathTraversal_whenValidateSecurityBoundaryIsCalledWithDotDotEscape
+  [PASS] com.epam.codereviewagent.util.RepositoryPathResolverTest#shouldRejectAbsolutePath_whenValidateSecurityBoundaryIsCalledWithAWindowsAbsolutePath
+
+Experiment #6: Large file / context overload (truncation)
+  [PASS] com.epam.codereviewagent.util.FileUtilsTest#shouldTruncateContentAndAppendMarker_whenLimitIsSmallerThanFileLength
+  [PASS] com.epam.codereviewagent.service.CodeReviewToolsTest#shouldReturnContentWrappedInMarkersWithVisibleTruncationMarker_whenContentExceedsConfiguredMaxFileChars
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldSetTruncatedTrue_whenAnyToolResultContainsTruncationMarker_evenIfModelClaimsFalse
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldSetTruncatedTrue_whenTheRealToolCallingManagerReturnsATruncatedFile_evenIfModelClaimsFalse
+
+Experiment #7: Loop non-termination
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldThrowAgentIterationLimitExceededException_afterExactlyMaxIterationsModelCalls_whenModelRequestsToolCallsIndefinitely
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldThrowAgentIterationLimitExceededExceptionWithZeroChatModelCalls_whenMaxIterationsIsZero
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldThrowAgentIterationLimitExceededExceptionAfterExactlyOneChatModelCall_whenMaxIterationsIsOneAndModelRequestsATool
+  [PASS] com.epam.codereviewagent.config.CodeReviewPropertiesTest#shouldFailContextRefresh_whenMaxIterationsPropertyIsZero
+
+Experiment #8: Empty / non-code input
+  [PASS] com.epam.codereviewagent.service.CodeReviewToolsTest#shouldReturnExplicitNonErrorEmptyFileMessage_whenFileExistsButIsEmpty
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenReadFileReturnsTheRealEmptyFileSentinelButModelClaimsFindings
+  [PASS] com.epam.codereviewagent.service.CodeReviewReactAgentTest#shouldReturnEmptyFindingsAndHonestNoEvidenceReview_whenTheRealToolCallingManagerReadsAnEmptyFile
+
+Experiment #1 (Tool overload) has no hermetic mechanism - live model reasoning is inherently required. See evaluation/experiments.json id=1.
+Experiment #5 (Path traversal) is fully closed above with zero model calls - there is no separate live half to run.
+
+=== Live model portion (Experiments #1, #2, plus the live half of #3/#4/#6/#7/#8, and R12) ===
+SKIPPED - no credentials: AZURE_OPEN_AI_KEY / AZURE_OPEN_AI_ENDPOINT / AZURE_OPEN_AI_DEPLOYMENT_NAME are not all set in this process environment.
+This is an honest skip, not a fabricated result. To run this portion, set real DIAL credentials (EPAM VPN required) and re-run this script without -HermeticOnly:
+  $env:AZURE_OPEN_AI_KEY = '<dial-key>'
+  $env:AZURE_OPEN_AI_ENDPOINT = 'https://ai-proxy.lab.epam.com'
+  $env:AZURE_OPEN_AI_DEPLOYMENT_NAME = 'gpt-4o'
+  .\03-code-review-agent\scripts\run-experiments.ps1
+  Experiment #1: Requires temporarily adding 2-4 redundant/dummy @Tool methods to AgentConfig#chatOptions's tool-callback list, then comparing a live run's tool-call sequence against a baseline. See evaluation/experiments.json id=1.
+  Experiment #2: Requires temporarily blanking/vague-ing an @Tool description (e.g. retrieveCodeConvention), then comparing a live run against a baseline, then reverting. See evaluation/experiments.json id=2.
+  R12 (model comparison, gpt-4o / gpt-4.1-nano-2025-04-14 / gpt-5-mini-2025-08-07, 2 runs each): see evaluation/model-comparison-schema.json and RESULTS.md's R12 section.
+
+=== Summary ===
+Hermetic citations checked: 23; FAIL: 0; UNKNOWN: 0
+Every cited hermetic test verifiably passed in the existing Surefire reports (this run did not itself execute mvnw test - see -SkipBuild).
+

@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-  Experiments & Edge Cases harness for Module 3 (context/TICKET.md's 8-row table, R13).
+  Experiments & Edge Cases harness for Module 3 (README.md's 8-row table, R13).
 
 .DESCRIPTION
   Every mechanism this script can prove without a live model is proven by the module's own
-  JUnit suite (Increments 1-7) - this script's -HermeticOnly mode re-runs exactly the cited
+  JUnit suite - this script's -HermeticOnly mode re-runs exactly the cited
   test classes and reads their real Surefire results back out of target/surefire-reports, per
   experiment, rather than re-implementing the same checks a second time in PowerShell. It never
   fabricates a PASS: if a cited test method cannot be found in the Surefire report (e.g. the
@@ -12,18 +12,24 @@
 
   Without -HermeticOnly, the script additionally looks for real AZURE_OPEN_AI_KEY /
   AZURE_OPEN_AI_ENDPOINT / AZURE_OPEN_AI_DEPLOYMENT_NAME credentials in the process environment.
-  If present, it attempts to build and start the application and exercise the live-evaluable
-  experiments over real HTTP; if absent, it prints an explicit "SKIPPED - no credentials" line
-  per experiment, with the exact manual command an operator needs, rather than silently omitting
-  them or inventing a result. See 03-code-review-agent/evaluation/experiments.json for the full,
+  If absent, it prints a single "SKIPPED - no credentials" line plus the exact manual steps an
+  operator needs for Experiments #1, #2 and R12 (the only pieces this script cannot exercise even
+  with credentials - see below), rather than silently omitting them or inventing a result. If
+  present, it builds and starts the application and waits for it to accept a TCP connection, then
+  stops it again - this is a startup/readiness smoke check, not an experiment runner: it does not
+  itself POST any request or exercise any experiment's live half. See "Live session (2026-09-23)"
+  in RESULTS.md for how the live halves were actually exercised (spring-boot:run left running,
+  plus curl). See 03-code-review-agent/evaluation/experiments.json for the full,
   structured citation/instruction set this script summarizes, and RESULTS.md for the narrative.
 
-  Known environment limitation (see 03-code-review-agent/RUNBOOK.md and context/PROGRESS.md):
-  on a Windows sandbox where java.nio.channels.Selector.open() cannot establish a loopback
-  connection, embedded Tomcat cannot start at all (the exact failure already documented for
+  Known environment limitation (see 03-code-review-agent/RUNBOOK.md's "Windows host note"):
+  on a Windows host where java.nio.channels.Selector.open() cannot establish a loopback
+  connection, embedded Tomcat cannot start (the exact failure already documented for
   HermeticApplicationContextIT). On such a host, the live mode below will fail to reach
-  readiness even with real credentials; this is a host/JVM networking limitation, not a defect
-  in this script or in the application.
+  readiness even with real credentials, unless TEMP/TMP is first pointed at a short path such as
+  C:\Temp\javatmp per RUNBOOK.md - confirmed on 2026-09-23 to make Selector.open() work and the
+  application serve real HTTP. This is a JVM temp-directory limitation, not a defect
+  in this script or in the application, and not fundamentally a networking restriction.
 
 .PARAMETER HermeticOnly
   Run only the hermetic (no live model, no network) portion: re-run the cited Surefire tests
@@ -77,7 +83,8 @@ $hermeticExperiments = [ordered]@{
   '2' = @{
     name = 'Ambiguous tool descriptions (regression guard only)'
     testCitations = @(
-      'com.epam.codereviewagent.service.CodeReviewToolsTest::shouldHaveNonBlankDescriptionLongerThanTwentyCharacters_forEveryToolAnnotatedMethod'
+      'com.epam.codereviewagent.service.CodeReviewToolsTest::shouldHaveNonBlankDescriptionLongerThanTwentyCharacters_forEveryToolAnnotatedMethod',
+      'com.epam.codereviewagent.service.CodeReviewToolsTest::shouldHaveNoTwoIdenticalToolDescriptions_amongAllToolAnnotatedMethods'
     )
   }
   '3' = @{
@@ -242,7 +249,7 @@ function Invoke-LivePortion {
   }
 
   Write-Host 'Real DIAL credentials detected in the environment. Attempting to build and start the application...' -ForegroundColor Yellow
-  Write-Host 'Known limitation: on a host where java.nio.channels.Selector.open() cannot establish a loopback connection, embedded Tomcat cannot start regardless of credentials - see this script''s own header and RUNBOOK.md.' -ForegroundColor Yellow
+  Write-Host 'This is a startup/readiness smoke check only - it does not itself POST any request. Known limitation: on a host where java.nio.channels.Selector.open() cannot establish a loopback connection, embedded Tomcat cannot start - see this script''s own header and RUNBOOK.md''s "Windows host note" for the TEMP/TMP workaround.' -ForegroundColor Yellow
 
   if (-not $SkipBuild) {
     & $mvnw -pl 03-code-review-agent -DskipTests package
@@ -280,7 +287,7 @@ function Invoke-LivePortion {
     }
 
     if (-not $ready) {
-      Write-Host "Application did not become ready on port $Port within $ReadinessTimeoutSeconds seconds - see target/live-experiments-std{out,err}.log. This is the expected outcome on a sandbox affected by the Selector.open() limitation documented above." -ForegroundColor Red
+      Write-Host "Application did not become ready on port $Port within $ReadinessTimeoutSeconds seconds - see target/live-experiments-std{out,err}.log. This is the expected outcome on a host affected by the Selector.open() limitation documented above, unless TEMP/TMP is set per RUNBOOK.md's ""Windows host note""." -ForegroundColor Red
       return
     }
 
@@ -304,10 +311,11 @@ if (-not $HermeticOnly) {
 
 Write-Section 'Summary'
 $failCount = ($hermeticResults | Where-Object { $_.outcome -eq 'FAIL' }).Count
-$unknownCount = ($hermeticResults | Where-Object { $_.outcome -like 'UNKNOWN*' }).Count
+$unknownCount = ($hermeticResults | Where-Object { $_.outcome -like 'UNKNOWN*' -or $_.outcome -eq 'SKIPPED' }).Count
+$sourceNote = if ($SkipBuild) { 'in the existing Surefire reports (this run did not itself execute mvnw test - see -SkipBuild)' } else { 'in this run' }
 Write-Host "Hermetic citations checked: $($hermeticResults.Count); FAIL: $failCount; UNKNOWN: $unknownCount"
 if ($failCount -gt 0 -or $unknownCount -gt 0) {
-  Write-Host 'At least one cited test did not verifiably pass in this run - do not treat RESULTS.md''s existing narrative as re-confirmed until this is investigated.' -ForegroundColor Red
+  Write-Host 'At least one cited test did not verifiably pass - do not treat RESULTS.md''s existing narrative as re-confirmed until this is investigated.' -ForegroundColor Red
 } else {
-  Write-Host 'Every cited hermetic test verifiably passed in this run.' -ForegroundColor Green
+  Write-Host "Every cited hermetic test verifiably passed $sourceNote." -ForegroundColor Green
 }
