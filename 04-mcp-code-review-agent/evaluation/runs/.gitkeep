@@ -1,0 +1,5 @@
+# Placeholder so this directory is tracked by git while empty (git does not track empty directories).
+# Live-run artifacts (recorded requests/responses against a real GitHub PR, see ../RESULTS.md) land
+# here once an operator actually executes scripts/run-experiments.ps1's live portion or an equivalent
+# manual run. As of this increment, no live run has been performed and this directory holds nothing
+# but this file.

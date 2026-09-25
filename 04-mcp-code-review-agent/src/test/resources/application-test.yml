@@ -1,0 +1,30 @@
+spring:
+  ai:
+    azure:
+      openai:
+        api-key: hermetic-test-key
+        endpoint: http://127.0.0.1:1
+        chat:
+          options:
+            deployment-name: hermetic-test-deployment
+    mcp:
+      client:
+        # Disables both spring-ai-autoconfigure-mcp-client-common auto-configurations entirely
+        # (decompilation-confirmed, see HermeticCodeReviewTestConfiguration's Javadoc): no
+        # McpSyncClient, no MCP transport, zero network activity at context refresh.
+        enabled: false
+
+# Deliberately top-level (not nested under `app`): GitHubMcpRequestCustomizerConfig's
+# `@Value("${GITHUB_TOKEN}")` bean is this module's own unconditional @Configuration bean, not part
+# of Spring AI's conditional MCP auto-config above, so it still gets constructed even with MCP
+# disabled - this placeholder must resolve to something or context refresh fails on an unrelated bean.
+GITHUB_TOKEN: hermetic-test-github-token
+
+app:
+  code-review:
+    system-prompt: classpath:prompts/pr-review-system-prompt.md
+    max-iterations: 5
+  conventions:
+    resources:
+      - classpath:documents/java-convention.md
+      - classpath:documents/python-convention.md

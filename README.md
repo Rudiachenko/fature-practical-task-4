@@ -61,6 +61,9 @@ export AZURE_OPEN_AI_KEY=dial-key
 export AZURE_OPEN_AI_ENDPOINT=https://ai-proxy.lab.epam.com
 export AZURE_OPEN_AI_DEPLOYMENT_NAME=gpt-4o
 export AZURE_OPEN_AI_EMBEDDING_DEPLOYMENT_NAME=text-embedding-3-small-1
+# GitHub Personal Access Token with PR read+write scope, required by 04-mcp-code-review-agent to
+# authenticate against GitHub's remote MCP server
+export GITHUB_TOKEN=your-github-personal-access-token
 # Optional overrides for Chroma defaults
 export CHROMA_BASE_URL=http://localhost:8000
 export CHROMA_COLLECTION=doc-qa-collection
@@ -83,7 +86,7 @@ variables above. Module-specific notes:
 - `01-prompting-llm`: exposes `/chat` endpoint for prompt processing
 - `02-rag`: exposes `/doc-qa/chat`, `/doc-qa/documents` endpoints (see `02-rag/RUNBOOK.md` for payloads; `02-rag/README.md` is the original assignment)
 - `03-code-review-agent`: exposes `/code-review` endpoint for Java code review
-- `04-mcp-code-review-agent`: exposes MCP-based code review endpoints
+- `04-mcp-code-review-agent`: exposes `POST /code-review` for MCP-based GitHub PR review
 
 
 ### Shutdown
