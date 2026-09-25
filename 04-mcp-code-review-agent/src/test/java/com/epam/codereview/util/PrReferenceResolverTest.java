@@ -26,7 +26,8 @@ class PrReferenceResolverTest {
     "octocat/Hello-World#123",
     "please check #42",
     "octocat/Hello-World",
-    "Can you review PR #77 in this repo?"
+    "Can you review PR #77 in this repo?",
+    "#42"
   })
   void shouldNotThrow_whenUserInputCarriesAtLeastOnePrShapedSignal(String userInput) {
     assertThatCode(() -> resolver.validatePrReferencePresent(userInput))

@@ -8,6 +8,7 @@ import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.KeyCredential;
 import com.epam.codereview.service.CodeReviewTools;
 import com.epam.codereview.service.ConventionService;
+import com.epam.codereview.util.PrReferenceResolver;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -114,6 +115,15 @@ class AgentConfigTest {
       codeReviewTools, defaultAzureOpenAiChatProperties(), mcpToolCallbackProvider);
 
     assertThat(((AzureOpenAiChatOptions) chatOptions).getInternalToolExecutionEnabled()).isFalse();
+  }
+
+  // --- prReferenceResolver -------------------------------------------------------------------
+
+  @Test
+  void shouldBuildANonNullPrReferenceResolver_whenPrReferenceResolverBeanIsBuilt() {
+    PrReferenceResolver prReferenceResolver = agentConfig.prReferenceResolver();
+
+    assertThat(prReferenceResolver).isNotNull().isInstanceOf(PrReferenceResolver.class);
   }
 
   private static Set<String> toolNames(ChatOptions chatOptions) {

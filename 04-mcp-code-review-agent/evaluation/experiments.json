@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": 1,
+  "description": "Machine-readable enumeration of the 8 Experiments & Edge Cases named in 04-mcp-code-review-agent/README.md's own 'Experiments & Edge Cases' table (context/TICKET.md Requirement 13). Each entry records how its underlying mechanism is proven: hermeticStatus.status is HERMETICALLY_PROVEN with a citation to the specific test class + test method(s) that hermetically demonstrate it (no live model, no real GitHub PR needed), NOT_APPLICABLE when no hermetic mechanism could meaningfully exist for (or was ever exercised for) that experiment's own 'what to observe' column, or ARCHITECTURAL_COMPARISON for the one experiment (#8) that is a design-level comparison rather than something a test proves or a live run measures. liveEvaluation is always tracked separately: several experiments have a hermetically-provable structural mechanism (e.g. the max-iteration guard exists and fires deterministically) while the live, real-model/real-PR narrative the README also implicitly invites can only be observed against a real GitHub PR and real DIAL credentials. liveEvaluation.status is REQUIRES_OPERATOR for every experiment that needs a live run - none has been recorded yet, this module has not been executed against a real PR - or NOT_APPLICABLE for #8, which needs no live run at all. No entry below claims a live result that was not actually observed. See 04-mcp-code-review-agent/evaluation/RESULTS.md for the full narrative.",
+  "sourceTicketSection": "04-mcp-code-review-agent/README.md, 'Experiments & Edge Cases' table; context/TICKET.md Requirement 13",
+  "experiments": [
+    {
+      "id": 1,
+      "name": "Tool overload",
+      "trigger": "Compare the full auto-discovered GitHub toolset vs mentally restricting the agent to a few tools in the system prompt.",
+      "whatToObserve": "Tool-selection accuracy, latency, wrong/unnecessary tool calls.",
+      "hermeticStatus": {
+        "status": "HERMETICALLY_PROVEN",
+        "citation": "AgentConfigTest#shouldMergeLocalAndMcpToolCallbacks_whenMcpToolsAreDiscovered; HermeticApplicationContextIT#shouldAttachExactlyTheTwoLocalToolCallbacksAndZeroMcpToolCallbacks_whenTheRealContextIsBooted",
+        "note": "What is actually proven: the precondition for this experiment to even be meaningful - that AgentConfig#chatOptions genuinely merges CodeReviewTools's 2 local tool callbacks with every callback SyncMcpToolCallbackProvider discovers (Stream.concat, not a hardcoded list), so the tool list really does grow as more MCP tools are exposed. What is NOT proven, and cannot be proven hermetically: whether a live model actually selects the wrong tool, wastes reasoning steps, or slows down as the tool list grows - that is an emergent property of real model reasoning over a real tool list; no fake ChatModel can distinguish 'the model picked a worse tool because there were more of them' from 'the model picked the same tool regardless', since a fake always does exactly what the test tells it to do."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real AZURE_OPEN_AI_*/GITHUB_TOKEN credentials, POST /code-review against a real PR, and record the per-tool-call INFO log lines ('Tool call executed: name=...') and iteration count for the full auto-discovered GitHub toolset. Then, per the README's own trigger wording, temporarily edit the system prompt to mention only a handful of tool names as preferred/allowed, repeat the same PR, and compare tool-call sequence, iteration count, and wall-clock time against the baseline run - revert the prompt edit afterward."
+      }
+    },
+    {
+      "id": 2,
+      "name": "Ambiguous request",
+      "trigger": "Omit the PR number or repo (e.g., \"review my PR\").",
+      "whatToObserve": "Does the agent ask for clarification or hallucinate owner/repo/PR identifiers?",
+      "hermeticStatus": {
+        "status": "HERMETICALLY_PROVEN",
+        "citation": "PrReferenceResolverTest#shouldThrowPrReferenceNotFoundException_whenUserInputHasNoPrShapedSignal (parameterized, includes the literal 'Please review my latest changes'/'Can you take a look at this?'/'I would like a general code review'); CodeReviewControllerTest#shouldReturnBadRequestWithPrReferenceNotFoundCode_whenUserInputHasNoPrSignal; PrReferenceResolverTest#shouldNotThrow_whenUserInputCarriesAtLeastOnePrShapedSignal (parameterized, includes the literal standalone weak-signal case \"#42\")",
+        "note": "This experiment splits cleanly into two sub-cases, and only one is hermetically provable. Total omission (zero PR-shaped signal at all, e.g. literally 'review my PR') is proven to be rejected with 400/PR_REFERENCE_NOT_FOUND before any ChatModel call is made - by construction, no hallucination risk exists for this sub-case, since the model is never invoked at all. A weak/partial signal (e.g. a bare '#42' with no repository context) is proven to be ACCEPTED and passed through to the agent unchanged - PrReferenceResolver deliberately does not reject incomplete references, only completely absent ones (see RUNBOOK.md's 'PR-reference validation boundary'). Whether the agent, once it receives that weak-signal input, asks a clarifying question or hallucinates a plausible-sounding owner/repo/PR number is exactly the kind of live-model judgment no hermetic fake can answer."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real credentials and POST /code-review with a weak-signal-only userInput that passes the boundary gate but omits real repository context (e.g. a bare '#42', or 'review PR #7'). Observe the agent's returned completion summary and, if it attempted to call an MCP tool at all, the per-tool-call log line's arguments: does it ask for the missing owner/repo, or does it invent one and proceed?"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Invalid / inaccessible PR",
+      "trigger": "Target a non-existent PR, or a private repo with a read-only token (403).",
+      "whatToObserve": "Error handling and graceful degradation vs confident-but-wrong output.",
+      "hermeticStatus": {
+        "status": "NOT_APPLICABLE",
+        "citation": null,
+        "note": "No test in this module's own suite constructs a genuinely failing/erroring MCP tool call (a 404-for-nonexistent-PR or 403-for-inaccessible-repo response from GitHub's remote MCP server). The claimed behavior - that such a failure is caught by Spring AI's SyncMcpToolCallback, rethrown as ToolExecutionException, and absorbed by DefaultToolExecutionExceptionProcessor into a text tool-result fed back to the model, rather than propagating to CodeReviewExceptionHandler as an HTTP error - is Spring AI's own framework behavior, reasoned from documented/decompiled behavior during this module's planning session and restated in CodeReviewExceptionHandler's own Javadoc, not exercised by any test here. context/PLAN.md's own Risks section flagged the closely related 'does DefaultToolCallingManager throw or absorb a genuinely unresolvable tool-name request' as requiring a targeted verification in a later increment; re-reading context/PROGRESS.md's Increments 4-6 entries in full confirms that verification was never subsequently performed, so this remains planning-time reasoning, not a hermetically proven guarantee of this module's own code. Separately, and independently proven: if a PR-access failure instead surfaces as a genuine AI-provider-level exception (TransientAiException/NonTransientAiException), CodeReviewExceptionHandlerTest#shouldReturnBadGatewayWithStaticMessage_whenTransientAiExceptionIsThrown and ...whenNonTransientAiExceptionIsThrown prove that specific, different failure class maps to 502/AI_PROVIDER_FAILURE - but that is not the same failure class this experiment's trigger describes."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real credentials and POST /code-review twice: once with a PR number that does not exist in a real, accessible repository, and once with a reference to a private repository the configured GITHUB_TOKEN cannot read. Confirm the HTTP response is still 200 with an honest completion summary (not a fabricated review), inspect server logs for the absorbed MCP tool-error text, and confirm no confident-but-wrong finding was posted to any real PR."
+      }
+    },
+    {
+      "id": 4,
+      "name": "Large PR",
+      "trigger": "Review a PR with many changed files / huge diffs.",
+      "whatToObserve": "Context overload, partial reviews, request timeouts.",
+      "hermeticStatus": {
+        "status": "HERMETICALLY_PROVEN",
+        "citation": "CodeReviewReactAgentTest#shouldThrowAgentIterationLimitExceededException_afterExactlyMaxIterationsChatModelCalls_whenModelRequestsToolCallsIndefinitely, #shouldThrowAgentIterationLimitExceededExceptionWithZeroChatModelCalls_whenMaxIterationsIsZero, #...WhenMaxIterationsIsNegative, #shouldThrowAgentIterationLimitExceededExceptionAfterExactlyOneChatModelCall_whenMaxIterationsIsOneAndModelRequestsATool; CodeReviewControllerTest#shouldReturnInternalServerErrorWithIterationLimitCode_whenAgentExhaustsMaxIterations; CodeReviewPropertiesTest#shouldFailContextRefresh_whenMaxIterationsPropertyIsZero; CodeReviewExceptionHandlerTest#shouldReturnBadGatewayWithStaticMessage_whenTransientAiExceptionIsThrown and #...whenNonTransientAiExceptionIsThrown",
+        "note": "Two structural guards against unbounded work from a large PR are proven, each with exact call-count/boundary proofs: (1) the ReAct loop exhausts after exactly app.code-review.max-iterations chatModel calls (never one more) and throws AgentIterationLimitExceededException (500) rather than returning an incomplete answer, with 0/1/negative boundary values individually asserted, and a misconfigured max-iterations<=0 failing fast at Spring Boot startup via @Min(1); (2) if the provider itself fails (e.g. a genuine token/context-window overflow surfacing as a provider error) that maps deterministically to 502/AI_PROVIDER_FAILURE, never a raw 500 with leaked detail. What is NOT hermetically provable: whether the current max-iterations=15 default is actually sufficient for a real large PR (documented in RUNBOOK.md and context/PLAN.md's own Risks section as an unmeasured starting estimate), and whether analysis quality visibly degrades as more files are reviewed in one request."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real credentials and POST /code-review against a PR with many changed files or very large diffs in a real repository. Record the iteration count actually reached (per-iteration INFO log lines), whether the request completes normally, hits AGENT_ITERATION_LIMIT_EXCEEDED (500), or hits AI_PROVIDER_FAILURE (502), and whether the posted inline comments/summary look complete or visibly partial for the PR's full size."
+      }
+    },
+    {
+      "id": 5,
+      "name": "MCP unavailability",
+      "trigger": "Use a wrong endpoint, an expired token, or block network access.",
+      "whatToObserve": "Startup and runtime resilience; quality of error messages.",
+      "hermeticStatus": {
+        "status": "HERMETICALLY_PROVEN",
+        "citation": "HermeticApplicationContextIT (all 4 test methods); AgentConfigTest#shouldAttachExactlyTheTwoLocalToolCallbacks_whenNoMcpClientsAreConfigured; McpToolDiscoveryLoggerTest#shouldLogZeroToolsWithAnEmptyNameList_whenNoMcpClientsAreConfigured",
+        "note": "What is actually proven: with spring.ai.mcp.client.enabled=false, the full real application context (real controller, real advice, real PrReferenceResolver, real AgentConfig beans, real CodeReviewTools/ConventionService, real CodeReviewReactAgent) boots cleanly on a random port, serves a real HTTP request successfully, and attaches exactly the 2 local tool callbacks and zero MCP tool callbacks - a controlled, intentional ABSENCE of MCP, decompilation-confirmed (context/PROGRESS.md's Increment 6 entry) to disable both Spring AI MCP auto-configurations and the streamable-HTTP transport auto-configuration entirely, with zero network activity. This is NOT the same as the experiment's literal trigger: a wrong endpoint, an expired token, or a blocked network path while spring.ai.mcp.client.enabled is still true and the application genuinely attempts a handshake. That failure mode - 'a bad MCP endpoint fails context refresh before any request is accepted' - is reasoned from decompiled Spring AI auto-configuration conditionals during this module's planning session (context/PLAN.md's Architecture Notes), not from actually booting this application against a broken endpoint, an expired GITHUB_TOKEN, or a blocked network path."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Three variants, each starting from real AZURE_OPEN_AI_* credentials: (a) set spring.ai.mcp.client.streamable-http.connections.github.url to an unreachable host and attempt spring-boot:run - confirm context refresh fails outright rather than starting in a degraded state; (b) set GITHUB_TOKEN to an invalid/expired value with the real endpoint, start the app successfully, then POST /code-review and observe the per-request tool-call error text the agent receives and how it reports it; (c) block outbound network access to api.githubcopilot.com and repeat (a)."
+      }
+    },
+    {
+      "id": 6,
+      "name": "Line anchoring",
+      "trigger": "Inspect where posted comments land in the \"Files changed\" tab.",
+      "whatToObserve": "Comments on the correct line vs out-of-diff / wrong-line anchoring.",
+      "hermeticStatus": {
+        "status": "NOT_APPLICABLE",
+        "citation": null,
+        "note": "This module implements no local line-anchoring logic of its own. Anchoring is entirely delegated to whatever file/line arguments the model itself passes to the GitHub MCP server's own comment-posting tool(s), and to GitHub's own rendering of those arguments in the PR's 'Files changed' tab - both outside this module's code. Nothing here computes, validates, bounds-checks, or corrects a line number, so no hermetic test could meaningfully prove or disprove anchoring correctness; this can only be observed by looking at a real posted comment against the real diff it claims to concern."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Start the app with real credentials, POST /code-review against a real PR, let the agent post its inline comments, then open that PR's 'Files changed' tab on GitHub and visually confirm each comment lands on the exact line (not an adjacent line, not out-of-diff context) it claims to concern."
+      }
+    },
+    {
+      "id": 7,
+      "name": "Hallucinated tool",
+      "trigger": "Prompt the agent to use a GitHub tool that doesn't exist.",
+      "whatToObserve": "How it recovers from invalid/failed tool calls.",
+      "hermeticStatus": {
+        "status": "NOT_APPLICABLE",
+        "citation": null,
+        "note": "No test in this module constructs a model response requesting a tool name absent from the merged local+MCP tool-callback list. context/PLAN.md's own Risks section explicitly flagged 'whether DefaultToolCallingManager throws or absorbs a genuinely unresolvable tool-name request' as an item needing targeted verification (decompile/IDE check) in Increments 4-6; re-reading context/PROGRESS.md's Increments 4-6 entries in full (including every 'Follow-up' note) confirms that verification was never subsequently performed. This experiment's actual recovery behavior is therefore genuinely unverified in this module - not merely unexercised by a convenience test - and is disclosed honestly here rather than assumed safe by analogy to Experiment #3's reasoning."
+      },
+      "liveEvaluation": {
+        "status": "REQUIRES_OPERATOR",
+        "instructions": "Temporarily edit the system prompt (src/main/resources/prompts/pr-review-system-prompt.md) to explicitly instruct the model to call a plausible-sounding but nonexistent tool name (e.g. 'delete_pull_request_review'), start the app with real credentials, POST /code-review, and observe whether the request completes with the agent reporting the failed call and continuing, or fails with an unhandled exception (500/INTERNAL_ERROR) - then revert the prompt edit."
+      }
+    },
+    {
+      "id": 8,
+      "name": "Local vs MCP comparison",
+      "trigger": "Compare this module's MCP tools with Module 3's local tools on a similar review.",
+      "whatToObserve": "Trade-offs: control, tool discovery, reliability, latency, debuggability.",
+      "hermeticStatus": {
+        "status": "ARCHITECTURAL_COMPARISON",
+        "citation": null,
+        "note": "Unlike the other 7 rows, this experiment is a design-level comparison of two already-built, already-tested systems, not something a single new test proves or a single live run measures - it needs neither. Grounded directly in both modules' actual shipped code: 03-code-review-agent's CodeReviewTools exposes exactly 6 fixed, hardcoded local @Tool methods (readFile, exploreRepository, retrieveCodeLanguage, retrieveCodeConvention, getCodebaseContext, analyzeCodeMetrics) operating over a local filesystem repository-root boundary; 04-mcp-code-review-agent's CodeReviewTools exposes exactly 2 fixed local @Tool methods (retrieveCodeLanguage, retrieveCodeConvention) plus every tool SyncMcpToolCallbackProvider dynamically discovers from GitHub's remote MCP server at runtime (AgentConfigTest#shouldMergeLocalAndMcpToolCallbacks_whenMcpToolsAreDiscovered proves the merge mechanism; McpToolDiscoveryLogger proves discovery is logged, not hardcoded). See evaluation/RESULTS.md's own 'Local vs MCP tool comparison against Module 3' section for the full written comparison."
+      },
+      "liveEvaluation": {
+        "status": "NOT_APPLICABLE",
+        "instructions": "No live run is required for this experiment - it is an architectural comparison, not a behavioral measurement. See evaluation/RESULTS.md."
+      }
+    }
+  ]
+}

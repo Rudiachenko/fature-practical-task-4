@@ -165,6 +165,20 @@ class CodeReviewToolsTest {
   }
 
   @Test
+  void shouldReturnUnknown_whenChatResponseCarriesNoGenerationAtAll() {
+    // Defensive branch: CodeReviewTools.callSubModel's own `generation == null` guard
+    // (response.getResult() returns null when the provider response carries zero Generations) -
+    // a real provider could return this shape, so this proves the guard degrades to an empty
+    // sub-call result (and, in turn, "unknown") without throwing, rather than merely being
+    // ported-but-never-exercised code.
+    chatModel.setNoGenerations();
+
+    String result = tools.retrieveCodeLanguage("public class Foo {}");
+
+    assertThat(result).isEqualTo("unknown");
+  }
+
+  @Test
   void shouldReturnBlankCodeSnippetMessageAndNeverCallTheModel_whenCodeSnippetIsBlank() {
     String result = tools.retrieveCodeLanguage("   ");
 
@@ -338,10 +352,14 @@ class CodeReviewToolsTest {
     private final List<Prompt> prompts = new ArrayList<>();
     private Function<Prompt, String> responseFunction = prompt -> "deterministic-response";
     private Usage usage;
+    private boolean noGenerations;
 
     @Override
     public ChatResponse call(Prompt prompt) {
       prompts.add(prompt);
+      if (noGenerations) {
+        return new ChatResponse(List.of());
+      }
       String response = responseFunction.apply(prompt);
       List<Generation> generations = List.of(new Generation(new AssistantMessage(response)));
       if (usage == null) {
@@ -364,6 +382,11 @@ class CodeReviewToolsTest {
 
     void setUsage(Usage usage) {
       this.usage = usage;
+    }
+
+    /** Makes the next {@link #call(Prompt)} return a {@link ChatResponse} with zero Generations. */
+    void setNoGenerations() {
+      this.noGenerations = true;
     }
   }
 
